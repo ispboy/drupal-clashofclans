@@ -1,0 +1,5 @@
+clashofclans_league.add_form:
+  route_name: entity.clashofclans_league.add_form
+  title: 'Add league'
+  appears_on:
+    - entity.clashofclans_league.collection

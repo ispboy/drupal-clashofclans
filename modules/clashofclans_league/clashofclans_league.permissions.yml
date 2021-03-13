@@ -1,0 +1,13 @@
+administer league:
+  title: 'Administer league settings'
+  restrict access: true
+access league overview:
+  title: 'Access league overview page'
+delete league:
+  title: Delete league
+create league:
+  title: Create league
+view league:
+  title: View league
+edit league:
+  title: Edit league

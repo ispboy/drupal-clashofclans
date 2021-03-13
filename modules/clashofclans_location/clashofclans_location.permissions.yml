@@ -1,0 +1,13 @@
+administer location:
+  title: 'Administer location settings'
+  restrict access: true
+access location overview:
+  title: 'Access location overview page'
+delete location:
+  title: Delete location
+create location:
+  title: Create location
+view location:
+  title: View location
+edit location:
+  title: Edit location

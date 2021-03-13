@@ -1,0 +1,7 @@
+entity.clashofclans_league.settings:
+  path: 'admin/structure/clashofclans-league'
+  defaults:
+    _form: '\Drupal\clashofclans_league\Form\ClashofclansLeagueSettingsForm'
+    _title: 'League'
+  requirements:
+    _permission: 'administer league'

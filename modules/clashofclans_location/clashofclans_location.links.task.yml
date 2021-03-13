@@ -1,0 +1,40 @@
+entity.clashofclans_location.settings:
+  title: Settings
+  route_name: entity.clashofclans_location.settings
+  base_route: entity.clashofclans_location.settings
+entity.clashofclans_location.view:
+  title: View
+  route_name: entity.clashofclans_location.canonical
+  base_route: entity.clashofclans_location.canonical
+entity.clashofclans_location.edit_form:
+  title: Edit
+  route_name: entity.clashofclans_location.edit_form
+  base_route: entity.clashofclans_location.canonical
+entity.clashofclans_location.delete_form:
+  title: Delete
+  route_name: entity.clashofclans_location.delete_form
+  base_route: entity.clashofclans_location.canonical
+  weight: 10
+entity.clashofclans_location.collection:
+  title: Location
+  route_name: entity.clashofclans_location.collection
+  base_route: system.admin_content
+  weight: 10
+
+clashofclans_location.ranking:
+  title: Ranking
+  route_name: clashofclans_location.clans
+  base_route: entity.clashofclans_location.canonical
+  weight: 1
+
+clashofclans_location.clans: # (2) Default subtab, same route as the parent tab, so different tab ID.
+  title: Clans
+  route_name: clashofclans_location.clans
+  parent_id: clashofclans_location.ranking
+  weight: 1
+
+clashofclans_location.players:
+  title: Players
+  route_name: clashofclans_location.players
+  parent_id: clashofclans_location.ranking
+  weight: 1

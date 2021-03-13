@@ -1,0 +1,31 @@
+entity.clashofclans_location.settings:
+  path: 'admin/structure/clashofclans-location'
+  defaults:
+    _form: '\Drupal\clashofclans_location\Form\ClashofclansLocationSettingsForm'
+    _title: 'Location'
+  requirements:
+    _permission: 'administer location'
+
+clashofclans_location.clans:
+  path: '/clashofclans-location/{clashofclans_location}/clans'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::clans'
+    _title_callback: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::setTitle'
+  requirements:
+    _permission: 'view location'
+  options:
+    parameters:
+      clashofclans_location:
+        type: entity:clashofclans_location
+
+clashofclans_location.players:
+  path: '/clashofclans-location/{clashofclans_location}/players'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::players'
+    _title_callback: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::setTitle'
+  requirements:
+    _permission: 'view location'
+  options:
+    parameters:
+      clashofclans_location:
+        type: entity:clashofclans_location

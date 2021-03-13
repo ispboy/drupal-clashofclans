@@ -1,0 +1,10 @@
+entity.clashofclans_league.settings:
+  title: League
+  description: Configure a League entity type
+  route_name:  entity.clashofclans_league.settings
+  parent: system.admin_structure
+entity.clashofclans_league.collection:
+  title: Leagues
+  description: List of leagues
+  route_name: entity.clashofclans_league.collection
+  parent: system.admin_content

@@ -1,0 +1,10 @@
+entity.clashofclans_location.settings:
+  title: Location
+  description: Configure a Location entity type
+  route_name:  entity.clashofclans_location.settings
+  parent: system.admin_structure
+entity.clashofclans_location.collection:
+  title: Locations
+  description: List of locations
+  route_name: entity.clashofclans_location.collection
+  parent: system.admin_content
