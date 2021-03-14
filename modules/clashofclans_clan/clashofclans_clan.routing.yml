@@ -1,7 +1,15 @@
-entity.clashofclans_clan.settings:
-  path: 'admin/structure/clashofclans-clan'
+clashofclans_clan.tag:
+  path: 'clashofclans-clan/{tag}'
   defaults:
-    _form: '\Drupal\clashofclans_clan\Form\ClashofclansClanSettingsForm'
-    _title: 'Clan'
+    _controller: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::tag'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::setTitle'
   requirements:
-    _permission: 'administer clan'
+    _permission: 'access content'
+
+clashofclans_clan.global:
+  path: 'clashofclans-clan'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::global'
+    _title: 'Clans top 200 (global)'
+  requirements:
+    _permission: 'access content'

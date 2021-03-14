@@ -32,9 +32,22 @@ class ClashofclansLocationController extends ControllerBase {
       $rankings = $client->getRankingsForLocation($clashofclans_location->id(), 'clans'); // returns array of Clan objects
 
       foreach($rankings as $key => $ranking) {
+        // $badge = [
+        //   '#theme' => 'image',
+        //   '#uri' => $ranking->badgeUrls()->small(),
+        //   '#width' => 24,
+        //   '#height' => 24,
+        // ];
         $tag = $ranking->tag();
-        $name = Link::fromTextAndUrl($ranking->name(), Url::fromUri('internal:/reports/search/'. $tag))->toString();
-        $rows[] = [$ranking->rank(), $ranking->previousRank(), $name, $ranking->clanLevel(), $ranking->members(), $ranking->clanPoints()];
+        $name = Link::fromTextAndUrl($ranking->name(), Url::fromRoute('clashofclans_clan.tag', ['tag' => $tag]))->toString();
+        $rows[] = [
+          $ranking->rank(),
+          $ranking->previousRank(),
+          // \Drupal::service('renderer')->render($badge),
+          $name,
+          $ranking->clanLevel(),
+          $ranking->members(),
+          $ranking->clanPoints()];
       }
     }
     catch (RequestException $error) {
@@ -65,7 +78,6 @@ class ClashofclansLocationController extends ControllerBase {
       $rankings = $client->getRankingsForLocation($clashofclans_location->id(), 'players'); // returns array of Clan objects
       // $first = current($rankings);
       // ksm($clashofclans_location->getTitle());
-
       foreach($rankings as $key => $ranking) {
         $rows[] = [
           $ranking->rank(),
