@@ -1,0 +1,9 @@
+name: ClashOfClans Player
+type: module
+description: Integrates Clash of Clans API into Drupal for Players.
+package: Clash of Clans
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - clashofclans:clashofclans
+  - clashofclans_location:clashofclans_location

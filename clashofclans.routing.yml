@@ -4,7 +4,7 @@ clashofclans.example:
     _title: 'Example'
     _controller: '\Drupal\clashofclans\Controller\ClashofclansController::build'
   requirements:
-    _permission: 'access content'
+    _permission: 'access devel information'
 
 clashofclans.settings_form:
   path: '/admin/config/system/clashofclans'

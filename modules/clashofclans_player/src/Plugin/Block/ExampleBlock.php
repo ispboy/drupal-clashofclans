@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\clashofclans_clan\Plugin\Block;
+namespace Drupal\clashofclans_player\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 
@@ -8,9 +8,9 @@ use Drupal\Core\Block\BlockBase;
  * Provides an example block.
  *
  * @Block(
- *   id = "clashofclans_clan_example",
+ *   id = "clashofclans_player_example",
  *   admin_label = @Translation("Example"),
- *   category = @Translation("ClashOfClans Clan")
+ *   category = @Translation("ClashOfClans Player")
  * )
  */
 class ExampleBlock extends BlockBase {

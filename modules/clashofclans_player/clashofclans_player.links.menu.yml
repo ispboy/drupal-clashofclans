@@ -1,0 +1,6 @@
+clashofclans_player.global:
+  title: Players
+  description: list the global top 200 players.
+  route_name: clashofclans_player.global
+  menu_name: main
+  weight: 2

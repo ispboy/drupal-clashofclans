@@ -1,0 +1,15 @@
+clashofclans_player.global:
+  path: 'clashofclans-player'
+  defaults:
+    _controller: '\Drupal\clashofclans_player\Controller\ClashofclansPlayerController::global'
+    _title: 'Players'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_player.tag:
+  path: 'clashofclans-player/{tag}'
+  defaults:
+    _controller: '\Drupal\clashofclans_player\Controller\ClashofclansPlayerController::tag'
+    _title_callback: '\Drupal\clashofclans_player\Controller\ClashofclansPlayerController::setTitle'
+  requirements:
+    _permission: 'access content'

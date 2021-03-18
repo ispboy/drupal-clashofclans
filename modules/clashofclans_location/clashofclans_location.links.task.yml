@@ -31,10 +31,10 @@ clashofclans_location.clans: # (2) Default subtab, same route as the parent tab,
   title: Clans
   route_name: clashofclans_location.clans
   parent_id: clashofclans_location.ranking
-  weight: 1
+  weight: 2
 
 clashofclans_location.players:
   title: Players
   route_name: clashofclans_location.players
   parent_id: clashofclans_location.ranking
-  weight: 1
+  weight: 2
