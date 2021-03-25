@@ -3,7 +3,7 @@
 namespace Drupal\clashofclans\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use ClashOfClans\Client;
+use Drupal\clashofclans\ClashofclansCore;
 
 /**
  * Returns responses for ClashOfClans routes.
@@ -14,16 +14,14 @@ class ClashofclansController extends ControllerBase {
    * Builds the response.
    */
   public function build() {
-    $key = \Drupal::config('clashofclans.settings')->get('key');
-    $client = new Client($key);
-
-    $clan = $client->getClan('#C00RJP'); // returns Clan object
+$clan = ClashofclansCore::getClan('#C00RJP');
+$clan2 = ClashofclansCore::getClan('#PQP8UJCQ');
+    // $clan = $client->getClan('#C00RJP'); // returns Clan object
     $clan->name(); // "Hattrickers"
     $clan->level(); // 8
     $clan->warWins(); // 168
     $leader = $clan->memberList()->coleaders();
-    $player = $client->getPlayer('#P9RJUCR2U');
-    ksm($player->clan());
+    ksm($clan->name(), $clan2->name());
 
     // $leagues = $client->getLeagues();
     // foreach ($leagues as $key => $league) {

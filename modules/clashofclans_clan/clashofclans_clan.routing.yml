@@ -1,7 +1,7 @@
 clashofclans_clan.global:
   path: 'clashofclans-clan'
   defaults:
-    _controller: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::global'
+    _controller: '\Drupal\clashofclans_clan\Controller\RankingController::global'
     _title: 'Clans'
   requirements:
     _permission: 'access content'
@@ -9,7 +9,7 @@ clashofclans_clan.global:
 clashofclans_clan.tag:
   path: 'clashofclans-clan/{tag}'
   defaults:
-    _controller: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::tag'
-    _title_callback: '\Drupal\clashofclans_clan\Controller\ClashofclansClanController::setTitle'
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::tag'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
   requirements:
     _permission: 'access content'
