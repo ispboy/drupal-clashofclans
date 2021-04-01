@@ -1,0 +1,3 @@
+services:
+  clashofclans.client:
+    class: Drupal\clashofclans\ClashofclansClient

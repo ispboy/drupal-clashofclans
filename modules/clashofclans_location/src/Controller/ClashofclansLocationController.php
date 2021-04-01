@@ -4,7 +4,7 @@ namespace Drupal\clashofclans_location\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\clashofclans\ClashofclansCore;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
@@ -12,6 +12,18 @@ use Drupal\Core\Url;
  * Returns responses for Clashofclans location routes.
  */
 class ClashofclansLocationController extends ControllerBase {
+  private $client;
+
+  public function __construct(\Drupal\clashofclans\ClashofclansClient $client)
+  {
+      $this->client = $client;
+  }
+
+  public static function create(ContainerInterface $container)
+  {
+      $client = $container->get('clashofclans.client');
+      return new static($client);
+  }
 
   /**
    * Builds the response.
@@ -19,7 +31,7 @@ class ClashofclansLocationController extends ControllerBase {
   public function clans(EntityInterface $clashofclans_location) {
 
     $rows = [];
-    $rankings = ClashofclansCore::getRankingsForLocation($clashofclans_location->id(), 'clans');
+    $rankings = $this->client->get('getRankingsForLocation', ['id' => $clashofclans_location->id(), 'type' => 'clans']);
     foreach($rankings as $key => $ranking) {
       $badge = [
         '#theme' => 'image',
@@ -58,7 +70,7 @@ class ClashofclansLocationController extends ControllerBase {
 
     $rows = [];
 
-    $rankings = ClashofclansCore::getRankingsForLocation($clashofclans_location->id(), 'players');
+    $rankings = $this->client->get('getRankingsForLocation', ['id' => $clashofclans_location->id(), 'type' => 'players']);
       // $first = current($rankings);
       // ksm($first->clan()->name());
     foreach($rankings as $key => $ranking) {

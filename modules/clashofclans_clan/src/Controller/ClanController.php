@@ -3,7 +3,7 @@
 namespace Drupal\clashofclans_clan\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\clashofclans\ClashofclansCore;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
@@ -12,9 +12,22 @@ use Drupal\Core\Url;
  */
 class ClanController extends ControllerBase {
 
+  private $client;
+
+  public function __construct(\Drupal\clashofclans\ClashofclansClient $client)
+  {
+      $this->client = $client;
+  }
+
+  public static function create(ContainerInterface $container)
+  {
+      $client = $container->get('clashofclans.client');
+      return new static($client);
+  }
+
   public function setTitle($tag) {
     $title = $tag;
-    $clan = ClashofclansCore::getClan($tag);
+    $clan = $this->client->get('getClan', ['tag' => $tag]);
     if (!empty($clan)) {
       $title = $clan->name();
     }
@@ -25,7 +38,7 @@ class ClanController extends ControllerBase {
    * Builds the response.
    */
   public function tag($tag) {
-    $clan = ClashofclansCore::getClan($tag);
+    $clan = $this->client->get('getClan', ['tag' => $tag]);
 
     if (empty($clan)) {
       $build['content'] = [

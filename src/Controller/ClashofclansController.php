@@ -3,25 +3,33 @@
 namespace Drupal\clashofclans\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\clashofclans\ClashofclansCore;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Returns responses for ClashOfClans routes.
  */
 class ClashofclansController extends ControllerBase {
+  private $client;
 
+  public function __construct(\Drupal\clashofclans\ClashofclansClient $client)
+  {
+      $this->client = $client;
+  }
+
+  public static function create(ContainerInterface $container)
+  {
+      $client = $container->get('clashofclans.client');
+      return new static($client);
+  }
   /**
    * Builds the response.
    */
   public function build() {
-$clan = ClashofclansCore::getClan('#C00RJP');
-$clan2 = ClashofclansCore::getClan('#PQP8UJCQ');
+    $client = $this->client;
+    $tag = '#P9RJUCR2U';
+    $player = $this->client->get('getPlayer', ['tag' => $tag]);
     // $clan = $client->getClan('#C00RJP'); // returns Clan object
-    $clan->name(); // "Hattrickers"
-    $clan->level(); // 8
-    $clan->warWins(); // 168
-    $leader = $clan->memberList()->coleaders();
-    ksm($clan->name(), $clan2->name());
+    ksm($player->legendStatistics());
 
     // $leagues = $client->getLeagues();
     // foreach ($leagues as $key => $league) {

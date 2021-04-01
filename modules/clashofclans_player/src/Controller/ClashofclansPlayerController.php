@@ -3,7 +3,7 @@
 namespace Drupal\clashofclans_player\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\clashofclans\ClashofclansCore;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
@@ -11,11 +11,23 @@ use Drupal\Core\Url;
  * Returns responses for ClashOfClans Player routes.
  */
 class ClashofclansPlayerController extends ControllerBase {
+  private $client;
+
+  public function __construct(\Drupal\clashofclans\ClashofclansClient $client)
+  {
+      $this->client = $client;
+  }
+
+  public static function create(ContainerInterface $container)
+  {
+      $client = $container->get('clashofclans.client');
+      return new static($client);
+  }
   /**
    * Builds the response.
    */
   public function global() {
-    $rankings = ClashofclansCore::getRankingsForLocation('global', 'players');
+    $rankings = $this->client->get('getRankingsForLocation', ['id' => 'global', 'type' => 'players']);
     foreach($rankings as $key => $ranking) {
       $clan = '';
       if ($ranking->clan()) {
@@ -59,7 +71,8 @@ class ClashofclansPlayerController extends ControllerBase {
    */
   public function tag($tag) {
 
-    $player = ClashofclansCore::getPlayer($tag);;
+    $player = $this->client->get('getPlayer', ['tag' => $tag]);
+
     // $badge = [
     //   '#theme' => 'image',
     //   '#uri' => $clan->badgeUrls()->small(),
@@ -92,6 +105,7 @@ class ClashofclansPlayerController extends ControllerBase {
       'versusBattleWins: ' . $player->versusBattleWins(),
       'expLevel: ' . $player->expLevel(),
       'trophies: ' . $player->trophies(),
+      'rank: '. (isset($player->legendStatistics()['currentSeason']['rank']) ? $player->legendStatistics()['currentSeason']['rank'] : ''),
       'bestTrophies: ' . $player->bestTrophies(),
       'builderHallLevel: ' . $player->builderHallLevel(),
       'versusTrophies: ' . $player->versusTrophies(),
@@ -111,7 +125,7 @@ class ClashofclansPlayerController extends ControllerBase {
 
   public function setTitle($tag) {
     $title = $tag;
-    $player = ClashofclansCore::getPlayer($tag);
+    $player = $this->client->get('getPlayer', ['tag' => $tag]);
     if (!empty($player)) {
       $title = $player->name();
     }
