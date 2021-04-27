@@ -1,0 +1,19 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_location
+id: clashofclans_location.field_country_code
+field_name: field_country_code
+entity_type: clashofclans_location
+type: string
+settings:
+  max_length: 32
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

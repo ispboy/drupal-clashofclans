@@ -1,0 +1,22 @@
+entity.clashofclans_player.settings:
+  title: Settings
+  route_name: entity.clashofclans_player.settings
+  base_route: entity.clashofclans_player.settings
+entity.clashofclans_player.view:
+  title: View
+  route_name: entity.clashofclans_player.canonical
+  base_route: entity.clashofclans_player.canonical
+entity.clashofclans_player.edit_form:
+  title: Edit
+  route_name: entity.clashofclans_player.edit_form
+  base_route: entity.clashofclans_player.canonical
+entity.clashofclans_player.delete_form:
+  title: Delete
+  route_name: entity.clashofclans_player.delete_form
+  base_route: entity.clashofclans_player.canonical
+  weight: 10
+entity.clashofclans_player.collection:
+  title: Player
+  route_name: entity.clashofclans_player.collection
+  base_route: system.admin_content
+  weight: 10

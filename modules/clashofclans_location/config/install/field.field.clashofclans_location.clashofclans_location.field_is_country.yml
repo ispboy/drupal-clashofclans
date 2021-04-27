@@ -1,0 +1,22 @@
+status: true
+dependencies:
+  config:
+    - field.storage.clashofclans_location.field_is_country
+  module:
+    - clashofclans_location
+id: clashofclans_location.clashofclans_location.field_is_country
+field_name: field_is_country
+entity_type: clashofclans_location
+bundle: clashofclans_location
+label: 'is Country'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

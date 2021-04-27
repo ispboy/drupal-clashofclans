@@ -1,0 +1,32 @@
+# Migration configuration for clashofclans_league content.
+id: clashofclans_league
+label: 'League'
+migration_group: 'Clash of Clans'
+
+source:
+  constants:
+    DRUPAL_FILE_DIRECTORY: 'public://img/league/'
+  plugin: clashofclans_league
+  track_changes: true
+
+destination:
+  # Specify the destination plugin (usually entity:entity_type).
+  plugin: 'entity:clashofclans_league'
+  default_bundle: 'clashofclans_league'
+
+process:
+  id: id
+  title: name
+  field_image:
+    plugin: image_import
+    source: icon
+    destination: 'constants/DRUPAL_FILE_DIRECTORY'
+    title: name
+    skip_on_missing_source: true
+
+dependencies:
+  module:
+    - clashofclans_league
+  enforced:
+    module:
+      - clashofclans_league
