@@ -27,10 +27,11 @@ class ClashofclansController extends ControllerBase {
   public function build() {
     $client = $this->client;
     $tag = '#P9RJUCR2U';
-    $player = $this->client->get('getPlayer', ['tag' => $tag]);
+    $player = $client->get('getPlayer', ['tag' => $tag]);
     // $clan = $client->getClan('#C00RJP'); // returns Clan object
-    ksm($player->legendStatistics());
-
+    // ksm($player->name(), $player->legendStatistics());
+$leagues = $client->get('getLeagues');
+ksm($leagues);
     // $leagues = $client->getLeagues();
     // foreach ($leagues as $key => $league) {
     //   ksm($league->name(), $league->id(), $league->icon()->small());

@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Implements hook_theme().

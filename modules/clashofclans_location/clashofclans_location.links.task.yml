@@ -21,20 +21,14 @@ entity.clashofclans_location.collection:
   base_route: system.admin_content
   weight: 10
 
-clashofclans_location.ranking:
-  title: Ranking
-  route_name: clashofclans_location.clans
-  base_route: entity.clashofclans_location.canonical
-  weight: 1
-
 clashofclans_location.clans: # (2) Default subtab, same route as the parent tab, so different tab ID.
   title: Clans
-  route_name: clashofclans_location.clans
-  parent_id: clashofclans_location.ranking
+  route_name: entity.clashofclans_location.canonical
+  parent_id: entity.clashofclans_location.view
   weight: 2
 
 clashofclans_location.players:
   title: Players
   route_name: clashofclans_location.players
-  parent_id: clashofclans_location.ranking
+  parent_id: entity.clashofclans_location.view
   weight: 2

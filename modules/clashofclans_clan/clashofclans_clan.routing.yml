@@ -1,11 +1,3 @@
-clashofclans_clan.global:
-  path: 'clashofclans-clan'
-  defaults:
-    _controller: '\Drupal\clashofclans_clan\Controller\RankingController::global'
-    _title: 'Clans'
-  requirements:
-    _permission: 'access content'
-
 clashofclans_clan.tag:
   path: 'clashofclans-clan/{tag}'
   defaults:

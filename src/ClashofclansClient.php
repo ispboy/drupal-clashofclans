@@ -4,6 +4,8 @@ namespace Drupal\clashofclans;
 
 use ClashOfClans\Client;
 use GuzzleHttp\Exception\RequestException;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 class ClashofclansClient {
   /**
@@ -52,8 +54,96 @@ class ClashofclansClient {
     return $data[$key];
   }
 
-  protected function getRankingsForLocation($args = ['id' => 'global', 'type' => 'clans']) {
-    return $this->client->getRankingsForLocation($args['id'], $args['type']);
+  protected function getClansForLocation($args = ['id' => 'global']) {
+    $rows = [];
+    $rankings = $this->client->getRankingsForLocation($args['id'], 'clans');
+    foreach($rankings as $key => $ranking) {
+      $badge = [
+        '#theme' => 'image',
+        '#uri' => $ranking->badgeUrls()->small(),
+        '#width' => 64,
+        '#height' => 64,
+      ];
+      $tag = $ranking->tag();
+      $name = Link::fromTextAndUrl($ranking->name(), Url::fromRoute('clashofclans_clan.tag', ['tag' => $tag]))->toString();
+
+      $items = [
+        $ranking->rank(),
+        $ranking->previousRank(),
+        \Drupal::service('renderer')->render($badge),
+        $name,
+        $ranking->clanLevel(),
+        $ranking->members(),
+        $ranking->clanPoints(),
+      ];
+      if ($args['id'] == 'global') {
+        $items[] = Link::fromTextAndUrl($ranking->location()->name(), Url::fromRoute('entity.clashofclans_location.canonical', ['clashofclans_location' => $ranking->location()->id()]))->toString();
+      }
+      $rows[] = $items;
+
+    }
+
+    $header = ['rank', 'previousRank', 'badge', 'name', 'clanLevel', 'members','clanPoints'];
+    if ($args['id'] == 'global') {
+      $header[] = 'location';
+    }
+
+
+    $build['content'] = [
+      '#type' => 'table',
+      '#sticky' => TRUE,
+      '#header' => $header,
+      '#rows' => $rows,
+    ];
+
+    return $build;
+  }
+
+  protected function getPlayersForLocation($args = ['id' => 'global']) {
+    $rows = [];
+
+    $rankings = $this->client->getRankingsForLocation($args['id'], 'players');
+      // $first = current($rankings);
+      // ksm($first->clan()->name());
+    foreach($rankings as $key => $ranking) {
+      $tag = $ranking->tag();
+      $name = Link::fromTextAndUrl($ranking->name(), Url::fromRoute('clashofclans_player.tag', ['tag' => $tag]))->toString();
+      $clan = '';
+      if ($ranking->clan()) {
+        $clan = Link::fromTextAndUrl($ranking->clan()->name(), Url::fromRoute('clashofclans_clan.tag', ['tag' => $ranking->clan()->tag()]))->toString();
+        // $clan = $ranking->clan()->name();
+      }
+
+      $league = [
+        '#theme' => 'image',
+        '#uri' => $ranking->league()->iconUrls()->small(),
+        '#width' => 36,
+        '#height' => 36,
+      ];
+
+      $rows[] = [
+        $ranking->rank(),
+        $ranking->previousRank(),
+        $name,
+        \Drupal::service('renderer')->render($league),
+        $ranking->expLevel(),
+        $ranking->trophies(),
+        $ranking->attackWins(),
+        $ranking->defenseWins(),
+        $clan,
+      ];
+    }
+
+
+    $header = ['rank', 'previousRank', 'name', 'league', 'expLevel', 'trophies','attackWins', 'defenseWins', 'clan'];
+    $build['content'] = [
+      '#type' => 'table',
+      '#sticky' => TRUE,
+      '#header' => $header,
+      '#rows' => $rows,
+    ];
+
+    return $build;
   }
 
   protected function getClan($args) {

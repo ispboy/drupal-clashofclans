@@ -6,18 +6,6 @@ entity.clashofclans_location.settings:
   requirements:
     _permission: 'administer location'
 
-clashofclans_location.clans:
-  path: '/clashofclans-location/{clashofclans_location}/clans'
-  defaults:
-    _controller: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::clans'
-    _title_callback: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::setTitle'
-  requirements:
-    _permission: 'view location'
-  options:
-    parameters:
-      clashofclans_location:
-        type: entity:clashofclans_location
-
 clashofclans_location.players:
   path: '/clashofclans-location/{clashofclans_location}/players'
   defaults:
@@ -29,3 +17,19 @@ clashofclans_location.players:
     parameters:
       clashofclans_location:
         type: entity:clashofclans_location
+
+clashofclans_location.global.clans:
+  path: 'clashofclans-clan'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::globalClans'
+    _title: 'Clans'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_location.global.players:
+  path: 'clashofclans-player'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\ClashofclansLocationController::globalPlayers'
+    _title: 'Players'
+  requirements:
+    _permission: 'access content'

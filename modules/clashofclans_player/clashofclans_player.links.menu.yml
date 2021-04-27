@@ -1,6 +1,10 @@
-clashofclans_player.global:
+entity.clashofclans_player.settings:
+  title: Player
+  description: Configure a Player entity type
+  route_name:  entity.clashofclans_player.settings
+  parent: system.admin_structure
+entity.clashofclans_player.collection:
   title: Players
-  description: list the global top 200 players.
-  route_name: clashofclans_player.global
-  menu_name: main
-  weight: 2
+  description: List of players
+  route_name: entity.clashofclans_player.collection
+  parent: system.admin_content
