@@ -7,7 +7,7 @@ entity.clashofclans_player.settings:
     _permission: 'administer player'
 
 clashofclans_player.tag:
-  path: 'clashofclans-player/{tag}'
+  path: 'clashofclans-player/tag/{tag}'
   defaults:
     _controller: '\Drupal\clashofclans_player\Controller\PlayerController::tag'
     _title_callback: '\Drupal\clashofclans_player\Controller\PlayerController::setTitle'
