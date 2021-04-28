@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormInterface;
  * @Block(
  *   id = "clashofclans_clan_tag_form",
  *   admin_label = @Translation("Find a clan"),
- *   category = @Translation("ClashOfClans Clan")
+ *   category = @Translation("ClashOfClans")
  * )
  */
 class TagFormBlock extends BlockBase {

@@ -40,7 +40,7 @@ class Location extends SourcePluginBase {
     // }
     // @endcode
 
-    $key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImVlNTI2MTgzLTNjNzMtNDM5Ny04MjEzLTQ0MzVkMGZjNzJjOCIsImlhdCI6MTYxNDQxNzIxMywic3ViIjoiZGV2ZWxvcGVyLzA1NzEyNTQ0LWE5ZDktMWRmMy1lNzRhLWZjZDIwYWJmZjA1ZCIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE2Ny43MS4xNTEuMTcyIl0sInR5cGUiOiJjbGllbnQifV19.W6UhL0IAkUTbBk41v5LNj2EHE5r_Ozgx68TU-5DJuvfKVAij0KoFADsZ81TGVUKQcenMemZZRwuIxMoQZ42UYw';
+    $key = \Drupal::config('clashofclans.settings')->get('key');
     $client = new Client($key);
 
     $locations = $client->getLocations();
