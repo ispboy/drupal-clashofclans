@@ -77,7 +77,11 @@ class ClashofclansClient {
         $ranking->clanPoints(),
       ];
       if ($args['id'] == 'global') {
-        $items[] = Link::fromTextAndUrl($ranking->location()->name(), Url::fromRoute('entity.clashofclans_location.canonical', ['clashofclans_location' => $ranking->location()->id()]))->toString();
+        if ($ranking->location()) {
+          $items[] = Link::fromTextAndUrl($ranking->location()->name(), Url::fromRoute('entity.clashofclans_location.canonical', ['clashofclans_location' => $ranking->location()->id()]))->toString();
+        } else {
+          $items[] = '';
+        }
       }
       $rows[] = $items;
 
@@ -152,6 +156,23 @@ class ClashofclansClient {
 
   protected function getPlayer($args) {
     return $this->client->getPlayer($args['tag']);
+  }
+
+  protected function verifyPlayer($args) {
+    $client = $this->client;
+    $tag = $args['tag'];
+    $token = $args['token'];  //This is not the api token, but player owner token.
+    $url = 'players/' . urlencode($tag). '/verifytoken';
+    $options = [
+      'headers' => ['authorization' => 'Bearer ' . $client->getToken()],
+      'body' => json_encode(['token' => $token]),
+    ];
+
+    $response = $client->getHttpClient()
+      ->request('POST', $url, $options);
+
+    $body = json_decode($response->getBody()->getContents(), true);
+    return ($body['status'] == 'ok') ? TRUE : FALSE;
   }
 
 }

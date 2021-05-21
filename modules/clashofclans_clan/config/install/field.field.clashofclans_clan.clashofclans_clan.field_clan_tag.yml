@@ -1,0 +1,18 @@
+status: true
+dependencies:
+  config:
+    - field.storage.clashofclans_clan.field_clan_tag
+  module:
+    - clashofclans_clan
+id: clashofclans_clan.clashofclans_clan.field_clan_tag
+field_name: field_clan_tag
+entity_type: clashofclans_clan
+bundle: clashofclans_clan
+label: 'Clan tag'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

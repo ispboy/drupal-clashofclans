@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\clashofclans_location\Plugin\migrate\source;
+namespace Drupal\clashofclans_clan\Plugin\migrate\source;
 
 use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
 use Drupal\migrate\Row;
@@ -8,21 +8,21 @@ use ClashOfClans\Client;
 
 
 /**
- * The 'clashofclans_location' source plugin.
+ * The 'clashofclans_location_clan' source plugin.
  *
  * @MigrateSource(
- *   id = "clashofclans_location",
- *   source_module = "clashofclans_location"
+ *   id = "clashofclans_clan",
+ *   source_module = "clashofclans_clan"
  * )
  */
-class Location extends SourcePluginBase {
+class Clan extends SourcePluginBase {
 
   /**
    * {@inheritdoc}
    */
   public function __toString() {
     // @DCG You may return something meaningful here.
-    return 'ClashOfClans Location source';
+    return 'ClashOfClans Global Clan source';
   }
 
   /**
@@ -43,14 +43,14 @@ class Location extends SourcePluginBase {
     $key = \Drupal::config('clashofclans.settings')->get('key');
     $client = new Client($key);
 
-    $locations = $client->getLocations();
+    $location_id = 'global';
+    $rankings = $client->getRankingsForLocation($location_id, 'clans'); // returns array of Clan objects
+
     $records = [];
-    foreach ($locations as $key => $location) {
+    foreach ($rankings as $key => $clan) {
       $records[] = [
-        'id' => $location->id(),
-        'name' => $location->name(),
-        'countryCode' => $location->countryCode(),
-        'isCountry' => $location->isCountry(),
+        'tag' => $clan->tag(),
+        'name' => $clan->name(),
       ];
     }
 
@@ -62,10 +62,8 @@ class Location extends SourcePluginBase {
    */
   public function fields() {
     return [
-      'id' => $this->t('The location ID.'),
-      'name' => $this->t('The location name.'),
-      'countryCode' => $this->t('The location countryCode.'),
-      'isCountry' => $this->t('The location isCountry.'),
+      'tag' => $this->t('The clan tag.'),
+      'name' => $this->t('The clan name.'),
     ];
   }
 
@@ -74,8 +72,8 @@ class Location extends SourcePluginBase {
    */
   public function getIds() {
     return [
-      'id' => [
-        'type' => 'integer',
+      'tag' => [
+        'type' => 'string',
       ],
     ];
   }

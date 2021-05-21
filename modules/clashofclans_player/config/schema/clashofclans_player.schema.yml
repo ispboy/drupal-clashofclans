@@ -1,0 +1,17 @@
+# Default value.
+field.value.clashofclans_player:
+  type: mapping
+  label: Default value
+  mapping:
+    name:
+      type: string
+      label: Name
+    tag:
+      type: string
+      label: Tag
+    token:
+      type: string
+      label: Token
+    verified:
+      type: integer
+      label: Verified

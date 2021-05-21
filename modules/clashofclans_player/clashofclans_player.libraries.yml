@@ -1,0 +1,4 @@
+clashofclans_player:
+  css:
+    component:
+      css/clashofclans-player-widget.css: {}

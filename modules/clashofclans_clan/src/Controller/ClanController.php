@@ -53,7 +53,11 @@ class ClanController extends ControllerBase {
       '#theme' => 'image',
       '#uri' => $clan->badgeUrls()->small(),
     ];
-    $location = Link::fromTextAndUrl($clan->location()->name(), Url::fromRoute('entity.clashofclans_location.canonical', ['clashofclans_location' => $clan->location()->id()]))->toString();
+    if ($clan->location()) {
+      $location = Link::fromTextAndUrl($clan->location()->name(), Url::fromRoute('entity.clashofclans_location.canonical', ['clashofclans_location' => $clan->location()->id()]))->toString();
+    } else {
+      $location = '';
+    }
     $items = [
       \Drupal::service('renderer')->render($badge),
       'tag: ' . $clan->tag(),

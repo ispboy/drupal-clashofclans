@@ -5,6 +5,9 @@ namespace Drupal\clashofclans\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+
 /**
  * Returns responses for ClashOfClans routes.
  */
@@ -21,28 +24,16 @@ class ClashofclansController extends ControllerBase {
       $client = $container->get('clashofclans.client');
       return new static($client);
   }
+
   /**
    * Builds the response.
    */
   public function build() {
     $client = $this->client;
     $tag = '#P9RJUCR2U';
-    $player = $client->get('getPlayer', ['tag' => $tag]);
-    // $clan = $client->getClan('#C00RJP'); // returns Clan object
-    // ksm($player->name(), $player->legendStatistics());
-$leagues = $client->get('getLeagues');
-ksm($leagues);
-    // $leagues = $client->getLeagues();
-    // foreach ($leagues as $key => $league) {
-    //   ksm($league->name(), $league->id(), $league->icon()->small());
-    // }
-
-    // $locations = $client->getLocations();
-    // $locationId = 32000029;
-    // $rankings = $client->getRankingsForLocation($locationId, 'clans'); // returns array of Clan objects
-    // foreach($rankings as $key => $clan) {
-    //   ksm($clan->name(), $clan->clanLevel(), $clan->clanPoints(), $clan->rank());
-    // }
+    $token = 'm7n3t7zs';
+    $verify = $client->get('verifyPlayer', ['tag' => $tag, 'token' => $token]);
+    dpm($verify);
 
 
     $build['content'] = [
