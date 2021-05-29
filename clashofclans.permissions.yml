@@ -1,4 +1,0 @@
-administer clashofclans configuration:
-  title: 'Administer clashofclans configuration'
-  description: 'Optional description.'
-  restrict access: true

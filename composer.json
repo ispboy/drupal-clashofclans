@@ -1,9 +1,0 @@
-{
-  "name": "drupal/clashofclans",
-  "type": "drupal-module",
-  "description": "Integrates Clash of Clans API into Drupal.",
-  "keywords": ["Drupal"],
-  "require": {
-    "toniperic/php-clash-of-clans": "dev-master"
-  }
-}
