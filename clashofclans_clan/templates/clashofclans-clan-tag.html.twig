@@ -1,0 +1,27 @@
+{# [module]/templates/clashofclans-clan-info.html.twig #}
+<article>
+<div style="float: right">
+  <img src="{{ clan.badgeUrls.medium }}" />
+  <br />
+  Points: {{ clan.clanPoints }}
+  <br />
+  VersusPoints: {{ clan.clanVersusPoints }}
+  <div>Location: {{ location }}</div>
+</div>
+<p>{{ clan.description}}</p>
+<div>Tag: {{ clan.tag}}</div>
+<div>Type: {{ clan.type}}</div>
+<div>requiredTrophies: {{ clan.requiredTrophies}}</div>
+<div>requiredTownhallLevel: {{ clan.requiredTownhallLevel}}</div>
+<div>requiredVersusTrophies: {{ clan.requiredVersusTrophies}}</div>
+<div>warFrequency: {{ clan.warFrequency}}</div>
+<div>warWinStreak: {{ clan.warWinStreak}}</div>
+<div>warWins: {{ clan.warWins}}</div>
+<div>warTies: {{ clan.warTies}}</div>
+<div>warLosses: {{ clan.warLosses}}</div>
+<div>isWarLogPublic: {{ clan.isWarLogPublic}}</div>
+<div>warLeague: {{ clan.warLeague.name}}</div>
+<div>members: {{ clan.members}}</div>
+</article>
+
+<div class='member-list'>{{ member_list }}</div>

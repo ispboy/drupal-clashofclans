@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Provides a clan entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function clashofclans_clan_theme() {
+  return [
+    'clashofclans_clan' => [
+      'render element' => 'elements',
+    ],
+
+    'clashofclans_clan_tag' => [
+      'variables' => [
+        'clan' => NULL,
+        'member_list' => NULL,
+        'location' => NULL,
+      ],
+    ],
+
+  ];
+}
+
+/**
+ * Prepares variables for clan templates.
+ *
+ * Default template: clashofclans-clan.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the clan information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_clashofclans_clan(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}

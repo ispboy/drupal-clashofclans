@@ -1,0 +1,3 @@
+services:
+  clashofclans_api.client:
+    class: Drupal\clashofclans_api\Client

@@ -1,0 +1,14 @@
+# Default value.
+field.value.clashofclans_clan:
+  type: mapping
+  label: Default value
+  mapping:
+    name:
+      type: string
+      label: Name
+    tag:
+      type: string
+      label: Tag
+    description:
+      type: string
+      label: Description

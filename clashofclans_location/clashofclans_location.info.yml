@@ -1,0 +1,10 @@
+name: ClashOfClans Location
+type: module
+description: 'Provides a location entity.'
+package: Clash of Clans
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - clashofclans_api:clashofclans_api
+  - extra_field:extra_field
+configure: entity.clashofclans_location.settings
