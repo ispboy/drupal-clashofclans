@@ -21,6 +21,20 @@ function clashofclans_clan_theme() {
         'clan' => NULL,
         'member_list' => NULL,
         'location' => NULL,
+        'current_war' => NULL,
+        'league_group' => NULL,
+      ],
+    ],
+
+    'clashofclans_clan_leaguegroup' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+    'clashofclans_clan_leaguewar' => [
+      'variables' => [
+        'war' => NULL,
       ],
     ],
 

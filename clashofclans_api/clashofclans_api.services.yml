@@ -1,3 +1,8 @@
 services:
   clashofclans_api.client:
     class: Drupal\clashofclans_api\Client
+
+  clashofclans_api.clan:
+    class: Drupal\clashofclans_api\Clan
+    arguments:
+      - '@clashofclans_api.client'

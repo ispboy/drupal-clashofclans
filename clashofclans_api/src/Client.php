@@ -10,6 +10,7 @@ class Client {
 
   protected $key;
   protected $httpClient;
+  protected $cache_max_age;
 
   /**
    * Class constructor.
@@ -20,6 +21,7 @@ class Client {
     $this->httpClient = \Drupal::service('http_client_factory')->fromOptions([
       'base_uri' => $base_uri,
     ]);;
+    $this->cache_max_age = 60;
   }
 
   /**
@@ -89,94 +91,152 @@ class Client {
   }
 
   /**
-   * @param $$items
+   * @param $items
    * @return array
    */
-  public function buildPlayers($items) {
+  public function buildRank($rank, $previousRank) {
+    $diff = intval($previousRank) - intval($rank);
+    if (intval($rank) <= 0 || intval($previousRank) <=0) {
+      $symbol = '';
+    } elseif ($diff == 0) {
+      $symbol = '(=)';
+    } elseif ($diff > 0) {
+      $symbol = '(+'. $diff. ')';
+    } else {
+      $symbol = '('. $diff. ')';
+    }
+    return $rank. '. '. $symbol;
+  }
+
+  /**
+   * @param $items
+   * @return array
+   */
+  public function buildPlayers($items, $fields) {
     $rows = [];
     foreach ($items as $key => $item) {
-      $clan = '';
-      if (isset($item['clan'])) {
-        $clan = $this->linkClan($item['clan']['name'], $item['clan']['tag']);
+      $row = [];
+      foreach ($fields as $field) {
+        switch ($field) {
+          case 'rank':
+            $row[] = $this->buildRank($item['rank'], $item['previousRank']);
+            break;
+          case 'clanRank':
+            $row[] = $this->buildRank($item['clanRank'], $item['previousClanRank']);
+            // $row[] = $item['clanRank']. '. '. $item['previousClanRank'];
+            break;
+
+          case 'name':
+            $row[] = $this->linkPlayer($item['name'], $item['tag']);
+            break;
+
+          case 'clan':
+            $row[] = isset($item['clan']) ? $this->linkClan($item['clan']['name'], $item['clan']['tag']) : '';
+            break;
+
+          case 'league':
+            $icon = [
+              '#theme' => 'image',
+              '#uri' => $item['league']['iconUrls']['tiny'],
+              '#width' => 36,
+              '#height' => 36,
+            ];
+            $row[] = \Drupal::service('renderer')->render($icon);
+            break;
+
+          default:
+            $row[] = isset($item[$field]) ? $item[$field] : '';
+        }
+
       }
-      $league = [
-        '#theme' => 'image',
-        '#uri' => $item['league']['iconUrls']['tiny'],
-        '#width' => 36,
-        '#height' => 36,
-      ];
-      $rows[] = [
-        $item['rank'],
-        $item['previousRank'],
-        $this->linkPlayer($item['name'], $item['tag']),
-        \Drupal::service('renderer')->render($league),
-        $item['expLevel'],
-        $item['trophies'],
-        $item['attackWins'],
-        $item['defenseWins'],
-        $clan,
-      ];
+
+      $rows[] = $row;
     }
-    $header = ['rank', 'previousRank', 'name', 'league', 'expLevel', 'trophies','attackWins', 'defenseWins', 'clan'];
-    $build['content'] = [
+    $header = array_keys($fields);
+    $build = [
       '#type' => 'table',
       '#sticky' => TRUE,
       '#header' => $header,
       '#rows' => $rows,
+      '#cache' => [
+        'max-age' => $this->cache_max_age,
+      ],
     ];
 
     return $build;
   }
 
   /**
-   * @param $$items
+   * @param $items: data['items']
+   * @param $fields: which fields to fetch.
    * @return array
    */
-  public function buildClans($items, $global = FALSE) {
+  public function buildClans($items, $fields) {
     $rows = [];
     foreach ($items as $key => $item) {
-      $name = $item['name'];
-      $tag = $item['tag'];
-      $name = $this->linkClan($name, $tag);
-      $badge = [
-        '#theme' => 'image',
-        '#uri' => $item['badgeUrls']['small'],
-        '#width' => 64,
-        '#height' => 64,
-      ];
+      $row = [];
+      foreach ($fields as $field) {
+        switch ($field) {
+          case 'rank':
+            $row[] = $this->buildRank($item['rank'], $item['previousRank']);
+            break;
 
-      $row = [
-        $item['rank'],
-        $item['previousRank'],
-        \Drupal::service('renderer')->render($badge),
-        $name,
-        $item['clanLevel'],
-        $item['members'],
-        $item['clanPoints'],
-      ];
+          case 'name':
+            $row[] = $this->linkClan($item['name'], $item['tag']);
+            break;
 
-      if ($global) {
-        $location = '';
-        if (isset($item['location'])) {
-          $location = $this->linkLocation($item['location']['name'], $item['location']['id']);
+          case 'badge':
+            $badge = [
+              '#theme' => 'image',
+              '#uri' => $item['badgeUrls']['small'],
+              '#width' => 64,
+              '#height' => 64,
+            ];
+            $row[] = \Drupal::service('renderer')->render($badge);
+            break;
+
+          case 'location':
+            if (isset($item['location'])) {
+              $row[] = $this->linkLocation($item['location']['name'], $item['location']['id']);
+            } else {
+              $row[] = '';
+            }
+            break;
+
+          default:
+            $row[] = isset($item[$field]) ? $item[$field] : '';
         }
-        $row[] = $location;
+
       }
 
       $rows[] = $row;
     }
 
-    $header = ['rank', 'previousRank', 'badge', 'name', 'clanLevel', 'members','clanPoints'];
-    if ($global) {
-      $header[] = 'location';
-    }
-    $build['content'] = [
+    $header = array_keys($fields);
+
+    $build = [
       '#type' => 'table',
       '#sticky' => TRUE,
       '#header' => $header,
       '#rows' => $rows,
+      '#cache' => [
+        'max-age' => $this->cache_max_age,
+      ],
     ];
 
     return $build;
+  }
+
+  public function getCacheMaxAge() {
+    return $this->cache_max_age;
+  }
+
+  public function encode($data, $format) {
+    switch ($format) {
+      case 'json':
+        return \Drupal\Component\Serialization\Json::encode($data);
+      default:
+        return $data;
+    }
   }
 }

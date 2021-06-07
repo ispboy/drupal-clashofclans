@@ -27,21 +27,49 @@ class ClashofclansLocationController extends ControllerBase {
    * Builds the Players response.
    */
   public function players(EntityInterface $clashofclans_location) {
-    $url = 'locations/'. $clashofclans_location->id(). '/rankings/players';
-    $data = $this->client->getArray($url);
-    return $this->client->buildPlayers($data['items']);
+    $build['content'] = $this->buildPlayers($clashofclans_location->id());
+    return $build;
   }
 
   public function globalPlayers() {
-    $url = 'locations/global/rankings/players';
+    $build['content'] = $this->buildPlayers('global');
+    return $build;
+  }
+
+  protected function buildPlayers($location_id) {
+    $url = 'locations/'. $location_id. '/rankings/players';
     $data = $this->client->getArray($url);
-    return $this->client->buildPlayers($data['items']);
+    $fields = [
+      'Rank' => 'rank',
+      'League' => 'league',
+      'Name'  => 'name',
+      'expLevel'  => 'expLevel',
+      'Clan'  => 'clan',
+      'attackWins'  => 'attackWins',
+      'defenseWins' => 'defenseWins',
+      'trophies'  => 'trophies',
+    ];
+
+    $build = $this->client->buildPlayers($data['items'], $fields);
+    return $build;
   }
 
   public function globalClans() {
     $url = 'locations/global/rankings/clans';
     $data = $this->client->getArray($url);
-    return $this->client->buildClans($data['items'], TRUE);
+    $fields = [
+      'Rank' => 'rank',
+      'Badge' => 'badge',
+      'Name'  => 'name',
+      'clanLevel'  => 'clanLevel',
+      'members'  => 'members',
+      'Location' => 'location',
+      'clanPoints'  => 'clanPoints',
+    ];
+
+    $build['content'] = $this->client->buildClans($data['items'], $fields);
+
+    return $build;
   }
 
   public function setTitle(EntityInterface $clashofclans_location) {

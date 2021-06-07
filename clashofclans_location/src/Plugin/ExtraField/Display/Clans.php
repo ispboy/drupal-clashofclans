@@ -56,7 +56,18 @@ class Clans extends ExtraFieldDisplayBase implements ContainerFactoryPluginInter
   public function view(ContentEntityInterface $entity) {
     $url = 'locations/'. $entity->id(). '/rankings/clans';
     $data = $this->client->getArray($url);
-    return $this->client->buildClans($data['items']);
+    $fields = [
+      'Rank' => 'rank',
+      'Badge' => 'badge',
+      'Name'  => 'name',
+      'clanLevel'  => 'clanLevel',
+      'members'  => 'members',
+      'clanPoints'  => 'clanPoints',
+    ];
+
+    $build['content'] = $this->client->buildClans($data['items'], $fields);
+
+    return $build;
   }
 
 }

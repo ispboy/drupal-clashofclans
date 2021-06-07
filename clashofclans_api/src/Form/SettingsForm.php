@@ -41,6 +41,12 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $this->config('clashofclans_api.settings')->get('key'),
       '#required' => TRUE,
     ];
+    $form['player'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Super player'),
+      '#description' => $this->t('The tag of a player who has all the troops, spells & heros, etc.'),
+      '#default_value' => $this->config('clashofclans_api.settings')->get('player'),
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -51,9 +57,12 @@ class SettingsForm extends ConfigFormBase {
     $this->config('clashofclans_api.settings')
       ->set('base_uri', $form_state->getValue('base_uri'))
       ->save();
-      $this->config('clashofclans_api.settings')
-        ->set('key', $form_state->getValue('key'))
-        ->save();
+    $this->config('clashofclans_api.settings')
+      ->set('key', $form_state->getValue('key'))
+      ->save();
+    $this->config('clashofclans_api.settings')
+      ->set('player', $form_state->getValue('player'))
+      ->save();
     parent::submitForm($form, $form_state);
   }
 

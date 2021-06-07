@@ -10,16 +10,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ClashofclansApiController extends ControllerBase {
   private $client;
+  private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client)
+  public function __construct(\Drupal\clashofclans_api\Client $client, \Drupal\clashofclans_api\Clan $clan)
   {
       $this->client = $client;
+      $this->clan = $clan;
   }
 
   public static function create(ContainerInterface $container)
   {
-      $client = $container->get('clashofclans_api.client');
-      return new static($client);
+      return new static(
+        $container->get('clashofclans_api.client'),
+        $container->get('clashofclans_api.clan')
+      );
   }
 
   /**
@@ -35,23 +39,25 @@ class ClashofclansApiController extends ControllerBase {
       )),
     ];
 
+    $build['test'] = [
+      '#markup' => 'time: '. time(),
+      '#cache' => [
+        'keys' => ['test'],
+        'max-age' => 5,
+      ],
+    ];
+
     $client = $this->client;
 
-    $tag = '#2VP0J0VV';
-    $url = 'clans/' . urlencode($tag);
-    $data = $client->getArray($url);
-    // dsm($data);
+    $tag = '#C00RJP';
+    // $url = 'clans/' . urlencode($tag);
+    $data = $this->clan->get($tag, 8);
+    dpm($data['memberList']['#CV80RVP2']);
     $build['debug'] = [
       '#theme' => 'clashofclans_api_sample',
       '#data' => $data,
     ];
 
-    $tag = '#2VP0J0VV';
-    $url = 'clans/' . urlencode($tag);
-    $data = $client->getArray($url);
-    dpm($data['name']);
-    // foreach ($data['items'] as $key => $item) {
-    // }
 
     return $build;
   }

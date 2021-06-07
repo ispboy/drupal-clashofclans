@@ -1,22 +1,68 @@
 <article>
-<div style="float: right;">
-  <div><img src="{{ player.clan.badgeUrls.small }}" /></div>
-  <div>{{ clan }}</div>
-  <div>Role: {{ player.role }}</div>
-  <div>donations: {{ player.donations }}</div>
-  <div>Received: {{ player.donationsReceived }}</div>
-</div>
-<div><img src="{{ player.league.iconUrls.small }}" /><span>{{ player.trophies }}</span></div>
 <div>Tag: {{ player.tag }}</div>
-<div>townHallLevel: {{ player.townHallLevel }}</div>
-<div>townHallWeaponLevel: {{ player.townHallWeaponLevel }}</div>
 <div>expLevel: {{ player.expLevel }}</div>
-<div>bestTrophies: {{ player.bestTrophies }}</div>
-<div>warStars: {{ player.warStars }}</div>
-<div>attackWins: {{ player.attackWins }}</div>
-<div>defenseWins: {{ player.defenseWins }}</div>
-<div>versusBattleWins: {{ player.versusBattleWins }}</div>
-<div>builderHallLevel: {{ player.builderHallLevel }}</div>
-<div>versusTrophies: {{ player.versusTrophies }}</div>
-<div>bestVersusTrophies: {{ player.bestVersusTrophies }}</div>
+<table id="clashofclan-basic">
+  <tr>
+    <td>
+      <div><img src="{{ player.league.iconUrls.small }}" /><span>{{ player.trophies }}</span></div>
+      <div>bestTrophies: {{ player.bestTrophies }}</div>
+      <div>warStars: {{ player.warStars }}</div>
+    </td>
+    <td>
+
+      <div><span style="font-size: 48px">⚔️</span> {{ player.versusTrophies }}</div>
+      <div>bestVersusTrophies: {{ player.bestVersusTrophies }}</div>
+    </td>
+    <td>
+      <div><img src="{{ player.clan.badgeUrls.small }}" /></div>
+      <div>{{ clan }}</div>
+      <div>Role: {{ player.role }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div>townHallLevel: {{ player.townHallLevel }}</div>
+      <div>townHallWeaponLevel: {{ player.townHallWeaponLevel }}</div>
+      <div>attackWins: {{ player.attackWins }}</div>
+      <div>defenseWins: {{ player.defenseWins }}</div>
+    </td>
+    <td>
+      <div>builderHallLevel: {{ player.builderHallLevel }}</div>
+      <div>versusBattleWins: {{ player.versusBattleWins }}</div>
+    </td>
+    <td>
+      <div>donations: {{ player.donations }}</div>
+      <div>Received: {{ player.donationsReceived }}</div>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h3>bestSeason</h3>
+      <div>{{ player.legendStatistics.bestSeason.id }}</div>
+      <div>trophies: {{ player.legendStatistics.bestSeason.trophies }}</div>
+      <div>rank: {{ player.legendStatistics.bestSeason.rank }}</div>
+      <h3>previousSeason</h3>
+      <div>{{ player.legendStatistics.previousSeason.id }}</div>
+      <div>trophies: {{ player.legendStatistics.previousSeason.trophies }}</div>
+      <div>rank: {{ player.legendStatistics.previousSeason.rank }}</div>
+      <h3>currentSeason</h3>
+      <div>trophies: {{ player.legendStatistics.currentSeason.trophies }}</div>
+      <div>rank: {{ player.legendStatistics.currentSeason.rank }}</div>
+    </td>
+    <td>
+      <h3>bestVersusSeason</h3>
+      <div>{{ player.legendStatistics.bestVersusSeason.id }}</div>
+      <div>trophies: {{ player.legendStatistics.bestVersusSeason.trophies }}</div>
+      <div>rank: {{ player.legendStatistics.bestVersusSeason.rank }}</div>
+      <h3>previousVersusSeason</h3>
+      <div>{{ player.legendStatistics.previousVersusSeason.id }}</div>
+      <div>trophies: {{ player.legendStatistics.previousVersusSeason.trophies }}</div>
+      <div>rank: {{ player.legendStatistics.previousVersusSeason.rank }}</div>
+    </td>
+    <td>
+    </td>
+  </tr>
+</table>
+
 </article>

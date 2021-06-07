@@ -1,0 +1,54 @@
+<p>State: {{ war.state }}</p>
+<p>teamSize: {{ war.teamSize }}</p>
+<p>preparationStartTime: {{ war.preparationStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</p>
+<p>startTime: {{ war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</p>
+<p>endTime: {{ war.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</p>
+<table>
+  <tr>
+    <td>
+      <img src="{{ war.clan.badgeUrls.small }}" width="70" height="70" />
+      <p><a href="{{ path('clashofclans_clan.tag', {'tag': war.clan.tag}) }}">{{ war.clan.name }}</a>
+      </p>
+    </td>
+    <td>
+      <img src="{{ war.opponent.badgeUrls.small }}" width="70" height="70" />
+      <p><a href="{{ path('clashofclans_clan.tag', {'tag': war.opponent.tag}) }}">{{ war.opponent.name }}</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>⚔️ {{ war.clan.attacks }}
+      ⭐ {{ war.clan.stars }}
+      ✨ {{ war.clan.destructionPercentage|number_format(2) }}</p>
+    </td>
+    <td>
+      <p>⚔️ {{ war.opponent.attacks }}
+      ⭐ {{ war.opponent.stars }}
+      ✨ {{ war.opponent.destructionPercentage|number_format(2) }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {% for player in war.clan.members %}
+      <p>{{ player.mapPosition }}. <a href="{{ path('clashofclans_player.tag', {'tag': player.tag}) }}">{{ player.name }}</a>
+      <div>Defense:
+      {% if player.bestOpponentAttack.stars %}{% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %} {{ player.bestOpponentAttack.destructionPercentage }} {% endif %}
+      </div>
+      <div>Attacks: {% if player.attacks[0].stars %}{% for i in 1..player.attacks[0].stars|number_format %}⭐{% endfor %}{% endif %}</div>
+      </p>
+      {% endfor %}
+    </td>
+    <td>
+      {% for player in war.opponent.members %}
+      <p>{{ player.mapPosition }}. <a href="{{ path('clashofclans_player.tag', {'tag': player.tag}) }}">{{ player.name }}</a>
+      <div>Defense:
+      {% if player.bestOpponentAttack.stars %}{% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %} {{ player.bestOpponentAttack.destructionPercentage }} {% endif %}
+      </div>
+      <div>Attacks: {% if player.attacks[0].stars %}{% for i in 1..player.attacks[0].stars|number_format %}⭐{% endfor %}{% endif %}</div>
+      </p>
+      {% endfor %}
+    </td>
+  </tr>
+</table>
+<p>warStartTime: {{ war.warStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</p>

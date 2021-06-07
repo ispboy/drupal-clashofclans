@@ -1,0 +1,60 @@
+<h3>{{ data.state }}</h3>
+<p>{{ data.season }}</p>
+<table>
+  <tr>
+    <th>Clans</th>
+    <th>Members</th>
+    <th>Stars</th>
+    <th>Percentage</th>
+  </tr>
+  {% for clan in data.clans %}
+  <tr>
+    <td nowrap>
+      <img src="{{ clan.badgeUrls.small }}" />
+      <p><a href="/clashofclans-clan/tag/{{ clan.tag|url_encode }}">{{ clan.name }}</a></p>
+    </td>
+    <td>
+      <ul class="links inline">
+      {% for player in clan.members %}
+        <li><a href="/clashofclans-player/tag/{{ player.tag|url_encode }}">{{ player.name }}</a></li>
+      {% endfor %}
+      </ul>
+    </td>
+    <td>{{ clan.stars }}</td>
+    <td>{{ clan.destructionPercentage|number_format }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ 'Rounds'|t }}</h2>
+{% for key,round in data.rounds %}
+  <table>
+    <caption><h3>{{ ('Round '~ (key+1))|t }}</h3>
+    {% if round.warData[0].state %}
+     <div>{{ round.warData[0].state}} ({{ round.warData[0].warStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }})</div>
+    {% endif %}
+    </caption>
+  {% for war_tag, war in round.warData %}
+    <tr>
+      <td><img src="{{ war.clan.badgeUrls.small }}" width="70" height="70" /><br />
+      <a href="{{ path('clashofclans_clan.tag', {'tag': war.clan.tag}) }}">{{ war.clan.name }}</a></td>
+      <td nowrap>
+        <a href="{{ path('clashofclans_clan.clanwarleagues.war', {'tag': war_tag}) }}">
+        <div>⭐ {{ war.clan.stars }}</div>
+        <div>💥 {{ war.clan.destructionPercentage|number_format(1) }}%</div>
+        <div>⚔️ {{ war.clan.attacks }}</div>
+        </a>
+      </td>
+      <td nowrap>
+        <a href="{{ path('clashofclans_clan.clanwarleagues.war', {'tag': war_tag}) }}">
+        <div>⭐ {{ war.opponent.stars }}</div>
+        <div>💥 {{ war.opponent.destructionPercentage|number_format(1) }}%</div>
+        <div>⚔️ {{ war.opponent.attacks }}</div>
+        </a>
+      </td>
+      <td><img src="{{ war.opponent.badgeUrls.small }}" width="70" height="70" /><br />
+      <a href="{{ path('clashofclans_clan.tag', {'tag': war.opponent.tag}) }}">{{ war.opponent.name }}</a></td>
+    </tr>
+  {% endfor %}
+  </table>
+{% endfor %}

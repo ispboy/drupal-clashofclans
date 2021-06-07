@@ -8,3 +8,10 @@ entity.clashofclans_clan.collection:
   description: List of clans
   route_name: entity.clashofclans_clan.collection
   parent: system.admin_content
+
+clashofclans_clan.search:
+  title: Search clans
+  description: Search by filter clans.
+  route_name: clashofclans_clan.search
+  menu_name: main
+  weight: 9

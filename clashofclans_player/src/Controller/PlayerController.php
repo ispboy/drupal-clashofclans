@@ -61,6 +61,8 @@ class PlayerController extends ControllerBase {
       $build['content']['#clan'] = $clan;
     }
 
+    $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
+
     return $build;
 
   }

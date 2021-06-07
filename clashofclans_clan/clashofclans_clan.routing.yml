@@ -13,3 +13,35 @@ clashofclans_clan.tag:
     _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
   requirements:
     _permission: 'access content'
+
+clashofclans_clan.tag.currentwar:
+  path: 'clashofclans-clan/tag/{tag}/currentwar'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::currentWar'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_clan.tag.leaguegroup:
+  path: 'clashofclans-clan/tag/{tag}/leaguegroup'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::renderLeagueGroup'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_clan.clanwarleagues.war:
+  path: 'clashofclans-clan/clanwarleagues/wars/{tag}'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::leagueWar'
+    _title: 'Clan war leagues'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_clan.search:
+  path: 'clashofclans-clan/search'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::search'
+    _title: 'Search Clans'
+  requirements:
+    _permission: 'access content'
