@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-
+use Drupal\clashofclans_api\Render;
 /**
  * Returns responses for Clashofclans location routes.
  */
@@ -38,7 +38,7 @@ class ClashofclansLocationController extends ControllerBase {
 
   protected function buildPlayers($location_id) {
     $url = 'locations/'. $location_id. '/rankings/players';
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
     $fields = [
       'Rank' => 'rank',
       'League' => 'league',
@@ -50,13 +50,13 @@ class ClashofclansLocationController extends ControllerBase {
       'trophies'  => 'trophies',
     ];
 
-    $build = $this->client->buildPlayers($data['items'], $fields);
+    $build = Render::players($data['items'], $fields);
     return $build;
   }
 
   public function globalClans() {
     $url = 'locations/global/rankings/clans';
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
     $fields = [
       'Rank' => 'rank',
       'Badge' => 'badge',
@@ -67,7 +67,7 @@ class ClashofclansLocationController extends ControllerBase {
       'clanPoints'  => 'clanPoints',
     ];
 
-    $build['content'] = $this->client->buildClans($data['items'], $fields);
+    $build['content'] = Render::clans($data['items'], $fields);
 
     return $build;
   }

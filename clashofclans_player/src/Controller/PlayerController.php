@@ -28,7 +28,7 @@ class PlayerController extends ControllerBase {
   public function setTitle($tag) {
     $title = $tag;  //provide default title, if not found.
     $url = 'players/'. urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
 
     if (isset($data['name'])) {
       $title = $data['name'];
@@ -41,7 +41,7 @@ class PlayerController extends ControllerBase {
    */
   public function tag($tag) {
     $url = 'players/'. urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
 
     if (!isset($data['name'])) {
       $build['content'] = [
@@ -57,7 +57,7 @@ class PlayerController extends ControllerBase {
     ];
 
     if (isset($data['clan'])) {
-      $clan = $this->client->linkClan($data['clan']['name'], $data['clan']['tag']);
+      $clan = \Drupal\clashofclans_api\Link::clan($data['clan']['name'], $data['clan']['tag']);
       $build['content']['#clan'] = $clan;
     }
 

@@ -1,0 +1,7 @@
+entity.leaguegroup.settings:
+  path: 'admin/structure/leaguegroup'
+  defaults:
+    _form: '\Drupal\clashofclans_leaguegroup\Form\LeaguegroupSettingsForm'
+    _title: 'LeagueGroup'
+  requirements:
+    _permission: 'administer leaguegroup'

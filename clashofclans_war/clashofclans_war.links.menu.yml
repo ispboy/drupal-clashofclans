@@ -1,0 +1,10 @@
+entity.clashofclans_war.settings:
+  title: War
+  description: Configure a War entity type
+  route_name:  entity.clashofclans_war.settings
+  parent: system.admin_structure
+entity.clashofclans_war.collection:
+  title: Wars
+  description: List of wars
+  route_name: entity.clashofclans_war.collection
+  parent: system.admin_content

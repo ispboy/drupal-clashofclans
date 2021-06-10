@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\clashofclans_location\Plugin\migrate\source;
+namespace Drupal\clashofclans_war\Plugin\migrate\source;
 
 use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
 use Drupal\migrate\Row;
@@ -8,21 +8,21 @@ use Drupal\clashofclans_api\Client;
 
 
 /**
- * The 'clashofclans_location' source plugin.
+ * The 'clashofclans_war' source plugin.
  *
  * @MigrateSource(
- *   id = "clashofclans_location",
- *   source_module = "clashofclans_location"
+ *   id = "clashofclans_war",
+ *   source_module = "clashofclans_war"
  * )
  */
-class Location extends SourcePluginBase {
+class War extends SourcePluginBase {
 
   /**
    * {@inheritdoc}
    */
   public function __toString() {
     // @DCG You may return something meaningful here.
-    return 'ClashOfClans Location source';
+    return 'ClashOfClans a certain wars source';
   }
 
   /**
@@ -41,21 +41,22 @@ class Location extends SourcePluginBase {
     // @endcode
 
     $client = new Client();
-    $url = 'locations';
+    $name = '铁血团之彼泽棠棣';
+    $tag = '#22P2GP82P';
+    $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
     $data = $client->get($url);
-
     $records = [];
-    foreach ($data['items'] as $key => $location) {
-      $countryCode = NULL;
-      if ($location['isCountry']) {
-        $countryCode = $location['countryCode'];
+    foreach ($data['rounds'] as $round) {
+      foreach ($round['warTags'] as $war_tag) {
+        if ($war_tag != '#0') {
+          $url = 'clanwarleagues/wars/'. urlencode($war_tag);
+          $war = $client->get($url, 'json');
+          $records[] = [
+            'tag' => $war_tag,
+            'data' => $war,
+          ];
+        }
       }
-      $records[] = [
-        'id' => $location['id'],
-        'name' => $location['name'],
-        'isCountry' => $location['isCountry'],
-        'countryCode' => $countryCode,
-      ];
     }
 
     return new \ArrayIterator($records);
@@ -66,10 +67,8 @@ class Location extends SourcePluginBase {
    */
   public function fields() {
     return [
-      'id' => $this->t('The location ID.'),
-      'name' => $this->t('The location name.'),
-      'countryCode' => $this->t('The location countryCode.'),
-      'isCountry' => $this->t('The location isCountry.'),
+      'tag' => $this->t('The war tag.'),
+      'data' => $this->t('The war data.'),
     ];
   }
 
@@ -78,8 +77,8 @@ class Location extends SourcePluginBase {
    */
   public function getIds() {
     return [
-      'id' => [
-        'type' => 'integer',
+      'tag' => [
+        'type' => 'string',
       ],
     ];
   }

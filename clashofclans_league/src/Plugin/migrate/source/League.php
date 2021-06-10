@@ -51,7 +51,7 @@ class League extends SourcePluginBase {
     // ksm($player->clan());
 
     $url = 'leagues';
-    $leagues = $client->getArray($url);
+    $leagues = $client->get($url);
     $records = [];
     foreach ($leagues['items'] as $key => $league) {
       $records[] = [

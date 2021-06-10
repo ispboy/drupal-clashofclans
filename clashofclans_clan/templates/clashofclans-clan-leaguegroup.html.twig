@@ -34,7 +34,16 @@
      <div>{{ round.warData[0].state}} ({{ round.warData[0].warStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }})</div>
     {% endif %}
     </caption>
-  {% for war_tag, war in round.warData %}
+
+    {# {% for war_tag in round.warTags %}
+      <tr>
+        <td>
+          <a href="{{ path('clashofclans_clan.clanwarleagues.war', {'tag': war_tag}) }}">{{ war_tag }}</a></td>
+        </td>
+      </tr>
+    {% endfor %} #}
+
+    {% for war_tag, war in round.warData %}
     <tr>
       <td><img src="{{ war.clan.badgeUrls.small }}" width="70" height="70" /><br />
       <a href="{{ path('clashofclans_clan.tag', {'tag': war.clan.tag}) }}">{{ war.clan.name }}</a></td>

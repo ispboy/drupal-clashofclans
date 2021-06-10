@@ -1,0 +1,13 @@
+administer war:
+  title: 'Administer war settings'
+  restrict access: true
+access war overview:
+  title: 'Access war overview page'
+delete war:
+  title: Delete war
+create war:
+  title: Create war
+view war:
+  title: View war
+edit war:
+  title: Edit war

@@ -20,9 +20,9 @@ class Clan implements ContainerInjectionInterface {
       return new static($client);
   }
 
-  public function get($tag, $limit = 0, $format = 'array') {
+  public function get($tag, $limit = 0, $json = '') {
     $url = 'clans/' . urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
     $items = [];
     $count = 0;
     foreach ($data['memberList'] as $item) {
@@ -30,18 +30,19 @@ class Clan implements ContainerInjectionInterface {
       $items[$key] = $item;
       if ($count < $limit) {
         $url = 'players/'. urlencode($key);
-        $detail = $this->client->getArray($url);
+        $detail = $this->client->get($url);
         $items[$key]['attackWins'] = $detail['attackWins'];
         $items[$key]['defenseWins'] = $detail['defenseWins'];
         if (isset($detail['legendStatistics'])) {
           $items[$key]['legendStatistics'] = $detail['legendStatistics'];
         }
       }
+      $count++;
     }
 
     $data['memberList'] = $items;
 
-    return $this->client->encode($data, $format);
+    return ($json == 'json')? \Drupal\Component\Serialization\Json::encode($data): $data;
   }
 
 }

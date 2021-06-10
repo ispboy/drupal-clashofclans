@@ -1,0 +1,10 @@
+entity.leaguegroup.settings:
+  title: LeagueGroup
+  description: Configure a LeagueGroup entity type
+  route_name:  entity.leaguegroup.settings
+  parent: system.admin_structure
+entity.leaguegroup.collection:
+  title: LeagueGroups
+  description: List of leaguegroups
+  route_name: entity.leaguegroup.collection
+  parent: system.admin_content

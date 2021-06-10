@@ -42,7 +42,7 @@ class Clan extends SourcePluginBase {
 
     $client = new Client();
     $url = 'locations/global/rankings/clans';
-    $data = $client->getArray($url);
+    $data = $client->get($url);
 
     $records = [];
     foreach ($data['items'] as $key => $item) {

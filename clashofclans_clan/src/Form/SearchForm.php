@@ -58,11 +58,6 @@ class SearchForm extends FormBase {
       '#default_value' => \Drupal::request()->query->get('minClanLevel'),
     ];
 
-    $form['limit'] = [
-      '#type' => 'hidden',
-      '#value' => 50,
-    ];
-
     $form['actions'] = [
       '#type' => 'actions',
     ];
@@ -98,7 +93,6 @@ class SearchForm extends FormBase {
         'minMembers' => $form_state->getValue('minMembers'),
         'minClanPoints' => $form_state->getValue('minClanPoints'),
         'minClanLevel' => $form_state->getValue('minClanLevel'),
-        'limit' => $form_state->getValue('limit'),
       ]),
     ];
     $form_state->setRedirect($route, [], $options);

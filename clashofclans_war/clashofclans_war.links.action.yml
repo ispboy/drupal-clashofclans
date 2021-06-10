@@ -1,0 +1,5 @@
+clashofclans_war.add_form:
+  route_name: entity.clashofclans_war.add_form
+  title: 'Add war'
+  appears_on:
+    - entity.clashofclans_war.collection

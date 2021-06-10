@@ -1,0 +1,13 @@
+administer leaguegroup:
+  title: 'Administer leaguegroup settings'
+  restrict access: true
+access leaguegroup overview:
+  title: 'Access leaguegroup overview page'
+delete leaguegroup:
+  title: Delete leaguegroup
+create leaguegroup:
+  title: Create leaguegroup
+view leaguegroup:
+  title: View leaguegroup
+edit leaguegroup:
+  title: Edit leaguegroup

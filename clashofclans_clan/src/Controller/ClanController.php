@@ -29,7 +29,7 @@ class ClanController extends ControllerBase {
   public function setTitle($tag) {
     $title = $tag;  //provide default title, if not found.
     $url = 'clans/'. urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
 
     if (isset($data['name'])) {
       $title = $data['name'];
@@ -42,7 +42,7 @@ class ClanController extends ControllerBase {
    */
   public function tag($tag) {
     $url = 'clans/'. urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
 
     if (!isset($data['name'])) {
       $build['content'] = [
@@ -58,7 +58,7 @@ class ClanController extends ControllerBase {
     ];
 
     if (isset($data['location'])) {
-      $location = $this->client->linkLocation($data['location']['name'], $data['location']['id']);
+      $location = \Drupal\clashofclans_api\Link::location($data['location']['name'], $data['location']['id']);
       $build['content']['#location'] = $location;
     }
 
@@ -82,9 +82,9 @@ class ClanController extends ControllerBase {
         'versusTrophies'  => 'versusTrophies',
         'trophies'  => 'trophies',
       ];
-      $build['content']['#member_list']= $this->client->buildPlayers($data['memberList'], $fields);
-
+      $build['content']['#member_list']=\Drupal\clashofclans_api\Render::players($data['memberList'], $fields);
     }
+    $build['#cache']['max-age'] = $this->config('clashofclans_api.settings')->get('cache_max_age');
 
     return $build;
 
@@ -95,7 +95,7 @@ class ClanController extends ControllerBase {
    */
   public function currentWar($tag) {
      $url = 'clans/'. urlencode($tag). '/currentwar';
-     $data = $this->client->getArray($url);
+     $data = $this->client->get($url);
      $state = $data['state'];
 
      $build['content'] = [
@@ -107,7 +107,7 @@ class ClanController extends ControllerBase {
 
    public function getLeagueGroup($tag) {
      $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
-     $data = $this->client->getArray($url);
+     $data = $this->client->get($url);
      $clans =[];
      foreach ($data['clans'] as $clan) {
        $clans[$clan['tag']] = $clan;
@@ -121,7 +121,7 @@ class ClanController extends ControllerBase {
        foreach ($round['warTags'] as $key_war => $war_tag) {
          if ($war_tag != '#0') {
            $url = 'clanwarleagues/wars/'. urlencode($war_tag);
-           $data['rounds'][$key_round]['warData'][$war_tag] = $this->client->getArray($url);
+           $data['rounds'][$key_round]['warData'][$war_tag] = $this->client->get($url);
            $this->processLeagueClan($data['rounds'][$key_round]['warData'][$war_tag], $data['clans']);
          }
        }
@@ -187,7 +187,7 @@ class ClanController extends ControllerBase {
   */
   public function leagueWar($tag) {
     $url = 'clanwarleagues/wars/'. urlencode($tag);
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
 
     $build['content'] = [
       '#theme' => 'clashofclans_clan_leaguewar',
@@ -202,24 +202,31 @@ class ClanController extends ControllerBase {
    */
   public function search(\Symfony\Component\HttpFoundation\Request $request) {
 
-    $query_string = $request->getQueryString();
-    $url = 'clans?'. $query_string;
-    $data = $this->client->getArray($url);
-    $fields = [
-      'Badge' => 'badge',
-      'Name'  => 'name',
-      'Type' => 'type',
-      'requiredTH' => 'requiredTownhallLevel',
-      'requiredTrophies' => 'requiredTrophies',
-      'requiredVersus' => 'requiredVersusTrophies',
-      'members'  => 'members',
-      'Location'  => 'location',
-      'isWarLogPublic' => 'isWarLogPublic',
-      'clanPoints'  => 'clanPoints',
-    ];
-
     $build['search_form'] = $this->formBuilder()->getForm(SearchForm::class);
-    $build['content'] = $this->client->buildClans($data['items'], $fields);
+
+    $query_string = $request->getQueryString();
+    if ($query_string) {
+      $url = 'clans?'. $query_string. '&limit=50';
+      $data = $this->client->get($url);
+      if ($data) {
+        $fields = [
+          'Badge' => 'badge',
+          'Name'  => 'name',
+          'Type' => 'type',
+          'requiredTH' => 'requiredTownhallLevel',
+          'requiredTrophies' => 'requiredTrophies',
+          'requiredVersus' => 'requiredVersusTrophies',
+          'members'  => 'members',
+          'Location'  => 'location',
+          'isWarLogPublic' => 'isWarLogPublic',
+          'clanPoints'  => 'clanPoints',
+        ];
+
+        $build['content'] = \Drupal\clashofclans_api\Render::clans($data['items'], $fields);
+      } else {
+        $build['content'] = $this->t('No result.');
+      }
+    }
 
     return $build;
   }

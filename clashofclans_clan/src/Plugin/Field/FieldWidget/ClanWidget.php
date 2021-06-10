@@ -100,7 +100,7 @@ class ClanWidget extends WidgetBase implements ContainerFactoryPluginInterface {
       } else {
         $tag = '#'. ltrim($value['tag'], '#');
         $url = 'clans/'. urlencode($tag);
-        $data = $this->client->getArray($url);
+        $data = $this->client->get($url);
         if (isset($data['name'])) {
           $values[$delta]['name'] = $data['name'];
         }

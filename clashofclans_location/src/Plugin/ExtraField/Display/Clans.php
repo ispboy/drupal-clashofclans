@@ -7,6 +7,7 @@ use Drupal\extra_field\Plugin\ExtraFieldDisplayBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans_api\Client;
+use Drupal\clashofclans_api\Render;
 
 /**
  * Example Extra field Display.
@@ -55,7 +56,7 @@ class Clans extends ExtraFieldDisplayBase implements ContainerFactoryPluginInter
    */
   public function view(ContentEntityInterface $entity) {
     $url = 'locations/'. $entity->id(). '/rankings/clans';
-    $data = $this->client->getArray($url);
+    $data = $this->client->get($url);
     $fields = [
       'Rank' => 'rank',
       'Badge' => 'badge',
@@ -65,7 +66,7 @@ class Clans extends ExtraFieldDisplayBase implements ContainerFactoryPluginInter
       'clanPoints'  => 'clanPoints',
     ];
 
-    $build['content'] = $this->client->buildClans($data['items'], $fields);
+    $build['content'] = Render::clans($data['items'], $fields);
 
     return $build;
   }

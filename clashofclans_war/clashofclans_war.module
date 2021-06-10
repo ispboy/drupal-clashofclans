@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * @file
+ * Provides a war entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function clashofclans_war_theme() {
+  return [
+    'clashofclans_war' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for war templates.
+ *
+ * Default template: clashofclans-war.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the war information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_clashofclans_war(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+* hook_ENTITY_TYPE_update
+* entity_type: leaguegroup
+**/
+function clashofclans_war_leaguegroup_update(Drupal\Core\Entity\EntityInterface $entity) {
+  // \Drupal::messenger()->addStatus(t('This is a successful message.'));
+  $json = $entity->get('field_data')->getString();
+  if ($json) {
+    $data = \Drupal\Component\Serialization\Json::decode($json);
+    if (isset($data['rounds'])) {
+      $client = \Drupal::service('clashofclans_api.client');
+      $records = [];
+      $ids = [];
+      foreach ($data['rounds'] as $round) {
+        foreach ($round['warTags'] as $tag) {
+          if ($tag != '#0') {
+            $url = 'clanwarleagues/wars/'. urlencode($tag);
+            $wardata = $client->get($url, 'json');
+            if ($wardata) {
+              $records[] = [
+                'tag' => $tag,
+                'data' => $wardata,
+              ];
+            }
+          }
+        }
+      }
+      if ($records) {
+        // do migrate.
+        $migrate_id = 'clashofclans_war';
+        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migrate_id, [
+          'source' => [
+            'plugin' => 'embedded_data',
+            'data_rows' => $records,
+            'ids' => ['tag' => ''],
+           ],
+        ]);
+        $executable = new \Drupal\migrate_tools\MigrateExecutable($migration, new \Drupal\migrate\MigrateMessage());
+        $executable->import();
+      }
+
+    }
+  }
+}

@@ -1,0 +1,22 @@
+entity.leaguegroup.settings:
+  title: Settings
+  route_name: entity.leaguegroup.settings
+  base_route: entity.leaguegroup.settings
+entity.leaguegroup.view:
+  title: View
+  route_name: entity.leaguegroup.canonical
+  base_route: entity.leaguegroup.canonical
+entity.leaguegroup.edit_form:
+  title: Edit
+  route_name: entity.leaguegroup.edit_form
+  base_route: entity.leaguegroup.canonical
+entity.leaguegroup.delete_form:
+  title: Delete
+  route_name: entity.leaguegroup.delete_form
+  base_route: entity.leaguegroup.canonical
+  weight: 10
+entity.leaguegroup.collection:
+  title: LeagueGroup
+  route_name: entity.leaguegroup.collection
+  base_route: system.admin_content
+  weight: 10

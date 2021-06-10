@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Provides a leaguegroup entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function clashofclans_leaguegroup_theme() {
+  return [
+    'leaguegroup' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for leaguegroup templates.
+ *
+ * Default template: leaguegroup.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the leaguegroup information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_leaguegroup(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+  $json = $variables['elements']['#leaguegroup']->field_data->getValue()[0]['value'];
+  $data = \Drupal\Component\Serialization\Json::decode($json);
+  dpm($data);
+}
+
+/**
+* hook_ENTITY_TYPE_presave
+**/
+function clashofclans_leaguegroup_leaguegroup_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  $tag = $entity->get('field_clan_tag')->getString();
+  if ($tag) {
+    $tag = '#'. ltrim($tag, '#');
+    $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
+    $client = \Drupal::service('clashofclans_api.client');
+    $data = $client->get($url, 'json');
+    if ($data) {
+      $entity->get('field_data')->setValue($data);
+    }
+  }
+}

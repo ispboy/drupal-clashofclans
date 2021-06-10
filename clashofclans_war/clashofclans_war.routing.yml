@@ -1,0 +1,7 @@
+entity.clashofclans_war.settings:
+  path: 'admin/structure/clashofclans-war'
+  defaults:
+    _form: '\Drupal\clashofclans_war\Form\ClashofclansWarSettingsForm'
+    _title: 'War'
+  requirements:
+    _permission: 'administer war'

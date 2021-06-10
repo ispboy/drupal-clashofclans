@@ -47,6 +47,13 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('The tag of a player who has all the troops, spells & heros, etc.'),
       '#default_value' => $this->config('clashofclans_api.settings')->get('player'),
     ];
+    $form['cache_max_age'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Cache: max-age'),
+      '#description' => $this->t('The general cache max-age'),
+      '#default_value' => $this->config('clashofclans_api.settings')->get('cache_max_age'),
+      '#required' => TRUE,
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -63,6 +70,9 @@ class SettingsForm extends ConfigFormBase {
     $this->config('clashofclans_api.settings')
       ->set('player', $form_state->getValue('player'))
       ->save();
+      $this->config('clashofclans_api.settings')
+        ->set('cache_max_age', $form_state->getValue('cache_max_age'))
+        ->save();
     parent::submitForm($form, $form_state);
   }
 
