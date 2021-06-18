@@ -1,0 +1,99 @@
+<ul>
+<li>State: {{ war.state }}</li>
+<li>teamSize: {{ war.teamSize }}</li>
+<li>preparationStartTime: {{ war.preparationStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+<li>startTime: {{ war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+<li>endTime: {{ war.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+</ul>
+<table>
+<tr>
+  <td>
+    <img width="200" height="200" src="{{ war.clan.badgeUrls.medium }}" />
+    <h2><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.clan.tag|url_encode }}">{{ war.clan.name }}</a></h2>
+  </td>
+  <td>
+    <img width="200" height="200" src="{{ war.opponent.badgeUrls.medium }}" />
+    <h2><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.opponent.tag|url_encode }}">{{ war.opponent.name }}</a></h2>
+  </td>
+</tr>
+<tr>
+  <td>⭐{{ war.clan.stars }}</td>
+  <td>⭐{{ war.opponent.stars }}</td>
+</tr>
+<tr>
+  <td>💥{{ war.clan.destructionPercentage }}%</td>
+  <td>💥{{ war.opponent.destructionPercentage }}%</td>
+</tr>
+<tr>
+  <td>⚔️{{ war.clan.attacks }}</td>
+  <td>⚔️{{ war.opponent.attacks }}</td>
+</tr>
+<tr>
+  <td valign="top">
+  <ol>
+  {% for player in war.clan.members %}
+    <li>
+      <h3>
+      <a name="{{ player.tag|trim('#') }}" href="{{ url('<front>') }}clashofclans-player/tag/{{ player.tag|url_encode }}">{{ player.name }}</a>
+      {% if player.bestOpponentAttack.stars %}
+        {% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %}
+        {{ player.bestOpponentAttack.destructionPercentage }}%
+        🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag] }}</a>
+      {% endif %}
+      </h3>
+      <ul>
+        <li>townHallLevel: {{ player.townhallLevel }}</li>
+        <li>opponentAttacks: {{ player.opponentAttacks }}</li>
+        <li>attacks:
+          <ul>
+          {% for attack in player.attacks %}
+            <li><a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag] }}</a>
+              {% for i in 1..attack.stars|number_format %}⭐{% endfor %}
+              {% if attack.destructionPercentage != 100  %}
+                {{ attack.destructionPercentage }}%
+              {% endif %}
+              ({{ attack.duration|date('i')|trim('0') }}'{{ attack.duration|date('s') }}")
+            </li>
+          {% endfor %}
+          </ul>
+        </li>
+      </ul>
+    </li>
+  {% endfor %}
+  </ol>
+  </td>
+  <td valign="top">
+  <ol>
+  {% for player in war.opponent.members %}
+  <li>
+    <h3>
+    <a name="{{ player.tag|trim('#') }}" href="{{ url('<front>') }}clashofclans-player/tag/{{ player.tag|url_encode }}">{{ player.name }}</a>
+    {% if player.bestOpponentAttack.stars %}
+      {% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %}
+      {{ player.bestOpponentAttack.destructionPercentage }}%
+      🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag] }}</a>
+    {% endif %}
+    </h3>
+    <ul>
+      <li>townHallLevel: {{ player.townhallLevel }}</li>
+      <li>opponentAttacks: {{ player.opponentAttacks }}</li>
+      <li>attacks:
+        <ul>
+        {% for attack in player.attacks %}
+        <li><a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag] }}</a>
+          {% for i in 1..attack.stars|number_format %}⭐{% endfor %}
+          {% if attack.destructionPercentage != 100  %}
+            {{ attack.destructionPercentage }}%
+          {% endif %}
+          ({{ attack.duration|date('i')|trim('0') }}'{{ attack.duration|date('s') }}")
+        </li>
+        {% endfor %}
+        </ul>
+      </li>
+    </ul>
+  </li>
+  {% endfor %}
+  </ol>
+  </td>
+</tr>
+</table>

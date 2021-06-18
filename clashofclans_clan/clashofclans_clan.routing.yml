@@ -14,11 +14,19 @@ clashofclans_clan.tag:
   requirements:
     _permission: 'access content'
 
+clashofclans_clan.tag.memberlist:
+  path: 'clashofclans-clan/tag/{tag}/memberlist/{nojs}'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::memberList'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
+  requirements:
+    _permission: 'view clan'
+
 clashofclans_clan.tag.currentwar:
   path: 'clashofclans-clan/tag/{tag}/currentwar'
   defaults:
     _controller: '\Drupal\clashofclans_clan\Controller\ClanController::currentWar'
-    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
+    _title: 'Current war'
   requirements:
     _permission: 'access content'
 

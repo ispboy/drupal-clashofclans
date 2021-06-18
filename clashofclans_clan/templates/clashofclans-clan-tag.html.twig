@@ -1,4 +1,5 @@
 {# [module]/templates/clashofclans-clan-info.html.twig #}
+{{ attach_library('core/drupal.ajax') }}
 <article>
 <div style="float: right">
   <img src="{{ clan.badgeUrls.medium }}" />
@@ -7,8 +8,14 @@
   <br />
   VersusPoints: {{ clan.clanVersusPoints }}
   <div>Location: {{ location }}</div>
+  <div>Language: {{ clan.chatLanguage.name }}</div>
 </div>
 <p>{{ clan.description}}</p>
+<div class="clashofclans-labels">
+{% for label in clan.labels %}
+  <img title="{{ label.name }}" src="{{ label.iconUrls.small }}" width="64" height="64" />
+{% endfor %}
+</div>
 <div>Tag: {{ clan.tag}}</div>
 <div>Type: {{ clan.type}}</div>
 <div>requiredTrophies: {{ clan.requiredTrophies}}</div>
@@ -21,7 +28,8 @@
 <div>warLosses: {{ clan.warLosses}}</div>
 <div>isWarLogPublic: {{ clan.isWarLogPublic}} {{ current_war}} {{ league_group}}</div>
 <div>warLeague: {{ clan.warLeague.name}}</div>
-<div>members: {{ clan.members}}</div>
+<div>members: {{ clan.members}} </div>
+<div>memberlist: &gt;&gt; <a class="use-ajax" href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/memberlist/nojs">The best rank.</a></div>
 </article>
 
 <div class='member-list'>{{ member_list }}</div>

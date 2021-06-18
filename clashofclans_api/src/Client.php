@@ -3,10 +3,11 @@
 namespace Drupal\clashofclans_api;
 
 use GuzzleHttp\Exception\RequestException;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
-class Client {
+class Client implements ContainerInjectionInterface {
 
   protected $key;
   protected $cacheMaxAge;
@@ -15,14 +16,21 @@ class Client {
   /**
    * Class constructor.
    */
-  public function __construct() {
-    $this->key = \Drupal::config('clashofclans_api.settings')->get('key');
-    $this->cacheMaxAge = \Drupal::config('clashofclans_api.settings')->get('cache_max_age');
-
-    $base_uri = \Drupal::config('clashofclans_api.settings')->get('base_uri');
+  public function __construct(ConfigFactoryInterface $config_factory) {
+    $config = $config_factory->get('clashofclans_api.settings');
+    $this->key = $config->get('key');
+    $this->cacheMaxAge = $config->get('cache_max_age');
+    $base_uri = $config->get('base_uri');
     $this->httpClient = \Drupal::service('http_client_factory')->fromOptions([
       'base_uri' => $base_uri,
     ]);;
+  }
+
+  public static function create(ContainerInterface $container)
+  {
+    return new static(
+      $container->get('config.factory')
+    );
   }
 
   /**
@@ -31,7 +39,7 @@ class Client {
    */
   public function get($url, $json = ''){
     $data = &drupal_static(__FUNCTION__);
-    $key = urlencode($url);
+    $key = urlencode($url); //not the this->key;
 
     if (!isset($data[$key])) {
 

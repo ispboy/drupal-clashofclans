@@ -10,19 +10,16 @@ use Drupal\clashofclans_api\Link;
  */
 class ClashofclansApiController extends ControllerBase {
   private $client;
-  private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client, \Drupal\clashofclans_api\Clan $clan)
+  public function __construct(\Drupal\clashofclans_api\Client $client)
   {
       $this->client = $client;
-      $this->clan = $clan;
   }
 
   public static function create(ContainerInterface $container)
   {
       return new static(
         $container->get('clashofclans_api.client'),
-        $container->get('clashofclans_api.clan')
       );
   }
 
@@ -43,6 +40,9 @@ class ClashofclansApiController extends ControllerBase {
       '#markup' => urldecode('%25'). ' time: '. time(),
     ];
 
+    $request_time = \Drupal::time()->getCurrentTime();
+    dpm(date('Y-m-d H:i:s', $request_time));
+
     $client = $this->client;
 
     // $name = '铁血团之彼泽棠棣';
@@ -57,8 +57,9 @@ class ClashofclansApiController extends ControllerBase {
     // dpm(array_keys($data));
 
     $data = [];
-    $tag = '#LJVLYGLV';
-    $data = $this->clan->get($tag, 8);
+    $tag = '#Q09C';
+    $url = 'clans/'. urlencode($tag);
+    $data = $this->client->get($url);
     // dpm($data['memberList']['#89YLCQ0J9']);
 
     $build['debug'] = [
@@ -67,6 +68,7 @@ class ClashofclansApiController extends ControllerBase {
     ];
 
     if (isset($data['memberList'])) {
+      $members = \Drupal\clashofclans_api\Members::getDetail($data['memberList'], $this->client, 10);
       $fields = [
         'Rank' => 'clanRank',
         'league' => 'league',
@@ -77,12 +79,12 @@ class ClashofclansApiController extends ControllerBase {
         'Received' => 'donationsReceived',
         'attackWins' => 'attackWins',
         'defenseWins' => 'defenseWins',
-        'legendTrophies' => 'legendTrophies',
+        // 'legendTrophies' => 'legendTrophies',
         'Best season' => 'bestSeason',
-        'versusTrophies'  => 'versusTrophies',
+        // 'versusTrophies'  => 'versusTrophies',
         'trophies'  => 'trophies',
       ];
-      $build['member_list'] = \Drupal\clashofclans_api\Render::players($data['memberList'], $fields);
+      $build['member_list'] = \Drupal\clashofclans_api\Render::players($members, $fields);
       // $build['#cache']['max-age'] = $this->config('clashofclans_api.settings')->get('cache_max_age');
       // $build['#cache']['max-age'] = 5;
     }

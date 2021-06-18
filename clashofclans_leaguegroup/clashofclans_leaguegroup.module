@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\clashofclans_leaguegroup\LeagueGroup;
 
 /**
  * Implements hook_theme().
@@ -31,11 +32,19 @@ function clashofclans_leaguegroup_theme() {
  */
 function template_preprocess_leaguegroup(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
+    if ($key == 'field_data') {
+      $json = $variables['elements']['#leaguegroup']->field_data->getString();
+      $data = \Drupal\Component\Serialization\Json::decode($json);
+      if ($data) {
+        $league_group = new LeagueGroup($data);
+        $league_group->execute();
+        $variables['content']['clans'] = $league_group->getClans();
+        $variables['content']['rounds'] = $league_group->getRounds();
+      }
+    } else {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
   }
-  $json = $variables['elements']['#leaguegroup']->field_data->getValue()[0]['value'];
-  $data = \Drupal\Component\Serialization\Json::decode($json);
-  dpm($data);
 }
 
 /**

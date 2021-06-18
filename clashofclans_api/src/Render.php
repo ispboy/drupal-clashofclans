@@ -5,7 +5,8 @@
 **/
 namespace Drupal\clashofclans_api;
 
-use Drupal\clashofclans_api\Link;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\Core\Render\Markup;
 
 class Render {
@@ -56,11 +57,11 @@ class Render {
             break;
 
           case 'name':
-            $row[] = Link::player($item['name'], $item['tag']);
+            $row[] = self::link($item['name'], $item['tag'], 'player');
             break;
 
           case 'clan':
-            $row[] = isset($item['clan']) ? Link::clan($item['clan']['name'], $item['clan']['tag']) : '';
+            $row[] = isset($item['clan']) ? self::link($item['clan']['name'], $item['clan']['tag'], 'clan') : '';
             break;
 
           case 'league':
@@ -72,12 +73,16 @@ class Render {
             break;
 
           case 'bestSeason':
-            $row[] = isset($item['legendStatistics']['bestSeason']) ?
+            $data = isset($item['legendStatistics']['bestSeason']) ?
               Markup::create(
-                $item['legendStatistics']['bestSeason']['id']. '<br />Trophies: '.
-                $item['legendStatistics']['bestSeason']['trophies']. '<br />Rank: '.
+                $item['legendStatistics']['bestSeason']['id']. '<br />🏆 '.
+                $item['legendStatistics']['bestSeason']['trophies']. '<br />📈 '.
                 $item['legendStatistics']['bestSeason']['rank']
               ) : '';
+            $row[] = [
+              'data' => $data,
+              'nowrap' => 'nowrap',
+            ];
             break;
 
           default:
@@ -91,6 +96,7 @@ class Render {
     $header = array_keys($fields);
     $build = [
       '#type' => 'table',
+      '#attributes' => ['class' => ['clashofclans-players-table']],
       '#sticky' => TRUE,
       '#header' => $header,
       '#rows' => $rows,
@@ -116,7 +122,7 @@ class Render {
             break;
 
           case 'name':
-            $row[] = Link::clan($item['name'], $item['tag']);
+            $row[] = self::link($item['name'], $item['tag'], 'clan');
             break;
 
           case 'badge':
@@ -125,7 +131,7 @@ class Render {
 
           case 'location':
             if (isset($item['location'])) {
-              $row[] = Link::location($item['location']['name'], $item['location']['id']);
+              $row[] = self::link($item['location']['name'], $item['location']['id'], 'location');
             } else {
               $row[] = '';
             }
@@ -153,4 +159,28 @@ class Render {
     return $build;
   }
 
+  /**
+   * purpose: because the Drupal Link object would convert the '#' to fragment, or '%23' to '%2523'!
+   * so build it myself.
+   * @param $items: data['items']
+   * @param $fields: which fields to fetch.
+   * @return array
+   */
+  public static function link($name, $tag, $type) {
+
+    $urls = [ //define the path centrally.
+      'clan' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag),
+      'player' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag),
+      'currentwar' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag). '/currentwar',
+      'leaguegroup' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag). '/leaguegroup',
+      'location' => Url::fromUri('internal:/clashofclans-location/'. $tag),
+    ];
+
+    $build = [
+      '#theme' => 'clashofclans_api_link',
+      '#url' => $urls[$type],
+      '#title' => $name,
+    ];
+    return \Drupal::service('renderer')->render($build);
+  }
 }

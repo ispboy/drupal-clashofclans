@@ -57,7 +57,7 @@ class PlayerController extends ControllerBase {
     ];
 
     if (isset($data['clan'])) {
-      $clan = \Drupal\clashofclans_api\Link::clan($data['clan']['name'], $data['clan']['tag']);
+      $clan = \Drupal\clashofclans_api\Render::link($data['clan']['name'], $data['clan']['tag'], 'clan');
       $build['content']['#clan'] = $clan;
     }
 

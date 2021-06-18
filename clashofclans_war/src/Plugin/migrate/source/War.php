@@ -46,15 +46,17 @@ class War extends SourcePluginBase {
     $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
     $data = $client->get($url);
     $records = [];
-    foreach ($data['rounds'] as $round) {
-      foreach ($round['warTags'] as $war_tag) {
-        if ($war_tag != '#0') {
-          $url = 'clanwarleagues/wars/'. urlencode($war_tag);
-          $war = $client->get($url, 'json');
-          $records[] = [
-            'tag' => $war_tag,
-            'data' => $war,
-          ];
+    if (isset($data['rounds'])) {
+      foreach ($data['rounds'] as $round) {
+        foreach ($round['warTags'] as $war_tag) {
+          if ($war_tag != '#0') {
+            $url = 'clanwarleagues/wars/'. urlencode($war_tag);
+            $war = $client->get($url, 'json');
+            $records[] = [
+              'tag' => $war_tag,
+              'data' => $war,
+            ];
+          }
         }
       }
     }

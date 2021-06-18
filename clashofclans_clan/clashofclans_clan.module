@@ -38,6 +38,13 @@ function clashofclans_clan_theme() {
       ],
     ],
 
+    'clashofclans_clan_currentwar' => [
+      'variables' => [
+        'war' => NULL,
+        'players' => NULL,
+      ],
+    ],
+
   ];
 }
 

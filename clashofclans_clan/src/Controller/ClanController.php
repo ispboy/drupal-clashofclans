@@ -14,16 +14,16 @@ use Drupal\clashofclans_clan\Form\SearchForm;
 class ClanController extends ControllerBase {
 
   private $client;
+  private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client)
-  {
+  public function __construct(\Drupal\clashofclans_api\Client $client) {
       $this->client = $client;
   }
 
-  public static function create(ContainerInterface $container)
-  {
-      $client = $container->get('clashofclans_api.client');
-      return new static($client);
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('clashofclans_api.client'),
+    );
   }
 
   public function setTitle($tag) {
@@ -41,68 +41,122 @@ class ClanController extends ControllerBase {
    * Builds the response.
    */
   public function tag($tag) {
-    $url = 'clans/'. urlencode($tag);
-    $data = $this->client->get($url);
+    $route = 'entity.clashofclans_clan.canonical';
 
-    if (!isset($data['name'])) {
-      $build['content'] = [
-        '#markup' => $this->t('Not found!'),
-      ];
-
-      return $build;
+    $id = $this->getEntityId($tag);
+    if ($id) {
+      return $this->redirect($route, ['clashofclans_clan' => $id]);
     }
 
     $build['content'] = [
-      '#theme' => 'clashofclans_clan_tag',
-      '#clan' => $data,
+      '#markup' => $this->t('Not found!'),
     ];
-
-    if (isset($data['location'])) {
-      $location = \Drupal\clashofclans_api\Link::location($data['location']['name'], $data['location']['id']);
-      $build['content']['#location'] = $location;
-    }
-
-    if (isset($data['isWarLogPublic']) && $data['isWarLogPublic']) {
-      $title = $this->t('Current war');
-      $build['content']['#current_war'] = Link::fromTextAndUrl($title, Url::fromRoute('clashofclans_clan.tag.currentwar', ['tag' => $tag]))->toString();
-
-      $title = $this->t('League group');
-      $build['content']['#league_group'] = Link::fromTextAndUrl($title, Url::fromRoute('clashofclans_clan.tag.leaguegroup', ['tag' => $tag]))->toString();
-    }
-
-    if (isset($data['memberList'])) {
-      $fields = [
-        'Rank' => 'clanRank',
-        'league' => 'league',
-        'expLevel' => 'expLevel',
-        'Name'  => 'name',
-        'role' => 'role',
-        'donations' => 'donations',
-        'Received' => 'donationsReceived',
-        'versusTrophies'  => 'versusTrophies',
-        'trophies'  => 'trophies',
-      ];
-      $build['content']['#member_list']=\Drupal\clashofclans_api\Render::players($data['memberList'], $fields);
-    }
-    $build['#cache']['max-age'] = $this->config('clashofclans_api.settings')->get('cache_max_age');
 
     return $build;
 
   }
 
   /**
+  * Get or create/update
+  **/
+  public function getEntityId($tag) {
+    $id = 0;
+    $storage = $this->entityTypeManager()->getStorage('clashofclans_clan');
+    $query = $storage->getQuery();
+    $query -> condition('field_clan_tag', $tag);
+    $ids = $query->execute();
+    if ($ids) { //entity exists.
+      $id = current($ids);
+    } else {  // create new
+      $url = 'clans/'. urlencode($tag);
+      $data = $this->client->get($url);
+      // dpm(array_keys($data));
+      if (isset($data['tag'])) {
+        $entity = $storage->create([
+          'title' => $data['name'],
+          'description' => $data['description'],
+          'field_clan_tag' => $data['tag'],
+          'uid' => 1,
+        ]);
+        $entity->save();
+        $id = $entity->id();
+      }
+    }
+    return $id;
+  }
+
+  /**
+   * Builds the response.
+   */
+  public function memberList($tag, $nojs = 'nojs') {
+    $build['content'] = [
+      '#markup' => $this->t('Not found!'),
+    ];
+
+    $url = 'clans/' . urlencode($tag). '/members';
+    $data = $this->client->get($url);
+
+    if (isset($data['items'])) {
+      $members = \Drupal\clashofclans_api\Members::getDetail($data['items'], $this->client, 10);
+      if ($members) {
+        $fields = [
+          'Rank' => 'clanRank',
+          'league' => 'league',
+          'expLevel' => 'expLevel',
+          'Name'  => 'name',
+          'role' => 'role',
+          'donations' => 'donations',
+          'Received' => 'donationsReceived',
+          'attackWins' => 'attackWins',
+          'defenseWins' => 'defenseWins',
+          'legendTrophies' => 'legendTrophies',
+          'Best season' => 'bestSeason',
+          'versusTrophies'  => 'versusTrophies',
+          'trophies'  => 'trophies',
+        ];
+        $build['content'] = \Drupal\clashofclans_api\Render::players($members, $fields);
+        $build['#cache']['max-age'] = $this->client->getCacheMaxAge();
+      }
+    }
+
+    // Determine whether the request is coming from AJAX or not.
+    if ($nojs == 'ajax') {
+      $response = new \Drupal\Core\Ajax\AjaxResponse();
+      $response->addCommand(new \Drupal\Core\Ajax\ReplaceCommand('#content .clashofclans-players-table', $build['content']));
+      return $response;
+    }
+
+    return $build;
+  }
+
+  /**
    * Builds the response.
    */
   public function currentWar($tag) {
-     $url = 'clans/'. urlencode($tag). '/currentwar';
-     $data = $this->client->get($url);
-     $state = $data['state'];
+    $build['content'] = [
+      '#markup' => $this->t('No content.'),
+    ];
+    $url = 'clans/'. urlencode($tag). '/currentwar';
+    $data = $this->client->get($url);
+// dpm(array_keys($data['clan']));
+    if ($data) {
+      if ($data['state'] == 'notInWar') {
+        $build['content'] = [
+          '#markup' => $this->t('Not in war.'),
+        ];
+      } else {
+        $war = new \Drupal\clashofclans_api\CurrentWar($data);
+        // dpm($war->getPlayers());
+        $build['content'] = [
+         '#theme' => 'clashofclans_clan_currentwar',
+         '#war' => $war->getData(),
+         '#players' => $war->getPlayers(),
+        ];
 
-     $build['content'] = [
-       '#markup' => $this->t($state),
-     ];
+      }
+    }
 
-     return $build;
+    return $build;
    }
 
    public function getLeagueGroup($tag) {
