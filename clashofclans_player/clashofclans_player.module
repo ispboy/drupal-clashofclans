@@ -2,44 +2,24 @@
 
 /**
  * @file
- * Provides a player entity type.
- */
-
-use Drupal\Core\Render\Element;
-
-/**
- * Implements hook_theme().
- */
-function clashofclans_player_theme() {
-  return [
-
-    'clashofclans_player' => [
-      'render element' => 'elements',
-    ],
-
-    'clashofclans_player_tag' => [
-      'variables' => [
-        'player' => NULL,
-        'clan' => NULL,
-      ],
-    ],
-
-  ];
-}
-
-/**
- * Prepares variables for player templates.
+ * Primary module hooks for ClashOfClans Player module.
  *
- * Default template: clashofclans-player.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - elements: An associative array containing the player information and any
- *     fields attached to the entity.
- *   - attributes: HTML attributes for the containing element.
+ * @DCG
+ * This file is no longer required in Drupal 8.
+ * @see https://www.drupal.org/node/2217931
  */
-function template_preprocess_clashofclans_player(array &$variables) {
-  foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
-  }
-}
+
+ /**
+  * Implements hook_theme().
+  */
+ function clashofclans_player_theme() {
+   return [
+     'clashofclans_player_tag' => [
+       'variables' => [
+         'player' => NULL,
+         'clan' => NULL,
+       ],
+     ],
+
+   ];
+ }

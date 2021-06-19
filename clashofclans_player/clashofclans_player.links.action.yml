@@ -1,5 +1,0 @@
-clashofclans_player.add_form:
-  route_name: entity.clashofclans_player.add_form
-  title: 'Add player'
-  appears_on:
-    - entity.clashofclans_player.collection

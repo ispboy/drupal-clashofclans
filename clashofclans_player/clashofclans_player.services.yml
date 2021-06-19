@@ -1,0 +1,5 @@
+services:
+  clashofclans_player.route_subscriber:
+    class: Drupal\clashofclans_player\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

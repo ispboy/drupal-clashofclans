@@ -5,8 +5,6 @@ namespace Drupal\clashofclans_player\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans\ClashofclansClient;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 
 /**
  * Returns responses for ClashOfClans Player routes.
@@ -25,45 +23,90 @@ class PlayerController extends ControllerBase {
       return new static($client);
   }
 
-  public function setTitle($tag) {
-    $title = $tag;  //provide default title, if not found.
-    $url = 'players/'. urlencode($tag);
-    $data = $this->client->get($url);
-
-    if (isset($data['name'])) {
-      $title = $data['name'];
+  public function userTitle(\Drupal\user\UserInterface $user = NULL) {
+    $result = '';
+    if ($user) {
+      $name = $user->get('field_player_name')->getString();
+      if ($name) {
+        $result = [
+          '#markup' => $name,
+          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+        ];
+      } else {
+        $result = [
+          '#markup' => $user->getDisplayName(),
+          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+        ];
+      }
     }
-    return $title;
+
+    return $result;
   }
 
   /**
    * Builds the response.
    */
   public function tag($tag) {
-    $url = 'players/'. urlencode($tag);
-    $data = $this->client->get($url);
+    $route = 'entity.user.canonical';
 
-    if (!isset($data['name'])) {
-      $build['content'] = [
-        '#markup' => $this->t('Not found!'),
-      ];
-
-      return $build;
+    $id = $this->getUserId($tag);
+    if ($id) {
+      return $this->redirect($route, ['user' => $id]);
     }
 
     $build['content'] = [
-      '#theme' => 'clashofclans_player_tag',
-      '#player' => $data,
+      '#markup' => $this->t('Not found!'),
     ];
-
-    if (isset($data['clan'])) {
-      $clan = \Drupal\clashofclans_api\Render::link($data['clan']['name'], $data['clan']['tag'], 'clan');
-      $build['content']['#clan'] = $clan;
-    }
-
-    $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
 
     return $build;
 
+  }
+
+  /**
+  * Get or create/update User.
+  * Return uid.
+  **/
+  public function getUserId($tag) {
+    $id = 0;
+    $storage = $this->entityTypeManager()->getStorage('user');
+    $query = $storage->getQuery();
+    $query -> condition('field_player_tag', $tag);
+    $ids = $query->execute();
+    if ($ids) { //entity exists.
+      $id = current($ids);
+    } else {  // create new
+      $url = 'players/'. urlencode($tag);
+      $data = $this->client->get($url);
+      // dpm(array_keys($data));
+      if (isset($data['name'])) {
+        $language = $this->languageManager()->getCurrentLanguage()->getId();
+        $user = \Drupal\user\Entity\User::create();
+
+        $username = html_entity_decode($tag);
+        $mail = $username. '@null.com';
+        // Mandatory.
+        $user->setPassword(user_password());
+        $user->enforceIsNew();
+        $user->setEmail($mail);
+        $user->setUsername($username);
+
+        // Optional.
+        $user->set('init', $mail);
+        $user->set('langcode', $language);
+        $user->set('preferred_langcode', $language);
+        $user->set('preferred_admin_langcode', $language);
+        $user->set('field_player_tag', $tag);
+        $user->set('field_player_name', $data['name']);
+        $user->activate();
+
+        $user->addRole('gamer');
+
+        // Save user account.
+        $user->save();
+        $id = $user->id();
+
+      }
+    }
+    return $id;
   }
 }
