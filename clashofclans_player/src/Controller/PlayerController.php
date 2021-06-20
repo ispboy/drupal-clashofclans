@@ -82,7 +82,7 @@ class PlayerController extends ControllerBase {
         $language = $this->languageManager()->getCurrentLanguage()->getId();
         $user = \Drupal\user\Entity\User::create();
 
-        $username = html_entity_decode($tag);
+        $username = ltrim($tag, '#');
         $mail = $username. '@null.com';
         // Mandatory.
         $user->setPassword(user_password());
@@ -98,6 +98,16 @@ class PlayerController extends ControllerBase {
         $user->set('field_player_tag', $tag);
         $user->set('field_player_name', $data['name']);
         $user->activate();
+
+        if (isset($data['legendStatistics']['bestSeason']['id'])) {
+          $t = strtotime($data['legendStatistics']['bestSeason']['id']);
+          $d = date('Y-m-d', $t);
+          $user->set('field_best_season', $d);
+          $user->set('field_best_season_rank', $data['legendStatistics']['bestSeason']['rank']);
+          $user->set('field_best_season_trophies', $data['legendStatistics']['bestSeason']['trophies']);
+          $user->set('field_best_trophies', $data['bestTrophies']);
+          $user->set('field_legend_trophies', $data['legendStatistics']['legendTrophies']);
+        }
 
         $user->addRole('gamer');
 

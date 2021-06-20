@@ -275,10 +275,11 @@ class ClanController extends ControllerBase {
           'isWarLogPublic' => 'isWarLogPublic',
           'clanPoints'  => 'clanPoints',
         ];
-
         $build['content'] = \Drupal\clashofclans_api\Render::clans($data['items'], $fields);
       } else {
-        $build['content'] = $this->t('No result.');
+        $build['content'] = [
+          '#markup' => $this->t('No results.'),
+        ];
       }
     }
 

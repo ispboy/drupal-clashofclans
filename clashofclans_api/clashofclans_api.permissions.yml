@@ -2,3 +2,7 @@ administer clashofclans_api configuration:
   title: 'Administer clashofclans_api configuration'
   description: 'Optional description.'
   restrict access: true
+
+Test clashofclans_api:
+  title: 'Test clashofclans_api module'
+  description: 'Optional description.'

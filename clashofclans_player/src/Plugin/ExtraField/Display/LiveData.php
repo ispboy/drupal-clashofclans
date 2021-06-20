@@ -64,7 +64,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
     if (!isset($data['name'])) {
 
       $build['content'] = [
-        '#markup' => $this->t('Not found!'),
+        // '#markup' => t('Game data NOT found!'),
       ];
 
     } else {
@@ -77,12 +77,48 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
         $clan = \Drupal\clashofclans_api\Render::link($data['clan']['name'], $data['clan']['tag'], 'clan');
         $build['content']['#clan'] = $clan;
       }
-
+      $this->checkEntity($data, $entity);
       $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
 
     }
 
     return $build;
+  }
+
+  private function checkEntity($data, ContentEntityInterface $entity) {
+    $items = [];
+
+    if (isset($data['legendStatistics']['bestSeason']['id'])) {
+      $timestamp = strtotime($data['legendStatistics']['bestSeason']['id']);
+      $date = date('Y-m-d', $timestamp);
+      $items['field_best_season'] = $date;
+    }
+
+    if (isset($data['legendStatistics']['legendTrophies'])) {
+      $items['field_legend_trophies'] = $data['legendStatistics']['legendTrophies'];
+    }
+
+    if (isset($data['bestTrophies'])) {
+      $items['field_best_trophies'] = $data['bestTrophies'];
+    }
+
+    $count = 0; //Count changes
+    foreach ($items as $key => $item) {
+      $val = $entity->get($key)->getString();
+      if (strcmp($val, $item)) {
+        $entity->set($key, $item);
+        if ($key == 'field_best_season') {
+          $entity->set('field_best_season_rank', $data['legendStatistics']['bestSeason']['rank']);
+          $entity->set('field_best_season_trophies', $data['legendStatistics']['bestSeason']['trophies']);
+        }
+        $count ++;
+      }
+    }
+    if ($count) {
+      $entity->save();
+      \Drupal::messenger()->addStatus(t('Player data updated.'));
+    }
+
   }
 
 }

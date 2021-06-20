@@ -1,0 +1,7 @@
+status: true
+dependencies: {  }
+id: gamer
+label: Gamer
+weight: 5
+is_admin: null
+permissions: {  }

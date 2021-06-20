@@ -9,15 +9,15 @@ entity.clashofclans_location.collection:
   route_name: entity.clashofclans_location.collection
   parent: system.admin_content
 
-clashofclans_location.global.clans:
-  title: Clans
+clashofclans_location.global:
+  title: Top clans
   description: list the global top 200 clans.
-  route_name: clashofclans_location.global.clans
+  route_name: clashofclans_location.global
   menu_name: main
   weight: 1
 
 clashofclans_location.global.players:
-  title: Players
+  title: Top players
   description: list the global top 200 players.
   route_name: clashofclans_location.global.players
   menu_name: main

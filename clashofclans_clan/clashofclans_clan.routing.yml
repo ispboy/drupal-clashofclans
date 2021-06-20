@@ -50,6 +50,6 @@ clashofclans_clan.search:
   path: 'clashofclans-clan/search'
   defaults:
     _controller: '\Drupal\clashofclans_clan\Controller\ClanController::search'
-    _title: 'Search Clans'
+    _title: 'Search clans'
   requirements:
     _permission: 'access content'

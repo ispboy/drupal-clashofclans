@@ -27,6 +27,28 @@ class ClashofclansApiController extends ControllerBase {
    * Builds the response.
    */
   public function build() {
+    $client = $this->client;
+
+    // $query = \Drupal::entityTypeManager()->getStorage('user')->getQuery();
+    // $ids = $query->execute();
+    // foreach ($ids as $uid) {
+    //   $user = \Drupal\user\Entity\User::load($uid);
+    //   $old = $user->get('name')->getString();
+    //   $new = ltrim($old, '#');
+    //   $user->setUsername($new);
+    //   $user->save();
+    // }
+
+    // $tag = '#Y2QPV0YUP';
+    $tag = '#8PUCLC2JP';
+    $url = 'players/'. urlencode($tag);
+    $data = $client->get($url);
+    if (isset($data['legendStatistics']['bestSeason']['id'])) {
+      $t = strtotime($data['legendStatistics']['bestSeason']['id']);
+      $d = date('Y-m', $t);
+      dpm($d);
+    }
+
     $build['content'] = [
       '#type' => 'item',
       '#markup' => $this->t('Integrates <a href="@api" target="_blank">Clash of Clans API</a> into Drupal.
@@ -41,9 +63,8 @@ class ClashofclansApiController extends ControllerBase {
     ];
 
     $request_time = \Drupal::time()->getCurrentTime();
-    dpm(date('Y-m-d H:i:s', $request_time));
+    // dpm(date('Y-m-d H:i:s', $request_time));
 
-    $client = $this->client;
 
     // $name = '铁血团之彼泽棠棣';
     // $tag = '#22P2GP82P';

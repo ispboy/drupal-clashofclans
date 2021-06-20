@@ -50,7 +50,11 @@ class ClashofclansLocationController extends ControllerBase {
       'trophies'  => 'trophies',
     ];
 
-    $build = Render::players($data['items'], $fields);
+    if (isset($data['items'])) {
+      $build = Render::players($data['items'], $fields);
+    } else {
+      $build = ['#markup' => $this->t('No results.')];
+    }
     return $build;
   }
 

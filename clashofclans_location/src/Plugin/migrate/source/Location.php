@@ -40,7 +40,7 @@ class Location extends SourcePluginBase {
     // }
     // @endcode
 
-    $client = new Client();
+    $client = \Drupal::service('clashofclans_api.client');
     $url = 'locations';
     $data = $client->get($url);
 

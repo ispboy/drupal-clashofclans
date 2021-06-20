@@ -171,8 +171,8 @@ class Render {
     $urls = [ //define the path centrally.
       'clan' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag),
       'player' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag),
-      'currentwar' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag). '/currentwar',
-      'leaguegroup' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag). '/leaguegroup',
+      'currentwar' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/currentwar',
+      'leaguegroup' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/leaguegroup',
       'location' => Url::fromUri('internal:/clashofclans-location/'. $tag),
     ];
 
