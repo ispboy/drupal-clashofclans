@@ -22,6 +22,14 @@ clashofclans_clan.tag.memberlist:
   requirements:
     _permission: 'view clan'
 
+clashofclans_clan.tag.warlog:
+  path: 'clashofclans-clan/tag/{tag}/warlog'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::warLog'
+    _title: 'War log'
+  requirements:
+    _permission: 'access content'
+
 clashofclans_clan.tag.currentwar:
   path: 'clashofclans-clan/tag/{tag}/currentwar'
   defaults:

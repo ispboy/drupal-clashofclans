@@ -97,16 +97,16 @@ class ClanController extends ControllerBase {
     $data = $this->client->get($url);
 
     if (isset($data['items'])) {
-      $members = \Drupal\clashofclans_api\Members::getDetail($data['items'], $this->client, 10);
+      $members = \Drupal\clashofclans_api\Members::getDetail($data['items'], $this->client, 15);
       if ($members) {
         $fields = [
           'Rank' => 'clanRank',
           'league' => 'league',
           'expLevel' => 'expLevel',
           'Name'  => 'name',
-          'role' => 'role',
-          'donations' => 'donations',
-          'Received' => 'donationsReceived',
+          // 'role' => 'role',
+          // 'donations' => 'donations',
+          // 'Received' => 'donationsReceived',
           'attackWins' => 'attackWins',
           'defenseWins' => 'defenseWins',
           'legendTrophies' => 'legendTrophies',
@@ -132,6 +132,25 @@ class ClanController extends ControllerBase {
   /**
    * Builds the response.
    */
+  public function warLog($tag) {
+    $url = 'clans/'. urlencode($tag). '/warlog';
+    $data = $this->client->get($url);
+    if (isset($data['items'])) {
+      $build['content'] = [
+       '#theme' => 'clashofclans_clan_warlog',
+       '#items' => $data['items'],
+      ];
+    } else {
+      $build['content'] = ['#markup' => $this->t('No content.')];
+    }
+
+    $build['#cache']['max-age'] = $this->client->getCacheMaxAge()*30;
+    return $build;
+  }
+
+  /**
+   * Builds the response.
+   */
   public function currentWar($tag) {
     $build['content'] = [
       '#markup' => $this->t('No content.'),
@@ -140,6 +159,7 @@ class ClanController extends ControllerBase {
     $data = $this->client->get($url);
 // dpm(array_keys($data['clan']));
     if ($data) {
+      $build['#cache']['max-age'] = $this->client->getCacheMaxAge();
       if ($data['state'] == 'notInWar') {
         $build['content'] = [
           '#markup' => $this->t('Not in war.'),
@@ -152,10 +172,10 @@ class ClanController extends ControllerBase {
          '#war' => $war->getData(),
          '#players' => $war->getPlayers(),
         ];
-
       }
     }
 
+    $build['#cache']['max-age'] = $this->client->getCacheMaxAge()*5;
     return $build;
    }
 
@@ -283,6 +303,7 @@ class ClanController extends ControllerBase {
       }
     }
 
+    $build['#cache']['contexts'] = ['url.query_args'];
     return $build;
   }
 }

@@ -2,13 +2,25 @@
 {{ attach_library('core/drupal.ajax') }}
 <article>
 <div style="float: right">
-  <img src="{{ clan.badgeUrls.medium }}" />
+  <img src="{{ clan.badgeUrls.small }}" />
   <br />
-  Points: {{ clan.clanPoints }}
+  🏆{{ clan.clanPoints }}
   <br />
-  VersusPoints: {{ clan.clanVersusPoints }}
-  <div>Location: {{ location }}</div>
-  <div>Language: {{ clan.chatLanguage.name }}</div>
+  ⚔️{{ clan.clanVersusPoints }}
+  <div>warFrequency: {{ clan.warFrequency}}</div>
+  <div>Warlog:</div>
+  <ul class="links">
+    <li>warWins: {{ clan.warWins}}</li>
+    <li>warWinStreak: {{ clan.warWinStreak}}</li>
+    {% if clan.isWarLogPublic %}
+    <li>warTies: {{ clan.warTies}}</li>
+    <li>warLosses: {{ clan.warLosses}}</li>
+    <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/warlog">{{ 'War log'|t }}</a></li>
+    <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/currentwar">{{ 'Current war'|t }}</a></li>
+    <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/leaguegroup">{{ 'League group'|t }}</a></li>
+    {% endif %}
+  </ul>
+  <div>warLeague: {{ clan.warLeague.name}}</div>
 </div>
 <p>{{ clan.description}}</p>
 <div class="clashofclans-labels">
@@ -17,19 +29,14 @@
 {% endfor %}
 </div>
 <div>Tag: {{ clan.tag}}</div>
+<div>Location: {{ location }}</div>
+<div>Language: {{ clan.chatLanguage.name }}</div>
 <div>Type: {{ clan.type}}</div>
 <div>requiredTrophies: {{ clan.requiredTrophies}}</div>
 <div>requiredTownhallLevel: {{ clan.requiredTownhallLevel}}</div>
 <div>requiredVersusTrophies: {{ clan.requiredVersusTrophies}}</div>
-<div>warFrequency: {{ clan.warFrequency}}</div>
-<div>warWinStreak: {{ clan.warWinStreak}}</div>
-<div>warWins: {{ clan.warWins}}</div>
-<div>warTies: {{ clan.warTies}}</div>
-<div>warLosses: {{ clan.warLosses}}</div>
-<div>isWarLogPublic: {{ clan.isWarLogPublic}} {{ current_war}} {{ league_group}}</div>
-<div>warLeague: {{ clan.warLeague.name}}</div>
 <div>members: {{ clan.members}} </div>
-<div>memberlist: &gt;&gt; <a class="use-ajax" href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/memberlist/nojs">The best rank.</a></div>
+<div>memberlist: &gt;&gt; <a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/memberlist/nojs">The best rank.</a></div>
 </article>
 
 <div class='member-list'>{{ member_list }}</div>

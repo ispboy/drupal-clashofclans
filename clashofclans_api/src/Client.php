@@ -38,6 +38,28 @@ class Client implements ContainerInjectionInterface {
    * @return array
    */
   public function get($url, $json = ''){
+    $data = $this->request('GET', $url);
+    return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
+
+  }
+
+  /**
+   * @param $url, $json: 'json', others.
+   * @return array
+   */
+  public function post($url, $body, $json = ''){
+    $options['body'] = $body;
+    $data = $this->request('POST', $url, $options);
+
+    return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
+
+  }
+
+  /**
+   * @param $url, $json: 'json', others.
+   * @return array
+   */
+  public function request($method='GET', $url, $options=[]){
     $data = &drupal_static(__FUNCTION__);
     $key = urlencode($url); //not the this->key;
 
@@ -46,12 +68,9 @@ class Client implements ContainerInjectionInterface {
       $data[$key] = NULL;
 
         try {
-          $options = [
-            'headers' => ['authorization' => 'Bearer ' . $this->key],
-          ];
-          $response = $this->httpClient->request('GET', $url, $options);
+          $options['headers']['authorization'] = 'Bearer ' . $this->key;
+          $response = $this->httpClient->request($method, $url, $options);
           $data[$key] = $response->getBody()->getContents();
-
         }
         catch (RequestException $error) {
           if ($error->getCode() == 404) {
@@ -60,11 +79,9 @@ class Client implements ContainerInjectionInterface {
             $logger->error($error->getMessage());
           }
         }
-
     }
 
-    return ($json == 'json')? $data[$key]: \Drupal\Component\Serialization\Json::decode($data[$key]);
-
+    return $data[$key]; //json format.
   }
 
   public function getCacheMaxAge() {

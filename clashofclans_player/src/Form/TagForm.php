@@ -4,7 +4,6 @@ namespace Drupal\clashofclans_player\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 
 /**
  * Provides a ClashOfClans Player form.

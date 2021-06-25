@@ -1,6 +1,28 @@
 <article>
+<div style="float: right;">
+  {% if not logged_in %}
+  <a href="{{url('<front>')}}clashofclans-player/tag/{{ player.tag|url_encode }}/verifytoken">{{ 'login as this player'|t }}</a>
+  {% endif %}
+</div>
 <div>Tag: {{ player.tag }}</div>
 <div>expLevel: {{ player.expLevel }}</div>
+<div>{{ 'Heroes'|t }}:</div>
+<ul class="inline">
+  {% for item in player.heroes %}
+  <li>
+    {{ item.name|t }} ({{ item.level }}/{{ item.maxLevel }})
+    {% if item.superTroopIsActive %}🎈{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+<div>{{ 'Pets'|t }}:</div>
+<ul class="inline">
+  {% for item in pets %}
+  <li>
+    {{ item.name|t }} ({{ item.level }}/{{ item.maxLevel }})
+  </li>
+  {% endfor %}
+</ul>
 <table id="clashofclan-basic">
   <tr>
     <td>

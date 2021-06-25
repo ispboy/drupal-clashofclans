@@ -1,0 +1,45 @@
+<table class="clashofclans-warlog-table sticky-enabled responsive-enabled sticky-table">
+<thead>
+<tr>
+  <th style="text-align: right;">{{ 'Clan'|t }}</th>
+  <th style="text-align: center;">{{ 'Result'|t }}</th>
+  <th>{{ 'Opponent'|t }}</th>
+</tr>
+</thead>
+{% for war in items %}
+{% if war.opponent.name %}
+<tr>
+  <td style="text-align: right;">
+    <img width="70" height="70" src="{{ war.clan.badgeUrls.small }}" />
+    <h3><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.clan.tag|url_encode }}">{{ war.clan.name }}</a></h3>
+    <p>⭐{{ war.clan.stars }}</p>
+    <p>💥{{ war.clan.destructionPercentage|number_format(2) }}%</p>
+    <p>⚔️{{ war.clan.attacks }}</p>
+    <p>💎{{ war.clan.expEarned }}</p>
+  </td>
+  <td style="text-align: center;" nowrap>
+    <div>{{ war.teamSize }} vs {{ war.teamSize }}</div>
+    <div>
+    {% if war.result == 'lose' %}
+      <span style="color:red; font-size:20px">{{ war.result|t }}</span>
+    {% endif %}
+    {% if war.result == 'win' %}
+      <span style="color:green; font-size:20px">{{ war.result|t }}</span>
+    {% endif %}
+    {% if war.result == 'draw' %}
+      <span style="font-size:20px">{{ war.result|t }}</span>
+    {% endif %}
+    </div>
+  </td>
+  <td style="text-align: left;">
+    <img width="70" height="70" src="{{ war.opponent.badgeUrls.small }}" />
+    <h3><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.opponent.tag|url_encode }}">{{ war.opponent.name }}</a></h3>
+    <p>⭐{{ war.opponent.stars }}</p>
+    <p>💥{{ war.opponent.destructionPercentage|number_format(2) }}%</p>
+    <p>&nbsp;</p>
+    <p>( {{ war.endTime|replace({ '.000Z':' UTC'})|date('y-m-d H:i') }} )</p>
+  </td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>

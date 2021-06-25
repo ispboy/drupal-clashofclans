@@ -18,8 +18,42 @@
        'variables' => [
          'player' => NULL,
          'clan' => NULL,
+         'pets' => NULL,
        ],
      ],
 
    ];
+ }
+
+ /**
+  * Prepares variables for clan templates.
+  *
+  * Default template: clashofclans-clan.html.twig.
+  *
+  * @param array $variables
+  *   An associative array containing:
+  *   - elements: An associative array containing the clan information and any
+  *     fields attached to the entity.
+  *   - attributes: HTML attributes for the containing element.
+  */
+ function template_preprocess_clashofclans_player_tag(array &$variables) {
+   $player = $variables['player'];
+   if (isset($player['clan'])) {
+     $clan = \Drupal\clashofclans_api\Render::link($player['clan']['name'], $player['clan']['tag'], 'clan');
+     $variables['clan'] = $clan;
+   }
+
+   if (isset($player['troops'])) {
+     $pets = [];
+     $names = ['L.A.S.S.I', 'Mighty Yak', 'Electro Owl', 'Unicorn'];
+     foreach ($player['troops'] as $troop) {
+       if (in_array($troop['name'], $names)) {
+         $pets[] = $troop;
+       }
+     }
+     $variables['pets'] = $pets;
+   }
+
+
+   // dpm($player['troops']);
  }

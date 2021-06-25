@@ -62,10 +62,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
     $data = $this->client->get($url);
 
     if (!isset($data['name'])) {
-      $build['content'] = [
-        '#markup' => $this->t('Not found!'),
-      ];
-
+      $build = ['#markup' => t('No results.')];
       return $build;
     }
 
@@ -79,13 +76,13 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
       $build['content']['#location'] = $location;
     }
 
-    if (isset($data['isWarLogPublic']) && $data['isWarLogPublic']) {
-      $title = t('Current war');
-      $build['content']['#current_war'] = Render::link($title, $tag, 'currentwar');
-
-      $title = t('League group');
-      $build['content']['#league_group'] = Render::link($title, $tag, 'leaguegroup');
-    }
+    // if (isset($data['isWarLogPublic']) && $data['isWarLogPublic']) {
+    //   $title = t('Current war');
+    //   $build['content']['#current_war'] = Render::link($title, $tag, 'currentwar');
+    //
+    //   $title = t('League group');
+    //   $build['content']['#league_group'] = Render::link($title, $tag, 'leaguegroup');
+    // }
 
     if (isset($data['memberList'])) {
       $fields = [

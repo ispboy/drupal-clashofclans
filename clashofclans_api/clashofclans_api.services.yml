@@ -3,7 +3,6 @@ services:
     class: Drupal\clashofclans_api\Client
     arguments: ['@config.factory']
 
-  # clashofclans_api.clan:
-  #   class: Drupal\clashofclans_api\Clan
-  #   arguments:
-  #     - '@clashofclans_api.client'
+  clashofclans_api.player:
+    class: Drupal\clashofclans_api\Player
+    arguments: ['@clashofclans_api.client', '@entity_type.manager', '@language_manager']

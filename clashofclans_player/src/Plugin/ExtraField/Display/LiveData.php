@@ -73,10 +73,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
         '#theme' => 'clashofclans_player_tag',
         '#player' => $data,
       ];
-      if (isset($data['clan'])) {
-        $clan = \Drupal\clashofclans_api\Render::link($data['clan']['name'], $data['clan']['tag'], 'clan');
-        $build['content']['#clan'] = $clan;
-      }
+
       $this->checkEntity($data, $entity);
       $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
 

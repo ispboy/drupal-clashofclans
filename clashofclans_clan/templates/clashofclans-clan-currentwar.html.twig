@@ -1,32 +1,119 @@
 <ul>
-<li>State: {{ war.state }}</li>
-<li>teamSize: {{ war.teamSize }}</li>
 <li>preparationStartTime: {{ war.preparationStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
 <li>startTime: {{ war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
 <li>endTime: {{ war.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
 </ul>
 <table>
 <tr>
-  <td>
-    <img width="200" height="200" src="{{ war.clan.badgeUrls.medium }}" />
-    <h2><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.clan.tag|url_encode }}">{{ war.clan.name }}</a></h2>
+  <td style="text-align: right">
+    <img width="70" height="70" src="{{ war.clan.badgeUrls.small }}" />
+    <h2><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.clan.tag|url_encode }}">{{ war.clan.name }}</a>
+    </h2>
   </td>
-  <td>
-    <img width="200" height="200" src="{{ war.opponent.badgeUrls.medium }}" />
+  <td style="text-align: center" nowrap>
+    <div style="font-size:28px">
+      {{ war.clan.stars }} ⭐ {{ war.opponent.stars }}
+    </div>
+    <div>teamSize: {{ war.teamSize }}</div>
+    <div>{{ war.state }}</div>
+  </td>
+  <td style="text-align: left">
+    <img width="70" height="70" src="{{ war.opponent.badgeUrls.small }}" />
     <h2><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.opponent.tag|url_encode }}">{{ war.opponent.name }}</a></h2>
   </td>
 </tr>
 <tr>
-  <td>⭐{{ war.clan.stars }}</td>
-  <td>⭐{{ war.opponent.stars }}</td>
+  <td style="text-align: right">💥{{ war.clan.destructionPercentage|number_format(2) }}%
+  </td>
+  <td style="text-align: center">{{ 'Total Destruction'|t }}
+  </td>
+  <td style="text-align: left">💥{{ war.opponent.destructionPercentage|number_format(2) }}%
+  </td>
 </tr>
 <tr>
-  <td>💥{{ war.clan.destructionPercentage }}%</td>
-  <td>💥{{ war.opponent.destructionPercentage }}%</td>
+  <td colspan="3" style="text-align: center" nowrap><h3>{{ 'Attack Totals'|t }}</h3>
+  </td>
 </tr>
 <tr>
-  <td>⚔️{{ war.clan.attacks }}</td>
-  <td>⚔️{{ war.opponent.attacks }}</td>
+  <td style="text-align: right">⚔️{{ war.clan.attacks }}
+  </td>
+  <td style="text-align: center">{{ 'Attacks used'|t }}
+  </td>
+  <td style="text-align: left">⚔️{{ war.opponent.attacks }}
+  </td>
+</tr>
+<tr>
+  <td style="text-align: right">{{ war.teamSize * 2 - war.clan.attacks }}
+  </td>
+  <td style="text-align: center">{{ 'Attacks Remaining'|t }}
+  </td>
+  <td style="text-align: left">{{ war.teamSize * 2 - war.opponent.attacks }}
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3" style="text-align: center" nowrap><h3>{{ 'Best Attacks'|t }}</h3>
+  </td>
+</tr>
+<tr>
+  <td style="text-align: right">⚔️{{ war.clan.bestAttacks[3] }}
+  </td>
+  <td style="text-align: center"><span style="font-size: x-large; color: orange;">★★★</span>
+  </td>
+  <td style="text-align: left">⚔️{{ war.opponent.bestAttacks[3] }}
+  </td>
+</tr>
+<tr>
+  <td style="text-align: right">⚔️{{ war.clan.bestAttacks[2] }}
+  </td>
+  <td style="text-align: center"><span style="font-size: x-large; color: orange;">★★☆</span>
+  </td>
+  <td style="text-align: left">⚔️{{ war.opponent.bestAttacks[2] }}
+  </td>
+</tr>
+<tr>
+  <td style="text-align: right">⚔️{{ war.clan.bestAttacks[1] }}
+  </td>
+  <td style="text-align: center"><span style="font-size: x-large; color: orange;">★☆☆</span>
+  </td>
+  <td style="text-align: left">⚔️{{ war.opponent.bestAttacks[1] }}
+  </td>
+</tr>
+<tr>
+  <td style="text-align: right">⚔️{{ war.clan.bestAttacks[0] }}
+  </td>
+  <td style="text-align: center"><span style="font-size: x-large; color: orange;">☆☆☆</span>
+  </td>
+  <td style="text-align: left">⚔️{{ war.opponent.bestAttacks[0] }}
+  </td>
+</tr>
+</table>
+
+
+<table>
+<tr>
+  <td colspan="2" style="text-align:center;">⭐⭐⭐ {{ 'players'|t }}
+  </td>
+</tr>
+<tr>
+  <td valign="top">
+    <ol class="links">
+    {% for tag,player in war.clan.bestPlayers %}
+      {% if player.stars[3] %}
+      <li><a href="{{ tag }}">{{ player.name }}</a>: {{ player.stars[3] }}</li>
+      {% endif %}
+    {% endfor %}
+    </ol>
+  </td>
+  <td valign="top">
+    <ol class="links">
+    {% for tag, player in war.opponent.bestPlayers %}
+      {% if player.stars[3] %}
+      <li><a href="{{ tag }}">{{ player.name }}</a>: {{ player.stars[3] }}</li>
+      {% endif %}
+    {% endfor %}
+    </ol>
+  </td>
 </tr>
 <tr>
   <td valign="top">
@@ -38,16 +125,16 @@
       {% if player.bestOpponentAttack.stars %}
         {% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %}
         {{ player.bestOpponentAttack.destructionPercentage }}%
-        🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag] }}</a>
+        🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag].name }}</a>
       {% endif %}
       </h3>
-      <ul>
+      <ul class="links">
         <li>townHallLevel: {{ player.townhallLevel }}</li>
         <li>opponentAttacks: {{ player.opponentAttacks }}</li>
         <li>attacks:
-          <ul>
+          <ul class="links">
           {% for attack in player.attacks %}
-            <li><a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag] }}</a>
+            <li>{{ players[attack.defenderTag].mapPosition }}. <a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag].name }}</a>
               {% for i in 1..attack.stars|number_format %}⭐{% endfor %}
               {% if attack.destructionPercentage != 100  %}
                 {{ attack.destructionPercentage }}%
@@ -71,16 +158,16 @@
     {% if player.bestOpponentAttack.stars %}
       {% for i in 1..player.bestOpponentAttack.stars|number_format %}❎{% endfor %}
       {{ player.bestOpponentAttack.destructionPercentage }}%
-      🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag] }}</a>
+      🏹<a href="{{ player.bestOpponentAttack.attackerTag }}">{{ players[player.bestOpponentAttack.attackerTag].name }}</a>
     {% endif %}
     </h3>
-    <ul>
+    <ul class="links">
       <li>townHallLevel: {{ player.townhallLevel }}</li>
       <li>opponentAttacks: {{ player.opponentAttacks }}</li>
       <li>attacks:
-        <ul>
+        <ul class="links">
         {% for attack in player.attacks %}
-        <li><a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag] }}</a>
+        <li>{{ players[attack.defenderTag].mapPosition }}. <a href="{{ attack.defenderTag }}">{{ players[attack.defenderTag].name }}</a>
           {% for i in 1..attack.stars|number_format %}⭐{% endfor %}
           {% if attack.destructionPercentage != 100  %}
             {{ attack.destructionPercentage }}%
@@ -96,4 +183,30 @@
   </ol>
   </td>
 </tr>
+</table>
+
+<table><caption>{{ 'War Events'|t }} {{ war.events|length }}</caption>
+{% for event in war.events %}
+<tr>
+  <td style="text-align: left;">{{ event.order }}
+  {% if event.type == 'clan' %}⚔️{% endif %}
+  </td>
+  <td style="text-align:right;">
+    {{ players[event.leftTag].mapPosition }}. <a href="{{ event.leftTag }}">{{ players[event.leftTag].name }}</a>
+  </td>
+  <td style="text-align: center;">
+    <div>
+    {% if event.type == 'clan' %}{% for i in 1..event.stars|number_format %}⭐{% endfor %}{% endif %}
+    {% if event.type == 'opponent' %}{% for i in 1..event.stars|number_format %}❎{% endfor %}{% endif %}
+    </div>
+    <div>
+    {% if event.destructionPercentage != 100  %}
+      {{ event.destructionPercentage }}%
+    {% endif %} ({{ event.duration|date('i')|trim('0') }}'{{ event.duration|date('s') }}")</div>
+  </td>
+  <td>
+    {{ players[event.rightTag].mapPosition }}. <a href="{{ event.rightTag }}">{{ players[event.rightTag].name }}</a>
+  </td>
+</tr>
+{% endfor %}
 </table>

@@ -45,6 +45,12 @@ function clashofclans_clan_theme() {
       ],
     ],
 
+    'clashofclans_clan_warlog' => [
+      'variables' => [
+        'items' => NULL,
+      ],
+    ],
+
   ];
 }
 

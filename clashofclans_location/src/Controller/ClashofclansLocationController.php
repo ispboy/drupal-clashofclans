@@ -61,17 +61,21 @@ class ClashofclansLocationController extends ControllerBase {
   public function globalClans() {
     $url = 'locations/global/rankings/clans';
     $data = $this->client->get($url);
-    $fields = [
-      'Rank' => 'rank',
-      'Badge' => 'badge',
-      'Name'  => 'name',
-      'clanLevel'  => 'clanLevel',
-      'members'  => 'members',
-      'Location' => 'location',
-      'clanPoints'  => 'clanPoints',
-    ];
+    if (isset($data['items'])) {
+      $fields = [
+        'Rank' => 'rank',
+        'Badge' => 'badge',
+        'Name'  => 'name',
+        'clanLevel'  => 'clanLevel',
+        'members'  => 'members',
+        'Location' => 'location',
+        'clanPoints'  => 'clanPoints',
+      ];
 
-    $build['content'] = Render::clans($data['items'], $fields);
+      $build['content'] = Render::clans($data['items'], $fields);
+    } else {
+      $build['content'] = ['#markup' => $this->t('No results.')];
+    }
 
     return $build;
   }

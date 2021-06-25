@@ -75,8 +75,8 @@ class Render {
           case 'bestSeason':
             $data = isset($item['legendStatistics']['bestSeason']) ?
               Markup::create(
-                $item['legendStatistics']['bestSeason']['id']. '<br />🏆 '.
-                $item['legendStatistics']['bestSeason']['trophies']. '<br />📈 '.
+                $item['legendStatistics']['bestSeason']['id']. '<br />🏆'.
+                $item['legendStatistics']['bestSeason']['trophies']. '<br />🚩'.
                 $item['legendStatistics']['bestSeason']['rank']
               ) : '';
             $row[] = [
@@ -171,8 +171,9 @@ class Render {
     $urls = [ //define the path centrally.
       'clan' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag),
       'player' => Url::fromUri('internal:/clashofclans-player/tag/')->toString(). urlencode($tag),
-      'currentwar' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/currentwar',
-      'leaguegroup' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/leaguegroup',
+      // 'warlog' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/warlog',
+      // 'currentwar' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/currentwar',
+      // 'leaguegroup' => Url::fromUri('internal:/clashofclans-clan/tag/')->toString(). urlencode($tag). '/leaguegroup',
       'location' => Url::fromUri('internal:/clashofclans-location/'. $tag),
     ];
 

@@ -29,6 +29,13 @@ class ClashofclansApiController extends ControllerBase {
   public function build() {
     $client = $this->client;
 
+// $test = new \Drupal\clashofclans_api\Test();
+// $test->getData('foo');
+// $test->getData('bar');
+// $test->getData('foo');
+// $test->getData('foo');
+// $test->getData('bar');
+// dpm($test);
     // $query = \Drupal::entityTypeManager()->getStorage('user')->getQuery();
     // $ids = $query->execute();
     // foreach ($ids as $uid) {
@@ -46,7 +53,6 @@ class ClashofclansApiController extends ControllerBase {
     if (isset($data['legendStatistics']['bestSeason']['id'])) {
       $t = strtotime($data['legendStatistics']['bestSeason']['id']);
       $d = date('Y-m', $t);
-      dpm($d);
     }
 
     $build['content'] = [

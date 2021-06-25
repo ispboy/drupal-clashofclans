@@ -6,3 +6,12 @@ clashofclans_player.tag:
     _title: 'Game player'
   requirements:
     _permission: 'access content'
+
+clashofclans_player.tag.verifytoken:
+  path: 'clashofclans-player/tag/{tag}/verifytoken'
+  defaults:
+    _form: 'Drupal\clashofclans_player\Form\VerifyTokenForm'
+    _title: 'Verify Token'
+  requirements:
+    # _permission: 'access content'
+    _user_is_logged_in: 'FALSE'

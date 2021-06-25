@@ -4,23 +4,26 @@ namespace Drupal\clashofclans_player\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\clashofclans\ClashofclansClient;
+use Drupal\clashofclans_api\Client;
+use Drupal\clashofclans_api\Player;
 
 /**
  * Returns responses for ClashOfClans Player routes.
  */
 class PlayerController extends ControllerBase {
   private $client;
+  private $player;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client)
-  {
+  public function __construct(Client $client, Player $player) {
       $this->client = $client;
+      $this->player = $player;
   }
 
-  public static function create(ContainerInterface $container)
-  {
-      $client = $container->get('clashofclans_api.client');
-      return new static($client);
+  public static function create(ContainerInterface $container) {
+      return new static(
+        $container->get('clashofclans_api.client'),
+        $container->get('clashofclans_api.player')
+      );
   }
 
   public function userTitle(\Drupal\user\UserInterface $user = NULL) {
@@ -49,7 +52,7 @@ class PlayerController extends ControllerBase {
   public function tag($tag) {
     $route = 'entity.user.canonical';
 
-    $id = $this->getUserId($tag);
+    $id = $this->player->getUserId($tag);
     if ($id) {
       return $this->redirect($route, ['user' => $id]);
     }
@@ -63,60 +66,14 @@ class PlayerController extends ControllerBase {
   }
 
   /**
-  * Get or create/update User.
-  * Return uid.
-  **/
-  public function getUserId($tag) {
-    $id = 0;
-    $storage = $this->entityTypeManager()->getStorage('user');
-    $query = $storage->getQuery();
-    $query -> condition('field_player_tag', $tag);
-    $ids = $query->execute();
-    if ($ids) { //entity exists.
-      $id = current($ids);
-    } else {  // create new
-      $url = 'players/'. urlencode($tag);
-      $data = $this->client->get($url);
-      // dpm(array_keys($data));
-      if (isset($data['name'])) {
-        $language = $this->languageManager()->getCurrentLanguage()->getId();
-        $user = \Drupal\user\Entity\User::create();
+   * Builds the response.
+   */
+  public function verifyToken($tag) {
 
-        $username = ltrim($tag, '#');
-        $mail = $username. '@null.com';
-        // Mandatory.
-        $user->setPassword(user_password());
-        $user->enforceIsNew();
-        $user->setEmail($mail);
-        $user->setUsername($username);
+    $build['content'] = ['#markup' => $this->t('No results.')];
 
-        // Optional.
-        $user->set('init', $mail);
-        $user->set('langcode', $language);
-        $user->set('preferred_langcode', $language);
-        $user->set('preferred_admin_langcode', $language);
-        $user->set('field_player_tag', $tag);
-        $user->set('field_player_name', $data['name']);
-        $user->activate();
+    return $build;
 
-        if (isset($data['legendStatistics']['bestSeason']['id'])) {
-          $t = strtotime($data['legendStatistics']['bestSeason']['id']);
-          $d = date('Y-m-d', $t);
-          $user->set('field_best_season', $d);
-          $user->set('field_best_season_rank', $data['legendStatistics']['bestSeason']['rank']);
-          $user->set('field_best_season_trophies', $data['legendStatistics']['bestSeason']['trophies']);
-          $user->set('field_best_trophies', $data['bestTrophies']);
-          $user->set('field_legend_trophies', $data['legendStatistics']['legendTrophies']);
-        }
-
-        $user->addRole('gamer');
-
-        // Save user account.
-        $user->save();
-        $id = $user->id();
-
-      }
-    }
-    return $id;
   }
+
 }
