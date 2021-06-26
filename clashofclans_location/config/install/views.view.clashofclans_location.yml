@@ -158,7 +158,7 @@ display:
         description: 'ClashOfClan Locations'
         expanded: false
         parent: ''
-        weight: 0
+        weight: 3
         context: '0'
         menu_name: main
     cache_metadata:
