@@ -37,35 +37,35 @@ class PlayerController extends ControllerBase {
     return $title;
   }
 
-  // public function userTitle(\Drupal\user\UserInterface $user = NULL) {
-  //   $result = '';
-  //   if ($user) {
-  //     $name = $user->get('field_player_name')->getString();
-  //     if ($name) {
-  //       $result = [
-  //         '#markup' => $name,
-  //         '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
-  //       ];
-  //     } else {
-  //       $result = [
-  //         '#markup' => $user->getDisplayName(),
-  //         '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
-  //       ];
-  //     }
-  //   }
-  //
-  //   return $result;
-  // }
+  public function userTitle(\Drupal\user\UserInterface $user = NULL) {
+    $result = '';
+    if ($user) {
+      $name = $user->get('field_player_name')->getString();
+      if ($name) {
+        $result = [
+          '#markup' => $name,
+          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+        ];
+      } else {
+        $result = [
+          '#markup' => $user->getDisplayName(),
+          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+        ];
+      }
+    }
+
+    return $result;
+  }
 
   /**
    * Builds the response.
    */
   public function tag($tag) {
-    $route = 'entity.clashofclans_player.canonical';
+    $route = 'entity.user.canonical';
 
     $id = $this->player->getEntityId($tag);
     if ($id) {
-      return $this->redirect($route, ['clashofclans_player' => $id]);
+      return $this->redirect($route, ['user' => $id]);
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
       return $build;

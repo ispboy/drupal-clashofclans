@@ -1,11 +1,3 @@
-entity.clashofclans_player.settings:
-  path: 'admin/structure/clashofclans-player'
-  defaults:
-    _form: '\Drupal\clashofclans_player\Form\ClashofclansPlayerSettingsForm'
-    _title: 'Player'
-  requirements:
-    _permission: 'administer player'
-
 clashofclans_player.tag:
   path: 'clashofclans-player/tag/{tag}'
   defaults:
@@ -14,11 +6,11 @@ clashofclans_player.tag:
   requirements:
     _permission: 'access content'
 
-# clashofclans_player.tag.verifytoken:
-#   path: 'clashofclans-player/tag/{tag}/verifytoken'
-#   defaults:
-#     _form: 'Drupal\clashofclans_player\Form\VerifyTokenForm'
-#     _title: 'Verify Token'
-#   requirements:
-#     # _permission: 'access content'
-#     _user_is_logged_in: 'FALSE'
+clashofclans_player.tag.verifytoken:
+  path: 'clashofclans-player/tag/{tag}/verifytoken'
+  defaults:
+    _form: 'Drupal\clashofclans_player\Form\VerifyTokenForm'
+    _title: 'Verify Token'
+  requirements:
+    # _permission: 'access content'
+    _user_is_logged_in: 'FALSE'

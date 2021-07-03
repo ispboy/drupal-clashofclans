@@ -27,13 +27,13 @@ class Player {
   }
 
   /**
-  * Get or create/update
+  * Get or create/update User
   **/
   public function getEntityId($tag) {
     $id = 0;
-    $storage = $this->entityTypeManager->getStorage('clashofclans_player');
+    $storage = $this->entityTypeManager->getStorage('user');
     $query = $storage->getQuery();
-    $query -> condition('player_tag', $tag);
+    $query -> condition('field_player_tag', $tag);
     $ids = $query->execute();
     if ($ids) { //entity exists.
       $id = current($ids);
@@ -41,15 +41,26 @@ class Player {
       $url = 'players/'. urlencode($tag);
       $data = $this->client->get($url);
       // dpm(array_keys($data));
-      if (isset($data['tag'])) {
-        $entity = $storage->create([
-          'title' => $data['name'],
-          'player_tag' => $data['tag'],
-          'uid' => 1,
-        ]);
-        $this->setLegendStatistics($data, $entity);
-        $entity->save();
-        $id = $entity->id();
+      if (isset($data['name'])) {
+        $user = $storage->create();
+        $username = ltrim($tag, '#');
+        $mail = $username. '@null.com';
+        // Mandatory.
+        $user->setPassword(user_password());
+        $user->enforceIsNew();
+        $user->setEmail($mail);
+        $user->setUsername($username);
+        // Optional.
+        $user->set('init', $mail);
+        $user->set('field_player_tag', $tag);
+        $user->set('field_player_name', $data['name']);
+        $user->activate();
+        $user->addRole('player');
+        $this->setLegendStatistics($data, $user);
+
+        // Save user account.
+        $user->save();
+        $id = $user->id();
       }
     }
     return $id;
@@ -129,7 +140,7 @@ class Player {
     if (isset($data['status'])) {
       $status = $data['status'];
       if ($status == 'ok') {
-        $uid = $this->getUserId($tag);
+        $uid = $this->getEntityId($tag);
         $storage = $this->entityTypeManager->getStorage('user');
         $user = $storage->load($uid);
         user_login_finalize($user);

@@ -18,7 +18,7 @@ use Drupal\clashofclans_api\Player;
  *   label = @Translation("Live data"),
  *   description = @Translation("The real-time data of the player."),
  *   bundles = {
- *     "clashofclans_player.clashofclans_player",
+ *     "user.user",
  *   }
  * )
  */
@@ -59,7 +59,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function view(ContentEntityInterface $entity) {
-    $tag = $entity->get('player_tag')->getString();
+    $tag = $entity->get('field_player_tag')->getString();
     // $changed = $entity->get('changed')->getString();
     // dpm(date('Y-m-d H:i:s', $changed));
     $url = 'players/'. urlencode($tag);

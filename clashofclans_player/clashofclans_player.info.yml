@@ -1,6 +1,6 @@
 name: ClashOfClans Player
 type: module
-description: 'Provides a player entity.'
+description: 'Attach player to drupal core user.'
 package: Clash of Clans
 core: 8.x
 core_version_requirement: ^8 || ^9
@@ -8,4 +8,3 @@ dependencies:
   - clashofclans_api:clashofclans_api
   - extra_field:extra_field
   - drupal:text
-configure: entity.clashofclans_player.settings
