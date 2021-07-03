@@ -1,0 +1,16 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_player
+id: clashofclans_player.field_previous_season
+field_name: field_previous_season
+entity_type: clashofclans_player
+type: clashofclans_player_season
+settings: {  }
+module: clashofclans_player
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

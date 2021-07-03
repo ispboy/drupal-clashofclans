@@ -1,0 +1,14 @@
+# Default value.
+field.value.clashofclans_player_season:
+  type: mapping
+  label: Default value
+  mapping:
+    id:
+      type: datetime
+      label: ID
+    trophies:
+      type: integer
+      label: Trophies
+    rank:
+      type: integer
+      label: Rank
