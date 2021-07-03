@@ -85,6 +85,19 @@ class Render {
             ];
             break;
 
+            case 'previousSeason':
+              $data = isset($item['legendStatistics']['previousSeason']) ?
+                Markup::create(
+                  $item['legendStatistics']['previousSeason']['id']. '<br />🏆'.
+                  $item['legendStatistics']['previousSeason']['trophies']. '<br />🚩'.
+                  $item['legendStatistics']['previousSeason']['rank']
+                ) : '';
+              $row[] = [
+                'data' => $data,
+                'nowrap' => 'nowrap',
+              ];
+              break;
+
           default:
             $row[] = isset($item[$field]) ? $item[$field] : '';
         }

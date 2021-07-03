@@ -63,7 +63,7 @@ class ClanController extends ControllerBase {
     $id = 0;
     $storage = $this->entityTypeManager()->getStorage('clashofclans_clan');
     $query = $storage->getQuery();
-    $query -> condition('field_clan_tag', $tag);
+    $query -> condition('clan_tag', $tag);
     $ids = $query->execute();
     if ($ids) { //entity exists.
       $id = current($ids);
@@ -75,7 +75,7 @@ class ClanController extends ControllerBase {
         $entity = $storage->create([
           'title' => $data['name'],
           'description' => $data['description'],
-          'field_clan_tag' => $data['tag'],
+          'clan_tag' => $data['tag'],
           'uid' => 1,
         ]);
         $entity->save();
@@ -111,6 +111,7 @@ class ClanController extends ControllerBase {
           'defenseWins' => 'defenseWins',
           'legendTrophies' => 'legendTrophies',
           'Best season' => 'bestSeason',
+          'Previous season' => 'previousSeason',
           'versusTrophies'  => 'versusTrophies',
           'trophies'  => 'trophies',
         ];

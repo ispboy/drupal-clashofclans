@@ -8,6 +8,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans_api\Client;
 use Drupal\clashofclans_api\Render;
+use Drupal\clashofclans_api\Player;
 
 /**
  * Example Extra field Display.
@@ -17,13 +18,14 @@ use Drupal\clashofclans_api\Render;
  *   label = @Translation("Live data"),
  *   description = @Translation("The real-time data of the player."),
  *   bundles = {
- *     "user.user",
+ *     "clashofclans_player.clashofclans_player",
  *   }
  * )
  */
 class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginInterface {
 
   protected $client;
+  protected $player;
 
   /**
    * Constructs a ExtraFieldDisplayFormattedBase object.
@@ -35,10 +37,11 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Client $client) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Client $client, Player $player) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->client = $client;
+    $this->player = $player;
   }
 
   /**
@@ -47,7 +50,8 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration, $plugin_id, $plugin_definition,
-      $container->get('clashofclans_api.client')
+      $container->get('clashofclans_api.client'),
+      $container->get('clashofclans_api.player')
     );
   }
 
@@ -55,7 +59,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function view(ContentEntityInterface $entity) {
-    $tag = $entity->get('field_player_tag')->getString();
+    $tag = $entity->get('player_tag')->getString();
     // $changed = $entity->get('changed')->getString();
     // dpm(date('Y-m-d H:i:s', $changed));
     $url = 'players/'. urlencode($tag);
@@ -74,48 +78,15 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
         '#player' => $data,
       ];
 
-      $this->checkEntity($data, $entity);
+      if ($this->player->setLegendStatistics($data, $entity)) {
+        $entity->save();
+        \Drupal::messenger()->addStatus(t('Player data updated.'));
+      }
       $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
 
     }
 
     return $build;
-  }
-
-  private function checkEntity($data, ContentEntityInterface $entity) {
-    $items = [];
-
-    if (isset($data['legendStatistics']['bestSeason']['id'])) {
-      $timestamp = strtotime($data['legendStatistics']['bestSeason']['id']);
-      $date = date('Y-m-d', $timestamp);
-      $items['field_best_season'] = $date;
-    }
-
-    if (isset($data['legendStatistics']['legendTrophies'])) {
-      $items['field_legend_trophies'] = $data['legendStatistics']['legendTrophies'];
-    }
-
-    if (isset($data['bestTrophies'])) {
-      $items['field_best_trophies'] = $data['bestTrophies'];
-    }
-
-    $count = 0; //Count changes
-    foreach ($items as $key => $item) {
-      $val = $entity->get($key)->getString();
-      if (strcmp($val, $item)) {
-        $entity->set($key, $item);
-        if ($key == 'field_best_season') {
-          $entity->set('field_best_season_rank', $data['legendStatistics']['bestSeason']['rank']);
-          $entity->set('field_best_season_trophies', $data['legendStatistics']['bestSeason']['trophies']);
-        }
-        $count ++;
-      }
-    }
-    if ($count) {
-      $entity->save();
-      \Drupal::messenger()->addStatus(t('Player data updated.'));
-    }
-
   }
 
 }

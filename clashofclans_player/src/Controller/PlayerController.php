@@ -26,53 +26,50 @@ class PlayerController extends ControllerBase {
       );
   }
 
-  public function userTitle(\Drupal\user\UserInterface $user = NULL) {
-    $result = '';
-    if ($user) {
-      $name = $user->get('field_player_name')->getString();
-      if ($name) {
-        $result = [
-          '#markup' => $name,
-          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
-        ];
-      } else {
-        $result = [
-          '#markup' => $user->getDisplayName(),
-          '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
-        ];
-      }
-    }
+  public function setTitle($tag) {
+    $title = $tag;  //provide default title, if not found.
+    $url = 'players/'. urlencode($tag);
+    $data = $this->client->get($url);
 
-    return $result;
+    if (isset($data['name'])) {
+      $title = $data['name'];
+    }
+    return $title;
   }
+
+  // public function userTitle(\Drupal\user\UserInterface $user = NULL) {
+  //   $result = '';
+  //   if ($user) {
+  //     $name = $user->get('field_player_name')->getString();
+  //     if ($name) {
+  //       $result = [
+  //         '#markup' => $name,
+  //         '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+  //       ];
+  //     } else {
+  //       $result = [
+  //         '#markup' => $user->getDisplayName(),
+  //         '#allowed_tags' => \Drupal\Component\Utility\Xss::getHtmlTagList(),
+  //       ];
+  //     }
+  //   }
+  //
+  //   return $result;
+  // }
 
   /**
    * Builds the response.
    */
   public function tag($tag) {
-    $route = 'entity.user.canonical';
+    $route = 'entity.clashofclans_player.canonical';
 
-    $id = $this->player->getUserId($tag);
+    $id = $this->player->getEntityId($tag);
     if ($id) {
-      return $this->redirect($route, ['user' => $id]);
+      return $this->redirect($route, ['clashofclans_player' => $id]);
+    } else {
+      $build['content'] = ['#markup' => $this->t('No results.')];
+      return $build;
     }
-
-    $build['content'] = [
-      '#markup' => $this->t('Not found!'),
-    ];
-
-    return $build;
-
-  }
-
-  /**
-   * Builds the response.
-   */
-  public function verifyToken($tag) {
-
-    $build['content'] = ['#markup' => $this->t('No results.')];
-
-    return $build;
 
   }
 

@@ -185,6 +185,22 @@ class ClashofclansClan extends ContentEntityBase implements ClashofclansClanInte
       ])
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['clan_tag'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Clan tag'))
+      ->setDescription(t('The tag of the clan.'))
+      ->setSetting('max_length', 32)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 5,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'string',
+        'label' => 'above',
+        'weight' => 5,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['description'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Description'))
       ->setDescription(t('A description of the clan.'))

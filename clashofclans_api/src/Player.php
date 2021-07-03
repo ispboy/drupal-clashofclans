@@ -1,41 +1,39 @@
 <?php
 namespace Drupal\clashofclans_api;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Language\LanguageManager;
 use Drupal\clashofclans_api\Client;
 
 class Player {
   protected $client;
-  protected $languageManager;
   protected $entityTypeManager;
 
   public function __construct(
     Client $client,
     EntityTypeManagerInterface $entityTypeManager,
-    LanguageManager $languageManager
   ) {
       $this->client = $client;
       $this->entityTypeManager = $entityTypeManager;
-      $this->languageManager = $languageManager;
   }
 
   public static function create(ContainerInterface $container) {
       return new static(
         $container->get('clashofclans_api.client'),
         $container->get('entity_type.manager'),
-        $container->get('language_manager')
       );
   }
 
+  public function getEntityTypeManager() {
+    return $this->entityTypeManager;
+  }
+
   /**
-  * Get uid or create User if not exists.
-  * Return uid.
+  * Get or create/update
   **/
-  public function getUserId($tag) {
+  public function getEntityId($tag) {
     $id = 0;
-    $storage = $this->entityTypeManager->getStorage('user');
+    $storage = $this->entityTypeManager->getStorage('clashofclans_player');
     $query = $storage->getQuery();
-    $query -> condition('field_player_tag', $tag);
+    $query -> condition('player_tag', $tag);
     $ids = $query->execute();
     if ($ids) { //entity exists.
       $id = current($ids);
@@ -43,46 +41,81 @@ class Player {
       $url = 'players/'. urlencode($tag);
       $data = $this->client->get($url);
       // dpm(array_keys($data));
-      if (isset($data['name'])) {
-        $language = $this->languageManager->getCurrentLanguage()->getId();
-        $user = $storage->create();
-
-        $username = ltrim($tag, '#');
-        $mail = $username. '@null.com';
-        // Mandatory.
-        $user->setPassword(user_password());
-        $user->enforceIsNew();
-        $user->setEmail($mail);
-        $user->setUsername($username);
-
-        // Optional.
-        $user->set('init', $mail);
-        $user->set('langcode', $language);
-        $user->set('preferred_langcode', $language);
-        $user->set('preferred_admin_langcode', $language);
-        $user->set('field_player_tag', $tag);
-        $user->set('field_player_name', $data['name']);
-        $user->activate();
-
-        if (isset($data['legendStatistics']['bestSeason']['id'])) {
-          $t = strtotime($data['legendStatistics']['bestSeason']['id']);
-          $d = date('Y-m-d', $t);
-          $user->set('field_best_season', $d);
-          $user->set('field_best_season_rank', $data['legendStatistics']['bestSeason']['rank']);
-          $user->set('field_best_season_trophies', $data['legendStatistics']['bestSeason']['trophies']);
-          $user->set('field_best_trophies', $data['bestTrophies']);
-          $user->set('field_legend_trophies', $data['legendStatistics']['legendTrophies']);
-        }
-
-        $user->addRole('gamer');
-
-        // Save user account.
-        $user->save();
-        $id = $user->id();
-
+      if (isset($data['tag'])) {
+        $entity = $storage->create([
+          'title' => $data['name'],
+          'player_tag' => $data['tag'],
+          'uid' => 1,
+        ]);
+        $this->setLegendStatistics($data, $entity);
+        $entity->save();
+        $id = $entity->id();
       }
     }
     return $id;
+  }
+
+  /**
+  * set legendStatistics data if outdated.
+  * return TRUE if set, or False.
+  */
+  public function setLegendStatistics($data, &$entity) {
+    $fields = [
+      'legendTrophies' => 'field_legend_trophies',
+      'bestSeason' => 'field_best_season',
+      'previousSeason' => 'field_previous_season',
+      'bestVersusSeason' => 'field_best_versus_season',
+      'previousVersusSeason' => 'field_previous_versus_season',
+    ];
+
+    $count = 0;
+    foreach ($fields as $key=>$field) {
+      if (isset($data['legendStatistics'][$key])) {
+        $value = $data['legendStatistics'][$key];
+        $type = $entity->get($field)->getFieldDefinition()->getType();
+        switch ($type) {
+          case 'clashofclans_player_season':
+            if (isset($value['id'])) {
+              $timestamp = strtotime($value['id']);
+              $date = date('Y-m-d', $timestamp);
+              $value['id'] = $date; //convert 2021-06 to 2021-06-01
+              $season = $entity->get($field)->getValue();
+              if (isset($season[0]['id'])) {
+                $date = $season[0]['id'];
+                if (strcmp($value['id'], $date)) {
+                  $entity->set($field, $value);
+                  $count ++;
+                }
+              } else {
+                $entity->set($field, $value);
+                $count ++;
+              }
+            }
+            break;
+          default:
+            $string = $entity->get($field)->getString();
+            if (strcmp($string, $value)) {
+              $entity->set($field, $value);
+              $count ++;
+            }
+        }
+      }
+    }
+
+    if (isset($data['bestTrophies'])) {
+      $bestTrophies = $data['bestTrophies'];
+      $field = 'field_best_trophies';
+      $old = $entity->get($field)->getString();
+      if (strcmp($old, $bestTrophies)) {
+        $entity->set($field, $bestTrophies);
+        $count ++;
+      }
+    }
+
+    if ($count) {
+      return TRUE;
+    }
+
   }
 
   /**

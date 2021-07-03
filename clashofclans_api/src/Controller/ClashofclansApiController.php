@@ -47,13 +47,20 @@ class ClashofclansApiController extends ControllerBase {
     // }
 
     // $tag = '#Y2QPV0YUP';
-    $tag = '#8PUCLC2JP';
+
+    $tag = '#2YUV8C8V0';
     $url = 'players/'. urlencode($tag);
-    $data = $client->get($url);
-    if (isset($data['legendStatistics']['bestSeason']['id'])) {
-      $t = strtotime($data['legendStatistics']['bestSeason']['id']);
-      $d = date('Y-m', $t);
-    }
+    $data = $this->client->get($url);
+    $player = \Drupal::service('clashofclans_api.player');
+    $id = $player->getEntityId($tag);
+    $storage = $player->getEntityTypeManager()->getStorage('clashofclans_player');
+    $entity = $storage->load(1);
+    $key = 'bestSeason';
+    // $result = $player->setLegendStatistics($key, $data, $entity);
+    $season = $entity->get('field_best_season')->getValue();
+    // $entity->save();
+    // dpm($entity->get('field_best_season')->getValue());
+    // dpm($season);
 
     $build['content'] = [
       '#type' => 'item',

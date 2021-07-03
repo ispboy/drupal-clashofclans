@@ -55,7 +55,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function view(ContentEntityInterface $entity) {
-    $tag = $entity->get('field_clan_tag')->getString();
+    $tag = $entity->get('clan_tag')->getString();
     // $changed = $entity->get('changed')->getString();
     // dpm(date('Y-m-d H:i:s', $changed));
     $url = 'clans/'. urlencode($tag);
