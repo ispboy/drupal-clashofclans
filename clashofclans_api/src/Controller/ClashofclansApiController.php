@@ -48,19 +48,19 @@ class ClashofclansApiController extends ControllerBase {
 
     // $tag = '#Y2QPV0YUP';
 
-    $tag = '#2YUV8C8V0';
-    $url = 'players/'. urlencode($tag);
-    $data = $this->client->get($url);
-    $player = \Drupal::service('clashofclans_api.player');
-    $id = $player->getEntityId($tag);
-    $storage = $player->getEntityTypeManager()->getStorage('clashofclans_player');
-    $entity = $storage->load(1);
-    $key = 'bestSeason';
-    // $result = $player->setLegendStatistics($key, $data, $entity);
-    $season = $entity->get('field_best_season')->getValue();
-    // $entity->save();
-    // dpm($entity->get('field_best_season')->getValue());
-    // dpm($season);
+    // $tag = '#2YUV8C8V0';
+    // $url = 'players/'. urlencode($tag);
+    // $data = $this->client->get($url);
+    // $player = \Drupal::service('clashofclans_api.player');
+    // $id = $player->getEntityId($tag);
+    // $storage = $player->getEntityTypeManager()->getStorage('clashofclans_player');
+    // $entity = $storage->load(1);
+    // $key = 'bestSeason';
+    // // $result = $player->setLegendStatistics($key, $data, $entity);
+    // $season = $entity->get('field_best_season')->getValue();
+    // // $entity->save();
+    // // dpm($entity->get('field_best_season')->getValue());
+    // // dpm($season);
 
     $build['content'] = [
       '#type' => 'item',
