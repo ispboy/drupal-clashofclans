@@ -69,6 +69,7 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
     $build['content'] = [
       '#theme' => 'clashofclans_clan_tag',
       '#clan' => $data,
+      '#nid' => $entity->id(),
     ];
 
     if (isset($data['location'])) {

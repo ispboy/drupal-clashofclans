@@ -4,8 +4,8 @@ namespace Drupal\clashofclans_clan\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
+use Drupal\clashofclans_api\Client;
+use Drupal\clashofclans_api\Clan;
 use Drupal\clashofclans_clan\Form\SearchForm;
 
 /**
@@ -16,25 +16,25 @@ class ClanController extends ControllerBase {
   private $client;
   private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client) {
+  public function __construct(Client $client, Clan $clan) {
       $this->client = $client;
+      $this->clan = $clan;
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('clashofclans_api.client'),
+      $container->get('clashofclans_api.clan'),
     );
   }
 
   public function setTitle($tag) {
-    $title = $tag;  //provide default title, if not found.
-    $url = 'clans/'. urlencode($tag);
-    $data = $this->client->get($url);
-
-    if (isset($data['name'])) {
-      $title = $data['name'];
+    $name = $this->clan->getName($tag);
+    if ($name) {
+      return $name;
+    } else {
+      return $tag;
     }
-    return $title;
   }
 
   /**
@@ -43,7 +43,7 @@ class ClanController extends ControllerBase {
   public function tag($tag) {
     $route = 'entity.clashofclans_clan.canonical';
 
-    $id = $this->getEntityId($tag);
+    $id = $this->clan->getEntityId($tag);
     if ($id) {
       return $this->redirect($route, ['clashofclans_clan' => $id]);
     }

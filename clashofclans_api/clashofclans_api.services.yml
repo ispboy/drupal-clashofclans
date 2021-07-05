@@ -6,3 +6,11 @@ services:
   clashofclans_api.player:
     class: Drupal\clashofclans_api\Player
     arguments: ['@clashofclans_api.client', '@entity_type.manager']
+
+  clashofclans_api.clan:
+    class: Drupal\clashofclans_api\Clan
+    arguments: ['@clashofclans_api.client', '@entity_type.manager']
+
+  clashofclans_api.leaguegroup:
+    class: Drupal\clashofclans_api\LeagueGroup
+    arguments: ['@clashofclans_api.client', '@entity_type.manager', '@clashofclans_api.clan']

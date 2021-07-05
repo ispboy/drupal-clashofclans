@@ -1,0 +1,25 @@
+status: true
+dependencies:
+  config:
+    - field.storage.leaguegroup.field_clan
+  module:
+    - clashofclans_leaguegroup
+id: leaguegroup.leaguegroup.field_clan
+field_name: field_clan
+entity_type: leaguegroup
+bundle: leaguegroup
+label: Clan
+description: 'The clans of the league group.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:clashofclans_clan'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+field_type: entity_reference

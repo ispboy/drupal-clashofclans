@@ -17,7 +17,7 @@
     <li>warLosses: {{ clan.warLosses}}</li>
     <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/warlog">{{ 'War log'|t }}</a></li>
     <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/currentwar">{{ 'Current war'|t }}</a></li>
-    <li><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}/leaguegroup">{{ 'League group'|t }}</a></li>
+    <li><a href="{{ url('<front>') }}clashofclans-clan/{{ nid }}/currentwar/leaguegroup">{{ 'League group'|t }}</a></li>
     {% endif %}
   </ul>
   <div>warLeague: {{ clan.warLeague.name}}</div>

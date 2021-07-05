@@ -185,6 +185,50 @@ class Leaguegroup extends ContentEntityBase implements LeaguegroupInterface {
       ])
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['state'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('State'))
+      ->setDescription(t('The state of the LeagueGroup.'))
+      ->setSetting('max_length', 32)
+      ->setDisplayOptions('view', [
+        'type' => 'string',
+        'label' => 'above',
+        'weight' => 5,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['season'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('Season'))
+      ->setDescription(t('The season of the LeagueGroup.'))
+      ->setSettings([
+        'datetime_type' => 'date'
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'datetime_default',
+        'weight' => 20,
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'datetime_default',
+        'label' => 'above',
+        'weight' => 6,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['data'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Data'))
+      ->setDescription(t('The data of the leaguegroup.'))
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => 10,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'text_default',
+        'label' => 'above',
+        'weight' => 7,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['description'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Description'))
       ->setDescription(t('A description of the leaguegroup.'))

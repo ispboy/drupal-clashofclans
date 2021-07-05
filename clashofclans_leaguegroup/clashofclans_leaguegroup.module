@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
-use Drupal\clashofclans_leaguegroup\LeagueGroup;
+use Drupal\clashofclans_api\LeagueGroup;
 
 /**
  * Implements hook_theme().
@@ -32,17 +32,19 @@ function clashofclans_leaguegroup_theme() {
  */
 function template_preprocess_leaguegroup(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    if ($key == 'field_data') {
-      $json = $variables['elements']['#leaguegroup']->field_data->getString();
+    if ($key == 'data') {
+      $json = $variables['elements']['#leaguegroup']->data->getString();
       $data = \Drupal\Component\Serialization\Json::decode($json);
       if ($data) {
-        $league_group = new LeagueGroup($data);
-        $league_group->execute();
-        $variables['content']['clans'] = $league_group->getClans();
-        $variables['content']['rounds'] = $league_group->getRounds();
+        $variables['data'] = $data;
+        // $league_group = new LeagueGroup($data);
+        // $league_group->execute();
+        // $variables['content']['clans'] = $league_group->getClans();
+        // $variables['content']['rounds'] = $league_group->getRounds();
       }
     } else {
       $variables['content'][$key] = $variables['elements'][$key];
+      // dpm($variables['content'][$key]);
     }
   }
 }
@@ -50,15 +52,15 @@ function template_preprocess_leaguegroup(array &$variables) {
 /**
 * hook_ENTITY_TYPE_presave
 **/
-function clashofclans_leaguegroup_leaguegroup_presave(Drupal\Core\Entity\EntityInterface $entity) {
-  $tag = $entity->get('field_clan_tag')->getString();
-  if ($tag) {
-    $tag = '#'. ltrim($tag, '#');
-    $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
-    $client = \Drupal::service('clashofclans_api.client');
-    $data = $client->get($url, 'json');
-    if ($data) {
-      $entity->get('field_data')->setValue($data);
-    }
-  }
-}
+// function clashofclans_leaguegroup_leaguegroup_presave(Drupal\Core\Entity\EntityInterface $entity) {
+//   $tag = $entity->get('field_clan_tag')->getString();
+//   if ($tag) {
+//     $tag = '#'. ltrim($tag, '#');
+//     $url = 'clans/'. urlencode($tag). '/currentwar/leaguegroup';
+//     $client = \Drupal::service('clashofclans_api.client');
+//     $data = $client->get($url, 'json');
+//     if ($data) {
+//       $entity->get('field_data')->setValue($data);
+//     }
+//   }
+// }

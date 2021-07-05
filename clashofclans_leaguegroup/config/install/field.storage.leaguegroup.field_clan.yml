@@ -1,0 +1,18 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_clan
+    - clashofclans_leaguegroup
+id: leaguegroup.field_clan
+field_name: field_clan
+entity_type: leaguegroup
+type: entity_reference
+settings:
+  target_type: clashofclans_clan
+module: core
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

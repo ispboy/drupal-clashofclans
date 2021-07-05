@@ -4,22 +4,25 @@ namespace Drupal\clashofclans_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\clashofclans_api\Link;
+use Drupal\clashofclans_api\Clan;
 /**
  * Returns responses for ClashOfClans API routes.
  */
 class ClashofclansApiController extends ControllerBase {
   private $client;
+  private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client)
+  public function __construct(\Drupal\clashofclans_api\Client $client, Clan $clan)
   {
       $this->client = $client;
+      $this->clan = $clan;
   }
 
   public static function create(ContainerInterface $container)
   {
       return new static(
         $container->get('clashofclans_api.client'),
+        $container->get('clashofclans_api.clan'),
       );
   }
 
@@ -29,38 +32,9 @@ class ClashofclansApiController extends ControllerBase {
   public function build() {
     $client = $this->client;
 
-// $test = new \Drupal\clashofclans_api\Test();
-// $test->getData('foo');
-// $test->getData('bar');
-// $test->getData('foo');
-// $test->getData('foo');
-// $test->getData('bar');
-// dpm($test);
-    // $query = \Drupal::entityTypeManager()->getStorage('user')->getQuery();
-    // $ids = $query->execute();
-    // foreach ($ids as $uid) {
-    //   $user = \Drupal\user\Entity\User::load($uid);
-    //   $old = $user->get('name')->getString();
-    //   $new = ltrim($old, '#');
-    //   $user->setUsername($new);
-    //   $user->save();
-    // }
-
-    // $tag = '#Y2QPV0YUP';
-
-    // $tag = '#2YUV8C8V0';
-    // $url = 'players/'. urlencode($tag);
-    // $data = $this->client->get($url);
-    // $player = \Drupal::service('clashofclans_api.player');
-    // $id = $player->getEntityId($tag);
-    // $storage = $player->getEntityTypeManager()->getStorage('clashofclans_player');
-    // $entity = $storage->load(1);
-    // $key = 'bestSeason';
-    // // $result = $player->setLegendStatistics($key, $data, $entity);
-    // $season = $entity->get('field_best_season')->getValue();
-    // // $entity->save();
-    // // dpm($entity->get('field_best_season')->getValue());
-    // // dpm($season);
+    $tag = '#Q09C';
+    // $name = $this->clan->getName($tag);
+    // dpm($name);
 
     $build['content'] = [
       '#type' => 'item',

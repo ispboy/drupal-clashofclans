@@ -6,5 +6,6 @@ core: 8.x
 core_version_requirement: ^8 || ^9
 dependencies:
   - clashofclans_api:clashofclans_api
+  - clashofclans_clan:clashofclans_clan
   - drupal:text
 configure: entity.leaguegroup.settings

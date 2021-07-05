@@ -5,3 +5,15 @@ entity.leaguegroup.settings:
     _title: 'LeagueGroup'
   requirements:
     _permission: 'administer leaguegroup'
+
+clashofclans_leaguegroup.current:
+  path: 'clashofclans-clan/{clashofclans_clan}/currentwar/leaguegroup'
+  defaults:
+    _controller: '\Drupal\clashofclans_leaguegroup\Controller\LeaguegroupController::currentWar'
+    _title: 'Current clan war league group'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      clashofclans_clan:
+        type: entity:clashofclans_clan
