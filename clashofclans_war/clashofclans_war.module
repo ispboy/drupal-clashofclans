@@ -12,9 +12,17 @@ use Drupal\Core\Render\Element;
  */
 function clashofclans_war_theme() {
   return [
+
     'clashofclans_war' => [
       'render element' => 'elements',
     ],
+
+    'clashofclans_war_tag' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
   ];
 }
 
@@ -41,41 +49,41 @@ function template_preprocess_clashofclans_war(array &$variables) {
 **/
 function clashofclans_war_leaguegroup_update(Drupal\Core\Entity\EntityInterface $entity) {
   // \Drupal::messenger()->addStatus(t('This is a successful message.'));
-  $json = $entity->get('field_data')->getString();
-  if ($json) {
-    $data = \Drupal\Component\Serialization\Json::decode($json);
-    if (isset($data['rounds'])) {
-      $client = \Drupal::service('clashofclans_api.client');
-      $records = [];
-      $ids = [];
-      foreach ($data['rounds'] as $round) {
-        foreach ($round['warTags'] as $tag) {
-          if ($tag != '#0') {
-            $url = 'clanwarleagues/wars/'. urlencode($tag);
-            $wardata = $client->get($url, 'json');
-            if ($wardata) {
-              $records[] = [
-                'tag' => $tag,
-                'data' => $wardata,
-              ];
-            }
-          }
-        }
-      }
-      if ($records) {
-        // do migrate.
-        $migrate_id = 'clashofclans_war';
-        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migrate_id, [
-          'source' => [
-            'plugin' => 'embedded_data',
-            'data_rows' => $records,
-            'ids' => ['tag' => ''],
-           ],
-        ]);
-        $executable = new \Drupal\migrate_tools\MigrateExecutable($migration, new \Drupal\migrate\MigrateMessage());
-        $executable->import();
-      }
-
-    }
-  }
+  // $json = $entity->get('field_data')->getString();
+  // if ($json) {
+  //   $data = \Drupal\Component\Serialization\Json::decode($json);
+  //   if (isset($data['rounds'])) {
+  //     $client = \Drupal::service('clashofclans_api.client');
+  //     $records = [];
+  //     $ids = [];
+  //     foreach ($data['rounds'] as $round) {
+  //       foreach ($round['warTags'] as $tag) {
+  //         if ($tag != '#0') {
+  //           $url = 'clanwarleagues/wars/'. urlencode($tag);
+  //           $wardata = $client->get($url, 'json');
+  //           if ($wardata) {
+  //             $records[] = [
+  //               'tag' => $tag,
+  //               'data' => $wardata,
+  //             ];
+  //           }
+  //         }
+  //       }
+  //     }
+  //     if ($records) {
+  //       // do migrate.
+  //       $migrate_id = 'clashofclans_war';
+  //       $migration = \Drupal::service('plugin.manager.migration')->createInstance($migrate_id, [
+  //         'source' => [
+  //           'plugin' => 'embedded_data',
+  //           'data_rows' => $records,
+  //           'ids' => ['tag' => ''],
+  //          ],
+  //       ]);
+  //       $executable = new \Drupal\migrate_tools\MigrateExecutable($migration, new \Drupal\migrate\MigrateMessage());
+  //       $executable->import();
+  //     }
+  //
+  //   }
+  // }
 }

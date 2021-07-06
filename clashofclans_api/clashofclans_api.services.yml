@@ -14,3 +14,7 @@ services:
   clashofclans_api.leaguegroup:
     class: Drupal\clashofclans_api\LeagueGroup
     arguments: ['@clashofclans_api.client', '@entity_type.manager', '@clashofclans_api.clan']
+
+  clashofclans_api.war:
+    class: Drupal\clashofclans_api\War
+    arguments: ['@clashofclans_api.client', '@entity_type.manager']

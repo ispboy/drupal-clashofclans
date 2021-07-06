@@ -40,7 +40,7 @@
 {% for round in data.rounds %}
 <tr>
   {% for tag in round.warTags %}
-  <td>{{ tag }}</td>
+  <td><a href="{{ url('<front>') }}clanwarleagues/wars/{{ tag|url_encode }}">{{ tag }}</a></td>
   {% endfor %}
 </tr>
 {% endfor %}

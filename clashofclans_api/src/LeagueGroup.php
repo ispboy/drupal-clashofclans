@@ -8,7 +8,6 @@ namespace Drupal\clashofclans_api;
 use Drupal\clashofclans_api\Client;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\clashofclans_api\Clan;
-use Symfony\Component\Serializer;
 
 class LeagueGroup {
   protected $client;

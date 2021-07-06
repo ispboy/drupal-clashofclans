@@ -5,3 +5,11 @@ entity.clashofclans_war.settings:
     _title: 'War'
   requirements:
     _permission: 'administer war'
+
+clashofclans_war.tag:
+  path: 'clanwarleagues/wars/{tag}'
+  defaults:
+    _controller: '\Drupal\clashofclans_war\Controller\WarController::clanWarLeagues'
+    _title: 'Clan war League'
+  requirements:
+    _permission: 'access content'

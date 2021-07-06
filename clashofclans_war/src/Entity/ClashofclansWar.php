@@ -162,6 +162,53 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
       ])
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['war_tag'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('War tag'))
+      ->setDescription(t('The tag of the war entity.'))
+      ->setSetting('max_length', 32)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['state'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('War state'))
+      ->setDescription(t('The state of the war entity.'))
+      ->setSetting('max_length', 32)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['data'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Data'))
+      ->setDescription(t('The data of the war.'))
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'text_default',
+        'label' => 'above',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Status'))
       ->setDescription(t('A boolean indicating whether the war is enabled.'))
