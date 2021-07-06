@@ -1,15 +1,7 @@
-entity.clashofclans_war.settings:
-  path: 'admin/structure/clashofclans-war'
-  defaults:
-    _form: '\Drupal\clashofclans_war\Form\ClashofclansWarSettingsForm'
-    _title: 'War'
-  requirements:
-    _permission: 'administer war'
-
 clashofclans_war.tag:
   path: 'clanwarleagues/wars/{tag}'
   defaults:
     _controller: '\Drupal\clashofclans_war\Controller\WarController::clanWarLeagues'
-    _title: 'Clan war League'
+    _title_callback: '\Drupal\clashofclans_war\Controller\WarController::clanWarLeaguesTitle'
   requirements:
-    _permission: 'access content'
+    _permission: 'view war'

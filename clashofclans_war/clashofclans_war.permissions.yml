@@ -1,5 +1,6 @@
-administer war:
-  title: 'Administer war settings'
+administer war types:
+  title: 'Administer war types'
+  description: 'Maintain the types of war entity.'
   restrict access: true
 access war overview:
   title: 'Access war overview page'

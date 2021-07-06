@@ -88,4 +88,8 @@ class Client implements ContainerInjectionInterface {
     return $this->cacheMaxAge;
   }
 
+  public function strToDatetime($str) {
+    $time_str = str_replace('.000Z', ' UTC', $str);
+    return date('Y-m-d\TH:i:s', strtotime($time_str));    
+  }
 }

@@ -1,5 +1,11 @@
-clashofclans_war.add_form:
-  route_name: entity.clashofclans_war.add_form
+clashofclans_war.type_add:
+  route_name: entity.clashofclans_war_type.add_form
+  title: 'Add war type'
+  appears_on:
+    - entity.clashofclans_war_type.collection
+
+clashofclans_war.add_page:
+  route_name: entity.clashofclans_war.add_page
   title: 'Add war'
   appears_on:
     - entity.clashofclans_war.collection

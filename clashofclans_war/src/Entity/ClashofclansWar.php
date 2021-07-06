@@ -17,6 +17,7 @@ use Drupal\user\UserInterface;
  *   id = "clashofclans_war",
  *   label = @Translation("War"),
  *   label_collection = @Translation("Wars"),
+ *   bundle_label = @Translation("War type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\clashofclans_war\ClashofclansWarListBuilder",
@@ -32,20 +33,23 @@ use Drupal\user\UserInterface;
  *     }
  *   },
  *   base_table = "clashofclans_war",
- *   admin_permission = "administer war",
+ *   admin_permission = "administer war types",
  *   entity_keys = {
  *     "id" = "id",
+ *     "bundle" = "bundle",
  *     "label" = "title",
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "add-form" = "/admin/content/clashofclans-war/add",
+ *     "add-form" = "/admin/content/clashofclans-war/add/{clashofclans_war_type}",
+ *     "add-page" = "/admin/content/clashofclans-war/add",
  *     "canonical" = "/clashofclans-war/{clashofclans_war}",
  *     "edit-form" = "/admin/content/clashofclans-war/{clashofclans_war}/edit",
  *     "delete-form" = "/admin/content/clashofclans-war/{clashofclans_war}/delete",
  *     "collection" = "/admin/content/clashofclans-war"
  *   },
- *   field_ui_base_route = "entity.clashofclans_war.settings"
+ *   bundle_entity_type = "clashofclans_war_type",
+ *   field_ui_base_route = "entity.clashofclans_war_type.edit_form"
  * )
  */
 class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterface {
@@ -145,26 +149,9 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
 
     $fields = parent::baseFieldDefinitions($entity_type);
 
-    $fields['title'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Title'))
-      ->setDescription(t('The title of the war entity.'))
-      ->setRequired(TRUE)
-      ->setSetting('max_length', 255)
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('view', TRUE);
-
-    $fields['war_tag'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('War tag'))
-      ->setDescription(t('The tag of the war entity.'))
+    $fields['tag'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('tag'))
+      ->setDescription(t('The tag of the war entity, maybe clan tag or war tag'))
       ->setSetting('max_length', 32)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
@@ -206,6 +193,41 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
         'type' => 'text_default',
         'label' => 'above',
         'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['start_time'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('Start time'))
+      ->setDescription(t('The start time of the War.'))
+      ->setSettings([
+        'datetime_type' => 'datetime'
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'datetime_default',
+        'weight' => 20,
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'datetime_default',
+        'label' => 'above',
+        'weight' => 6,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['title'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Title'))
+      ->setDescription(t('The title of the war entity.'))
+      ->setRequired(TRUE)
+      ->setSetting('max_length', 255)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
       ])
       ->setDisplayConfigurable('view', TRUE);
 
