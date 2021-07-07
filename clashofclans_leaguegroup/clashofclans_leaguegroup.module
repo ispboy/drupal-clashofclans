@@ -33,8 +33,10 @@ function clashofclans_leaguegroup_theme() {
 function template_preprocess_leaguegroup(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
     if ($key == 'data') {
-      $json = $variables['elements']['#leaguegroup']->data->getString();
+      $weight = $variables['elements'][$key]['#weight'];
+      $json = $variables['elements'][$key]['#items']->getString();
       $data = \Drupal\Component\Serialization\Json::decode($json);
+
       if ($data) {
         $variables['data'] = $data;
         // $league_group = new LeagueGroup($data);

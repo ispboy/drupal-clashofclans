@@ -8,6 +8,7 @@ namespace Drupal\clashofclans_api;
 use Drupal\clashofclans_api\Client;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\clashofclans_api\Clan;
+use Drupal\Core\Datetime\DrupalDateTime;
 
 class LeagueGroup {
   protected $client;
@@ -98,8 +99,8 @@ class LeagueGroup {
   }
 
   public function seasonToDate($season) {
-    $timestamp = strtotime($season);
-    $date = date('Y-m-d', $timestamp);
-    return $date;
+    $season .= ' UTC';
+    $datetime = DrupalDateTime::createFromTimestamp(strtotime($season), 'UTC');
+    return $datetime->format("Y-m-d");
   }
 }

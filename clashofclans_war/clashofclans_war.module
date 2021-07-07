@@ -15,6 +15,13 @@ function clashofclans_war_theme() {
     'clashofclans_war' => [
       'render element' => 'elements',
     ],
+
+    'clashofclans_war_data' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
   ];
 }
 
@@ -31,6 +38,18 @@ function clashofclans_war_theme() {
  */
 function template_preprocess_clashofclans_war(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
+    if ($key == 'data') {
+      $weight = $variables['elements'][$key]['#weight'];
+      $json = $variables['elements'][$key]['#items']->getString();
+      $data = \Drupal\Component\Serialization\Json::decode($json);
+      $build = [
+        '#theme' => 'clashofclans_war_data',
+        '#data' => $data,
+        '#weight' => $weight,
+      ];
+      $variables['content']['data'] = $build;
+    } else {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
   }
 }

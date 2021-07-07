@@ -10,8 +10,7 @@ use Drupal\clashofclans_api\War;
  * Returns responses for ClashOfClans Clan routes.
  */
 class WarController extends ControllerBase {
-  private $war;
-  private $entity;
+  protected $war;
 
   public function __construct(War $war) {
       $this->war = $war;
@@ -24,23 +23,19 @@ class WarController extends ControllerBase {
   }
 
   public function clanWarLeaguesTitle($tag) {
-    if (!$this->entity) {
-      $this->entity = $this->war->getEntity($tag, 'league_war');
-    }
-    if ($this->entity) {
-      return $this->entity->get('title')->getString();
+    $entity = $this->war->getEntity($tag, 'league_war');
+    if ($entity) {
+      return $entity->get('title')->getString();
     } else {
       return $tag;
     }
   }
 
   public function clanWarLeagues($tag) {
-    if (!$this->entity) {
-      $this->entity = $this->war->getEntity($tag, 'league_war');
-    }
-    if ($this->entity) {
+    $entity = $this->war->getEntity($tag, 'league_war');
+    if ($entity) {
       $view_builder = $this->entityTypeManager()->getViewBuilder('clashofclans_war');
-      return $view_builder->view($this->entity);
+      return $view_builder->view($entity);
     } else {
       return $build['content'] = ['#markup' => $this->t('No results.')];
     }

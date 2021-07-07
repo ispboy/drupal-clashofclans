@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\RequestException;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Datetime\DrupalDateTime;
 
 class Client implements ContainerInjectionInterface {
 
@@ -90,6 +91,7 @@ class Client implements ContainerInjectionInterface {
 
   public function strToDatetime($str) {
     $time_str = str_replace('.000Z', ' UTC', $str);
-    return date('Y-m-d\TH:i:s', strtotime($time_str));    
+    $datetime = DrupalDateTime::createFromTimestamp(strtotime($time_str), 'UTC');
+    return $datetime->format("Y-m-d\TH:i:s");
   }
 }

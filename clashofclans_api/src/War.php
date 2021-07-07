@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class War {
   private $client;
   private $entityTypeManager;
-  private $data;
+  private $entities;  //entities[$tag.$type]
 
   public function __construct(Client $client, EntityTypeManagerInterface $entityTypeManager) {
     $this->client = $client;
@@ -26,6 +26,13 @@ class War {
   }
 
   public function getEntity($tag, $type='clan_war') {
+    if (!isset($this->entities[$tag.$type])) {
+      $this->connect($tag, $type);
+    }
+    return $this->entities[$tag.$type];
+  }
+
+  public function connect($tag, $type='clan_war') {
     $urls = [
       'clan_war' => 'clans/'. urlencode($tag). '/currentwar',
       'league_war' => 'clanwarleagues/wars/'. urlencode($tag),
@@ -40,8 +47,9 @@ class War {
         $query -> condition('bundle', $type);
         $query -> condition('tag', $tag);
         $start_time = $this->client->strToDatetime($data['startTime']);
+        dpm($data['startTime']);
+        dpm($start_time);
         if ($type == 'clan_war') {
-        // if ($type == 'league_war') {
           $query -> condition('start_time', $start_time);
         }
         $ids = $query->execute();
@@ -49,10 +57,10 @@ class War {
           $entity = $storage->load(current($ids));
           // $entity->set('start_time', $start_time);
           // $entity->save();
-          return $entity;
+          $this->entities[$tag.$type] = $entity;
         } else {
           $title = implode(' ', [
-            $data['clan']['name'], 'vs', $data['opponent']['name'], '(', $start_time, ')'
+            $data['clan']['name'], 'vs', $data['opponent']['name']
           ]);
           $entity = $storage->create([
             'title' => $title,
@@ -64,25 +72,10 @@ class War {
             'uid' => 1,
           ]);
           $entity->save();
-          return $entity;
+          $this->entities[$tag.$type] = $entity;
         }
       }
     }
   }
-
-  public function clanWarLeagues($tag) { //get clan war Leagues' war data
-    $url = 'clanwarleagues/wars/'. urlencode($tag);
-    $data = $this->client->get($url);
-    if (isset($data['state'])) {
-      $this->data = $data;
-    } else {
-      $this->data = NULL;
-    }
-  }
-
-  public function getData() {
-    return $this->data;
-  }
-
 
 }
