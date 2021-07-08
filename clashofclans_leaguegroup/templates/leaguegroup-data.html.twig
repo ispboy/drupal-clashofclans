@@ -1,0 +1,61 @@
+<table><caption>Clans</caption>
+{% for clan in data.clans %}
+<tr>
+<td>
+  <div><img src="{{ clan.badgeUrls.small }}" width="70" height="70" /></div>
+  <div><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}">{{ clan.name }}</a></div>
+</td>
+<td>
+  <ul class="links inline">
+  {% for player in clan.members %}
+    <li><a href="{{ url('<front>') }}clashofclans-player/tag/{{ player.tag|url_encode }}">{{ player.name }}</a></li>
+  {% endfor %}
+  </ul>
+</td>
+<td style="font-size: large;">
+  {{ clan.stars }}⭐
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<table><caption>Rounds</caption>
+{% for i,round in data.rounds %}
+<tr><td colspan="3" style="text-align: center"><h3 style="font-size: xx-large;">Round {{ i+1 }}</h3></td></tr>
+  {% for tag in round.warTags %}
+    {% if tag != '#0' %}
+    {% set war = data.wars[tag] %}
+    <tr>
+      <td style="text-align: right">
+        {% if war.clan.result == 'win' %}
+          <span style="font-size: large; color: red">{{ war.clan.result }}</span>
+        {% endif %}
+        <img width="70" height="70" src="{{ war.clan.badgeUrls.small }}" />
+        <h3><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.clan.tag|url_encode }}">{{ war.clan.name }}</a>
+        </h3>
+      </td>
+      <td style="text-align: center" nowrap>
+        <div style="font-size: large;">
+          {{ war.clan.stars }} ⭐ {{ war.opponent.stars }}
+        </div>
+        <div>teamSize: {{ war.teamSize }}</div>
+        <div>
+          ⚔️{{ war.clan.attacks }}
+          <a href="{{ url('<front>') }}clanwarleagues/wars/{{ tag|url_encode }}">{{ war.state }}</a> 
+          ⚔️{{ war.opponent.attacks }}
+        </div>
+        <div>{{ war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</div>
+      </td>
+      <td style="text-align: left">
+        <img width="70" height="70" src="{{ war.opponent.badgeUrls.small }}" />
+        {% if war.opponent.result == 'win' %}
+          <span style="font-size: large; color: red">{{ war.opponent.result }}</span>
+        {% endif %}
+        <h3><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ war.opponent.tag|url_encode }}">{{ war.opponent.name }}</a>
+        </h3>
+      </td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+</table>

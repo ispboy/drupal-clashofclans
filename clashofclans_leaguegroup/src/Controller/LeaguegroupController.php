@@ -25,14 +25,31 @@ class LeaguegroupController extends ControllerBase {
 
   public function currentWar(EntityInterface $clashofclans_clan) {
     $tag = $clashofclans_clan->get('clan_tag')->getString();
-    $entity = $this->leaguegroup->getEntity($tag);
+    $data = $this->leaguegroup->fetchData($tag);
+    if ($data) {
+      if ($data['state'] == 'warEnded') {
+      // if ($data['state'] == 'inWar') {
+        $id = $this->leaguegroup->getEntityId($tag, $data);
+        if (!$id) {
+          $title = $clashofclans_clan->get('title')->getString();
+          $id = $this->leaguegroup->createEntity($data, $title);
+        }
+        $route = 'entity.leaguegroup.canonical';
+        return $this->redirect($route, ['leaguegroup' => $id]);
 
-    if ($entity) {
-      $view_builder = $this->entityTypeManager()->getViewBuilder('leaguegroup');
-      return $view_builder->view($entity);
+      } else {
+        $data = $this->leaguegroup->processData($data);
+        $build['content'] = [
+          '#theme' => 'leaguegroup_data',
+          '#data' => $data,
+        ];
+      }
     } else {
-      return $build['content'] = ['#markup' => $this->t('No results.')];
+      $build['content'] = ['#markup' => $this->t('No results.')];
     }
+
+    $build['#cache']['max-age'] = $this->leaguegroup->getCacheMaxAge();
+    return $build;
   }
 
 }

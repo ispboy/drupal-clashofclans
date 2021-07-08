@@ -165,10 +165,9 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
       ])
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['state'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('War state'))
-      ->setDescription(t('The state of the war entity.'))
-      ->setSetting('max_length', 32)
+    $fields['team_size'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Team size'))
+      ->setDescription(t('The team size of the war entity'))
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => 0,
@@ -176,7 +175,7 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayOptions('view', [
         'label' => 'above',
-        'type' => 'string',
+        'type' => 'number_integer',
         'weight' => 0,
       ])
       ->setDisplayConfigurable('view', TRUE);
@@ -196,9 +195,9 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
       ])
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['start_time'] = BaseFieldDefinition::create('datetime')
-      ->setLabel(t('Start time'))
-      ->setDescription(t('The start time of the War.'))
+    $fields['end_time'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('End time'))
+      ->setDescription(t('The end time of the War.'))
       ->setSettings([
         'datetime_type' => 'datetime'
       ])
@@ -287,6 +286,48 @@ class ClashofclansWar extends ContentEntityBase implements ClashofclansWarInterf
         'label' => 'above',
         'type' => 'author',
         'weight' => 15,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['clan'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Clan'))
+      ->setDescription(t('The entity ID of the war clan.'))
+      ->setSetting('target_type', 'clashofclans_clan')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => 60,
+          'placeholder' => '',
+        ],
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'entity_reference_label',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['opponent'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Opponent'))
+      ->setDescription(t('The entity ID of the war opponent.'))
+      ->setSetting('target_type', 'clashofclans_clan')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => 60,
+          'placeholder' => '',
+        ],
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'entity_reference_label',
+        'weight' => 0,
       ])
       ->setDisplayConfigurable('view', TRUE);
 

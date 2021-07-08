@@ -13,8 +13,8 @@ services:
 
   clashofclans_api.leaguegroup:
     class: Drupal\clashofclans_api\LeagueGroup
-    arguments: ['@clashofclans_api.client', '@entity_type.manager', '@clashofclans_api.clan']
+    arguments: ['@clashofclans_api.client', '@entity_type.manager', '@clashofclans_api.clan', '@clashofclans_api.war']
 
   clashofclans_api.war:
     class: Drupal\clashofclans_api\War
-    arguments: ['@clashofclans_api.client', '@entity_type.manager']
+    arguments: ['@clashofclans_api.client', '@clashofclans_api.clan', '@entity_type.manager']

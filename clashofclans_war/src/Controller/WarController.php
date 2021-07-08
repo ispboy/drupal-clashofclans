@@ -23,9 +23,9 @@ class WarController extends ControllerBase {
   }
 
   public function clanWarLeaguesTitle($tag) {
-    $entity = $this->war->getEntity($tag, 'league_war');
-    if ($entity) {
-      return $entity->get('title')->getString();
+    $title = $this->war->getTitle($tag, 'league_war');
+    if ($title) {
+      return $title;
     } else {
       return $tag;
     }
@@ -34,11 +34,22 @@ class WarController extends ControllerBase {
   public function clanWarLeagues($tag) {
     $entity = $this->war->getEntity($tag, 'league_war');
     if ($entity) {
-      $view_builder = $this->entityTypeManager()->getViewBuilder('clashofclans_war');
-      return $view_builder->view($entity);
-    } else {
-      return $build['content'] = ['#markup' => $this->t('No results.')];
+      $route = 'entity.clashofclans_war.canonical';
+      return $this->redirect($route, ['clashofclans_war' => $entity->id()]);
     }
+    
+    $data = $this->war->getData($tag, 'league_war');
+    if ($data) {
+      $build['content'] = [
+        '#theme' => 'clashofclans_war_data',
+        '#data' => $data,
+      ];
+    } else {
+      $build['content'] = ['#markup' => $this->t('No results.')];
+    }
+
+    $build['#cache']['max-age'] = $this->war->getCacheMaxAge();
+    return $build;
   }
 
 }

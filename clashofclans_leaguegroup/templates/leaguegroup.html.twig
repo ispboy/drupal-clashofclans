@@ -18,32 +18,4 @@
   {% if content %}
     {{- content -}}
   {% endif %}
-<table><caption>Clans</caption>
-{% for clan in data.clans %}
-<tr>
-<td>
-  <div><img src="{{ clan.badgeUrls.small }}" width="70" height="70" /></div>
-  <div><a href="{{ url('<front>') }}clashofclans-clan/tag/{{ clan.tag|url_encode }}">{{ clan.name }}</a></div>
-</td>
-<td>
-  <ul class="links inline">
-  {% for player in clan.members %}
-    <li><a href="{{ url('<front>') }}clashofclans-player/tag/{{ player.tag|url_encode }}">{{ player.name }}</a></li>
-  {% endfor %}
-  </ul>
-</td>
-</tr>
-{% endfor %}
-</table>
-
-<table><caption>Rounds</caption>
-{% for round in data.rounds %}
-<tr>
-  {% for tag in round.warTags %}
-  <td><a href="{{ url('<front>') }}clanwarleagues/wars/{{ tag|url_encode }}">{{ tag }}</a></td>
-  {% endfor %}
-</tr>
-{% endfor %}
-</table>
-
 </article>

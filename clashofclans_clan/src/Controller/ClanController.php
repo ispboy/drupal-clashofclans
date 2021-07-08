@@ -41,10 +41,9 @@ class ClanController extends ControllerBase {
    * Builds the response.
    */
   public function tag($tag) {
-    $route = 'entity.clashofclans_clan.canonical';
-
     $id = $this->clan->getEntityId($tag);
     if ($id) {
+      $route = 'entity.clashofclans_clan.canonical';
       return $this->redirect($route, ['clashofclans_clan' => $id]);
     }
 
