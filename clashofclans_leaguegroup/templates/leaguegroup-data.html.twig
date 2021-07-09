@@ -1,3 +1,4 @@
+<p><strong>State:</strong> {{ data.state }}</p>
 <table><caption>Clans</caption>
 {% for clan in data.clans %}
 <tr>
@@ -41,7 +42,7 @@
         <div>teamSize: {{ war.teamSize }}</div>
         <div>
           ⚔️{{ war.clan.attacks }}
-          <a href="{{ url('<front>') }}clanwarleagues/wars/{{ tag|url_encode }}">{{ war.state }}</a> 
+          <a href="{{ url('<front>') }}clanwarleagues/wars/{{ tag|url_encode }}">{{ war.state }}</a>
           ⚔️{{ war.opponent.attacks }}
         </div>
         <div>{{ war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</div>
