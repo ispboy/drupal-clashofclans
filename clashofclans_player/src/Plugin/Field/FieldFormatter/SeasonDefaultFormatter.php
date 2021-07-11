@@ -34,6 +34,17 @@ class SeasonDefaultFormatter extends FormatterBase {
         $timestamp = $date->getTimestamp();
         $formatted_date = $date_formatter->format($timestamp, 'html_month');
         $iso_date = $date_formatter->format($timestamp, 'custom', 'Y-m-d\TH:i:s') . 'Z';
+
+        if ($item->rank) {
+          $element[$delta]['rank'] = [
+            // '#type' => 'item',
+            '#title' => $this->t('Rank'),
+            '#prefix' => '<div>🧍‍♂️',
+            '#markup' => $item->rank,
+            '#postfix' => '</div>',
+          ];
+        }
+
         $element[$delta]['id'] = [
           // '#type' => 'item',
           '#title' => $this->t('ID'),
@@ -49,6 +60,8 @@ class SeasonDefaultFormatter extends FormatterBase {
                 'timezone',
               ],
             ],
+            '#prefix' => '<div>🗓',
+            '#postfix' => '</div>',
           ],
         ];
       }
@@ -59,16 +72,6 @@ class SeasonDefaultFormatter extends FormatterBase {
           '#title' => $this->t('Trophies'),
           '#prefix' => '<div>🏆',
           '#markup' => $item->trophies,
-          '#postfix' => '</div>',
-        ];
-      }
-
-      if ($item->rank) {
-        $element[$delta]['rank'] = [
-          // '#type' => 'item',
-          '#title' => $this->t('Rank'),
-          '#prefix' => '<div>🚩',
-          '#markup' => $item->rank,
           '#postfix' => '</div>',
         ];
       }

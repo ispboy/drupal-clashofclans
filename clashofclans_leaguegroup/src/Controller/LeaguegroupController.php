@@ -27,7 +27,7 @@ class LeaguegroupController extends ControllerBase {
     $tag = $clashofclans_clan->get('clan_tag')->getString();
     $data = $this->leaguegroup->fetchData($tag);
     if ($data) {
-      if ($data['state'] == 'warEnded') {
+      if ($data['state'] == 'ended') {
       // if ($data['state'] == 'inWar') {
         $id = $this->leaguegroup->getEntityId($tag, $data);
         if (!$id) {

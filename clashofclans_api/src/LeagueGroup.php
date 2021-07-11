@@ -64,7 +64,7 @@ class LeagueGroup {
   }
 
   public function createEntity($data, $title) {
-    $title .= '('. $data['season']. ')';
+    $title .= ' ('. $data['season']. ')';
     $season = $this->seasonToDate($data['season']);
     $data = $this->processdata($data);
 

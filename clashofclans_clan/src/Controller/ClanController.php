@@ -101,17 +101,16 @@ class ClanController extends ControllerBase {
         $fields = [
           'Rank' => 'clanRank',
           'league' => 'league',
-          'expLevel' => 'expLevel',
+          'exp' => 'expLevel',
           'Name'  => 'name',
           // 'role' => 'role',
           // 'donations' => 'donations',
           // 'Received' => 'donationsReceived',
-          'attackWins' => 'attackWins',
-          'defenseWins' => 'defenseWins',
-          'legendTrophies' => 'legendTrophies',
+          'attack Wins' => 'attackWins',
+          'defense Wins' => 'defenseWins',
+          'legend Trophies' => 'legendTrophies',
           'Best season' => 'bestSeason',
           'Previous season' => 'previousSeason',
-          'versusTrophies'  => 'versusTrophies',
           'trophies'  => 'trophies',
         ];
         $build['content'] = \Drupal\clashofclans_api\Render::players($members, $fields);
