@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans_api\Client;
 use Drupal\clashofclans_api\Clan;
 use Drupal\clashofclans_clan\Form\SearchForm;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Returns responses for ClashOfClans Clan routes.
@@ -93,6 +94,10 @@ class ClanController extends ControllerBase {
     ];
 
     $url = 'clans/' . urlencode($tag). '/members';
+    if ($nojs == 'json') {
+      $data = $this->client->get($url, 'json');
+      return new Response($data);
+    }
     $data = $this->client->get($url);
 
     if (isset($data['items'])) {

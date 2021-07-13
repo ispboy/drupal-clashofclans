@@ -37,7 +37,6 @@ use Drupal\user\UserInterface;
  *   admin_permission = "administer location",
  *   entity_keys = {
  *     "id" = "id",
- *     "langcode" = "langcode",
  *     "label" = "title",
  *     "uuid" = "uuid"
  *   },
