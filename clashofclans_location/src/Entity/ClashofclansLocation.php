@@ -32,8 +32,6 @@ use Drupal\user\UserInterface;
  *     }
  *   },
  *   base_table = "clashofclans_location",
- *   data_table = "clashofclans_location_field_data",
- *   translatable = TRUE,
  *   admin_permission = "administer location",
  *   entity_keys = {
  *     "id" = "id",
