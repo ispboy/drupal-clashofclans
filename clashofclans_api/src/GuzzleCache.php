@@ -1,14 +1,14 @@
 <?php
-
 namespace Drupal\clashofclans_api;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Strategy\PrivateCacheStrategy;
+use Drupal\guzzle_cache\DrupalGuzzleCache;
 use GuzzleHttp\Exception\RequestException;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Datetime\DrupalDateTime;
 
-class Client implements ContainerInjectionInterface {
+class GuzzleCache {
 
   protected $key;
   protected $cacheMaxAge;
@@ -17,21 +17,37 @@ class Client implements ContainerInjectionInterface {
   /**
    * Class constructor.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
-    $config = $config_factory->get('clashofclans_api.settings');
+  public function __construct() {
+    // Create default HandlerStack
+    $stack = HandlerStack::create();
+
+    // Create a Drupal Guzzle cache. Its' useful to have a separate cache bin to
+    // manage independent of other cache bins. Here is how you might define such a
+    // cache bin in a *.service.yml file:
+    // cache.my_custom_http_cache_bin:
+    //   class: Drupal\Core\Cache\CacheBackendInterface
+    //   tags:
+    //     - { name: cache.bin }
+    //   factory: cache_factory:get
+    //   arguments: [my_custom_http_cache_bin]
+    $cache = new DrupalGuzzleCache(\Drupal::service('cache.clashofclans_api_http_cache_bin'));
+
+    // Push the cache to the stack.
+    $stack->push(
+      new CacheMiddleware(
+        new PrivateCacheStrategy($cache)
+      ),
+      'cache'
+    );
+
+    $config = \Drupal::config('clashofclans_api.settings');
     $this->key = $config->get('key');
     $this->cacheMaxAge = $config->get('cache_max_age');
     $base_uri = $config->get('base_uri');
     $this->httpClient = \Drupal::service('http_client_factory')->fromOptions([
       'base_uri' => $base_uri,
+      'handler' => $stack,
     ]);;
-  }
-
-  public static function create(ContainerInterface $container)
-  {
-    return new static(
-      $container->get('config.factory')
-    );
   }
 
   /**
@@ -40,18 +56,6 @@ class Client implements ContainerInjectionInterface {
    */
   public function get($url, $json = ''){
     $data = $this->request('GET', $url);
-    return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
-
-  }
-
-  /**
-   * @param $url, $json: 'json', others.
-   * @return array
-   */
-  public function post($url, $body, $json = ''){
-    $options['body'] = $body;
-    $data = $this->request('POST', $url, $options);
-
     return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
 
   }
@@ -90,15 +94,5 @@ class Client implements ContainerInjectionInterface {
     }
 
     return $data[$cid]; //json format.
-  }
-
-  public function getCacheMaxAge() {
-    return $this->cacheMaxAge;
-  }
-
-  public function strToDatetime($str) {
-    $time_str = str_replace('.000Z', ' UTC', $str);
-    $datetime = DrupalDateTime::createFromTimestamp(strtotime($time_str), 'UTC');
-    return $datetime->format("Y-m-d\TH:i:s");
   }
 }

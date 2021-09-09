@@ -1,7 +1,9 @@
 {# [module]/templates/clashofclans-clan-tag.html.twig #}
 {{ attach_library('core/drupal.ajax') }}
 <article>
-<div style="float: right">
+<div>
+  <p>{{ clan.description}}</p>
+
   <img src="{{ clan.badgeUrls.small }}" width="70" height="70" />
   <br />
   🏆{{ clan.clanPoints }}
@@ -9,7 +11,7 @@
   ⚔️{{ clan.clanVersusPoints }}
   <div>warFrequency: {{ clan.warFrequency}}</div>
   <div>Warlog:</div>
-  <ul class="links">
+  <ul class="links inline">
     <li>warWins: {{ clan.warWins}}</li>
     <li>warWinStreak: {{ clan.warWinStreak}}</li>
     {% if clan.isWarLogPublic %}
@@ -22,7 +24,6 @@
   </ul>
   <div>warLeague: {{ clan.warLeague.name}}</div>
 </div>
-<p>{{ clan.description}}</p>
 <div class="clashofclans-labels">
 {% for label in clan.labels %}
   <img title="{{ label.name }}" src="{{ label.iconUrls.small }}" width="64" height="64" />

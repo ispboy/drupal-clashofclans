@@ -1,0 +1,28 @@
+status: true
+dependencies:
+  module:
+    - user
+id: following_players
+label: 'Following Players'
+bundles: {  }
+entity_type: user
+global: false
+weight: 0
+flag_short: 'Follow this player'
+flag_long: ''
+flag_message: ''
+unflag_short: 'Unfollow this player'
+unflag_long: ''
+unflag_message: ''
+unflag_denied_text: ''
+flag_type: 'entity:user'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: true
+  show_on_form: false
+  show_contextual_link: false
+  extra_permissions:
+    owner: '0'
+  show_on_profile: false
+linkTypeConfig: {  }

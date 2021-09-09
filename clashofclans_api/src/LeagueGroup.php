@@ -96,19 +96,32 @@ class LeagueGroup {
     $data = $this->processWarResults($data);
     $data = $this->processClanStars($data, 'clan');
     $data = $this->processClanStars($data, 'opponent');
+    $data = $this->processPlayerStars($data, 'clan', 'opponent');
+    $data = $this->processPlayerStars($data, 'opponent', 'clan');
     $data = $this->sortClans($data);
 
     return $data;
   }
 
   public function processClans($data) {
-    $items = [];
+    $clans = [];
     foreach ($data['clans'] as $clan) {
       $tag = $clan['tag'];
-      $items[$tag] = $clan;
-      $items[$tag]['stars'] = 0;
+      $clans[$tag] = $clan;
+      $clans[$tag]['stars'] = 0;
+      $clans[$tag]['destructionPercentage'] = 0;
+      $members = [];
+      foreach ($clan['members'] as $player) {
+        $player_tag = $player['tag'];
+        $members[$player_tag] = $player;
+        $members[$player_tag]['stars'] = 0;
+        $members[$player_tag]['destructionPercentage'] = 0;
+        $members[$player_tag]['attacks'] = 0;
+        $members[$player_tag]['attend'] = 0;
+      }
+      $clans[$tag]['members'] = $members;
     }
-    $data['clans'] = $items;
+    $data['clans'] = $clans;
     return $data;
   }
 
@@ -180,6 +193,7 @@ class LeagueGroup {
     foreach ($data['wars'] as $war) {
       $tag = $war[$clan]['tag'];
       $data['clans'][$tag]['stars'] += intval($war[$clan]['stars']);
+      $data['clans'][$tag]['destructionPercentage'] += floatval($war[$clan]['destructionPercentage'] * intval($war['teamSize']));
       if ($war[$clan]['result'] == 'win') {
         $data['clans'][$tag]['stars'] += 10;
       }
@@ -187,14 +201,46 @@ class LeagueGroup {
     return $data;
   }
 
+  public function processPlayerStars($data, $clan = 'clan', $opponent = 'opponent') {
+    foreach ($data['wars'] as $war) {
+      $clan_tag = $war[$clan]['tag'];
+      $opponent_tag = $war[$opponent]['tag'];
+      foreach ($war[$opponent]['members'] as $player) {
+        if (isset($war['state']) && $war['state'] == 'warEnded') {
+          $player_tag = $player['tag'];
+          $data['clans'][$opponent_tag]['members'][$player_tag]['attend'] ++;
+          if (isset($player['attacks'])) {
+            $data['clans'][$opponent_tag]['members'][$player_tag]['attacks'] += count($player['attacks']);
+          }
+
+          if (isset($player['bestOpponentAttack'])) {
+            $player_tag = $player['bestOpponentAttack']['attackerTag'];
+            $stars = $player['bestOpponentAttack']['stars'];
+            $destructionPercentage = $player['bestOpponentAttack']['destructionPercentage'];
+            $data['clans'][$clan_tag]['members'][$player_tag]['stars'] += intval($stars);
+            $data['clans'][$clan_tag]['members'][$player_tag]['destructionPercentage'] += intval($destructionPercentage);
+          }
+        }
+
+      }
+    }
+    return $data;
+  }
+
   public function sortClans($data) {
     uasort($data['clans'], [$this, 'cmpClanStars']);
+    foreach ($data['clans'] as $key => $clan) {
+      uasort($data['clans'][$key]['members'], [$this, 'cmpClanStars']);
+    }
     return $data;
   }
 
   public function cmpClanStars($a, $b){
     if ($a['stars'] == $b['stars']) {
-      return 0;
+      if ($a['destructionPercentage'] == $b['destructionPercentage']) {
+        return 0;
+      }
+      return ($a['destructionPercentage'] < $b['destructionPercentage']) ? 1 : -1;
     }
     return ($a['stars'] < $b['stars']) ? 1 : -1;
   }

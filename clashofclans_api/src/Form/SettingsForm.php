@@ -54,6 +54,15 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $this->config('clashofclans_api.settings')->get('cache_max_age'),
       '#required' => TRUE,
     ];
+
+    $form['api_root'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('API root'),
+      '#description' => $this->t('custom api root of this site, e.g. "/api"'),
+      '#default_value' => $this->config('clashofclans_api.settings')->get('api_root'),
+      '#required' => TRUE,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -70,9 +79,12 @@ class SettingsForm extends ConfigFormBase {
     $this->config('clashofclans_api.settings')
       ->set('player', $form_state->getValue('player'))
       ->save();
-      $this->config('clashofclans_api.settings')
-        ->set('cache_max_age', $form_state->getValue('cache_max_age'))
-        ->save();
+    $this->config('clashofclans_api.settings')
+      ->set('cache_max_age', $form_state->getValue('cache_max_age'))
+      ->save();
+    $this->config('clashofclans_api.settings')
+      ->set('api_root', $form_state->getValue('api_root'))
+      ->save();
     parent::submitForm($form, $form_state);
   }
 

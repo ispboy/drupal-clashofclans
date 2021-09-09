@@ -1,0 +1,42 @@
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.base_layout.body
+    - field.field.node.base_layout.field_base_link
+    - field.field.node.base_layout.field_photo
+    - image.style.medium
+    - node.type.base_layout
+  module:
+    - image
+    - text
+    - user
+id: node.base_layout.teaser
+targetEntityType: node
+bundle: base_layout
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 1
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  field_photo:
+    type: image
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      image_style: medium
+      image_link: content
+    third_party_settings: {  }
+  links:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_base_link: true

@@ -16,16 +16,16 @@ function clashofclans_clan_theme() {
       'render element' => 'elements',
     ],
 
-    'clashofclans_clan_tag' => [
-      'variables' => [
-        'nid' => NULL,
-        'clan' => NULL,
-        'member_list' => NULL,
-        'location' => NULL,
-        'current_war' => NULL,
-        'league_group' => NULL,
-      ],
-    ],
+    // 'clashofclans_clan_tag' => [
+    //   'variables' => [
+    //     'nid' => NULL,
+    //     'clan' => NULL,
+    //     'member_list' => NULL,
+    //     'location' => NULL,
+    //     'current_war' => NULL,
+    //     'league_group' => NULL,
+    //   ],
+    // ],
 
     'clashofclans_clan_leaguegroup' => [
       'variables' => [
@@ -68,6 +68,28 @@ function clashofclans_clan_theme() {
  */
 function template_preprocess_clashofclans_clan(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
+    if ($key == 'extra_field_clashofclans_clan_live_data' && isset($variables['elements'][$key]['content'])) {
+      // $weight = $variables['elements'][$key]['#weight'];
+      $extra_field = $variables['elements'][$key]['content'];
+      $sub_keys = array_keys($extra_field);
+      foreach ($sub_keys as $val) {
+        $sub_key = ltrim($val, '#');
+        $variables[$sub_key] = $extra_field[$val];
+      }
+      unset($variables['elements'][$key]);
+    } else {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
   }
+
+  // if (isset($variables['member_list']) && isset($variables['data']['members'])) {
+  //   $link = \Drupal\Core\Link::fromTextAndUrl(
+  //     $variables['data']['members'],
+  //     \Drupal\Core\Url::fromRoute(
+  //       'clashofclans_clan.tag.memberlist',
+  //       ['tag' => $variables['data']['tag'], 'nojs' => 'nojs']
+  //     )
+  //   )->toString();
+  //   $variables['member_list']['#caption'] = \Drupal\Core\Render\Markup::create(t('Members'). ': '. $link);
+  // }
 }

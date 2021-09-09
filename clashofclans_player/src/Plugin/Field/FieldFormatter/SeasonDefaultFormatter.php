@@ -39,7 +39,7 @@ class SeasonDefaultFormatter extends FormatterBase {
           $element[$delta]['rank'] = [
             // '#type' => 'item',
             '#title' => $this->t('Rank'),
-            '#prefix' => '<div>🧍‍♂️',
+            '#prefix' => '<div>📌',
             '#markup' => $item->rank,
             '#postfix' => '</div>',
           ];
@@ -60,7 +60,7 @@ class SeasonDefaultFormatter extends FormatterBase {
                 'timezone',
               ],
             ],
-            '#prefix' => '<div>🗓',
+            '#prefix' => '<div>',
             '#postfix' => '</div>',
           ],
         ];

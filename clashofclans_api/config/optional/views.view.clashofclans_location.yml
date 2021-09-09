@@ -10,13 +10,13 @@ label: 'ClashOfClans Location'
 module: views
 description: ''
 tag: ''
-base_table: clashofclans_location_field_data
+base_table: clashofclans_location
 base_field: id
 display:
   default:
     display_plugin: default
     id: default
-    display_title: Master
+    display_title: Default
     position: 0
     display_options:
       access:
@@ -47,7 +47,7 @@ display:
       pager:
         type: some
         options:
-          items_per_page: 512
+          items_per_page: 1000
           offset: 0
       style:
         type: grid
@@ -65,7 +65,7 @@ display:
       fields:
         title:
           id: title
-          table: clashofclans_location_field_data
+          table: clashofclans_location
           field: title
           relationship: none
           group_type: group
@@ -130,7 +130,7 @@ display:
           plugin_id: field
       filters: {  }
       sorts: {  }
-      title: 'ClashOfClans Locations'
+      title: Location
       header: {  }
       footer: {  }
       empty: {  }
@@ -155,7 +155,7 @@ display:
       menu:
         type: normal
         title: Location
-        description: 'ClashOfClan Locations'
+        description: 'The clan location.'
         expanded: false
         parent: ''
         weight: 3

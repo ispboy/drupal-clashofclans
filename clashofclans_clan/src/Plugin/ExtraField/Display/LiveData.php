@@ -62,14 +62,15 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
     $data = $this->client->get($url);
 
     if (!isset($data['name'])) {
-      $build = ['#markup' => t('No results.')];
+      $build['#markup'] = t('No results.');
       return $build;
     }
 
     $build['content'] = [
-      '#theme' => 'clashofclans_clan_tag',
-      '#clan' => $data,
-      '#nid' => $entity->id(),
+      // '#theme' => 'clashofclans_clan_tag',
+      // '#markup' => 'Return the #data, #entity_id, #location, #member_list, #cache',
+      '#data' => $data,
+      '#entity_id' => $entity->id(),
     ];
 
     if (isset($data['location'])) {
@@ -97,10 +98,16 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
         'versusTrophies'  => 'versusTrophies',
         'trophies'  => 'trophies',
       ];
-      $build['content']['#member_list']=\Drupal\clashofclans_api\Render::players($data['memberList'], $fields);
+      $table = \Drupal\clashofclans_api\Render::players($data['memberList'], $fields);
+
+      $build['content']['#member_list'] = $table;
     }
     $build['#cache']['max-age'] = $this->client->getCacheMaxAge();
+
     $this->checkEntity($data, $entity);
+
+    $keys = array_keys($build['content']);
+    $build ['#markup'] = 'Check properties: '. implode(',', $keys);
     return $build;
   }
 

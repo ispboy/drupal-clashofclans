@@ -1,0 +1,19 @@
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_best_season
+  module:
+    - clashofclans_player
+    - user
+id: user.user.field_best_season
+field_name: field_best_season
+entity_type: user
+bundle: user
+label: 'Best Season'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: clashofclans_player_season

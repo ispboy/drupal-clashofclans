@@ -62,12 +62,15 @@ class Clans extends ExtraFieldDisplayBase implements ContainerFactoryPluginInter
         'Rank' => 'rank',
         'Badge' => 'badge',
         'Name'  => 'name',
-        'clanLevel'  => 'clanLevel',
+        'Level'  => 'clanLevel',
         'members'  => 'members',
-        'clanPoints'  => 'clanPoints',
+        'Points'  => 'clanPoints',
       ];
 
-      $build['content'] = Render::clans($data['items'], $fields);
+      $table = Render::clans($data['items'], $fields);
+      $table['#attributes']['class'][] = 'uk-table-middle';
+      $table['#attributes']['class'][] = 'uk-table-small';
+      $build['content'] = $table;
     } else {
       // $build['content'] = ['#markup' => t('No results.')];
     }

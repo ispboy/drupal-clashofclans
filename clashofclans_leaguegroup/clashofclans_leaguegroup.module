@@ -59,11 +59,11 @@ function template_preprocess_leaguegroup(array &$variables) {
 * hook_ENTITY_TYPE_presave
 * to process data of the manual input.
 **/
-// function clashofclans_leaguegroup_leaguegroup_presave(Drupal\Core\Entity\EntityInterface $entity) {
-//   $json = $entity->get('data')->getString();
-//   $data = \Drupal\Component\Serialization\Json::decode($json);
-//   $lg = \Drupal::service('clashofclans_api.leaguegroup');
-//   $data = $lg->processData($data); dpm('lg');
-//   $json = \Drupal\Component\Serialization\Json::encode($data);
-//   $entity->set('data', $json);
-// }
+function clashofclans_leaguegroup_leaguegroup_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  $json = $entity->get('data')->getString();
+  $data = \Drupal\Component\Serialization\Json::decode($json);
+  $lg = \Drupal::service('clashofclans_api.leaguegroup');
+  $data = $lg->processData($data);
+  $json = \Drupal\Component\Serialization\Json::encode($data);
+  $entity->set('data', $json);
+}

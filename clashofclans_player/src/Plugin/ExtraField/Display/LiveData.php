@@ -83,7 +83,6 @@ class LiveData extends ExtraFieldDisplayBase implements ContainerFactoryPluginIn
         \Drupal::messenger()->addStatus(t('Player data updated.'));
       }
       $build['content']['#cache']['max-age'] = $this->client->getCacheMaxAge();
-
     }
 
     return $build;

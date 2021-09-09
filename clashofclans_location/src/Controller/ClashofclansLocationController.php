@@ -43,15 +43,18 @@ class ClashofclansLocationController extends ControllerBase {
       'Rank' => 'rank',
       'League' => 'league',
       'Name'  => 'name',
-      'expLevel'  => 'expLevel',
+      'exp'  => 'expLevel',
       'Clan'  => 'clan',
-      'attackWins'  => 'attackWins',
-      'defenseWins' => 'defenseWins',
-      'trophies'  => 'trophies',
+      'attack Wins'  => 'attackWins',
+      'defense Wins' => 'defenseWins',
+      'Trophies'  => 'trophies',
     ];
 
     if (isset($data['items'])) {
-      $build = Render::players($data['items'], $fields);
+      $table = Render::players($data['items'], $fields);
+      $table['#attributes']['class'][] = 'uk-table-middle';
+      $table['#attributes']['class'][] = 'uk-table-small';
+      $build['content'] = $table;
     } else {
       $build = ['#markup' => $this->t('No results.')];
     }
@@ -65,14 +68,17 @@ class ClashofclansLocationController extends ControllerBase {
       $fields = [
         'Rank' => 'rank',
         'Badge' => 'badge',
+        'Level'  => 'clanLevel',
         'Name'  => 'name',
-        'clanLevel'  => 'clanLevel',
         'members'  => 'members',
         'Location' => 'location',
-        'clanPoints'  => 'clanPoints',
+        'Points'  => 'clanPoints',
       ];
 
-      $build['content'] = Render::clans($data['items'], $fields);
+      $table = Render::clans($data['items'], $fields);
+      $table['#attributes']['class'][] = 'uk-table-middle';
+      $table['#attributes']['class'][] = 'uk-table-small';
+      $build['content'] = $table;
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
     }

@@ -75,9 +75,9 @@ class Render {
           case 'bestSeason':
             $data = isset($item['legendStatistics']['bestSeason']) ?
               Markup::create(
-                $item['legendStatistics']['bestSeason']['id']. '<br />🏆'.
-                $item['legendStatistics']['bestSeason']['trophies']. '<br />🚩'.
-                $item['legendStatistics']['bestSeason']['rank']
+                // $item['legendStatistics']['bestSeason']['id']. '<br />🏆'.
+                // $item['legendStatistics']['bestSeason']['trophies']. '<br />📌'.
+                '📌'. $item['legendStatistics']['bestSeason']['rank']
               ) : '';
             $row[] = [
               'data' => $data,
@@ -88,9 +88,9 @@ class Render {
             case 'previousSeason':
               $data = isset($item['legendStatistics']['previousSeason']) ?
                 Markup::create(
-                  $item['legendStatistics']['previousSeason']['id']. '<br />🏆'.
-                  $item['legendStatistics']['previousSeason']['trophies']. '<br />🚩'.
-                  $item['legendStatistics']['previousSeason']['rank']
+                  // $item['legendStatistics']['previousSeason']['id']. '<br />🏆'.
+                  // $item['legendStatistics']['previousSeason']['trophies']. '<br />📌'.
+                  '📌'. $item['legendStatistics']['previousSeason']['rank']
                 ) : '';
               $row[] = [
                 'data' => $data,
@@ -106,11 +106,22 @@ class Render {
 
       $rows[] = $row;
     }
-    $header = array_keys($fields);
+
+    $header = [];
+    foreach ($fields as $key => $field) {
+      $th = [];
+      $highs = ['rank', 'clanRank', 'name', 'clanPoints', 'trophies', 'attackWins'];
+      $th['data'] = $key;
+      if (!in_array($field, $highs)) {
+        $th['class'] = [RESPONSIVE_PRIORITY_MEDIUM];
+      }
+      $header[] = $th;
+    }
     $build = [
       '#type' => 'table',
       '#attributes' => ['class' => ['clashofclans-players-table']],
-      '#sticky' => TRUE,
+      '#sticky' => FALSE,
+      '#responsive' => FALSE,
       '#header' => $header,
       '#rows' => $rows,
       '#cache' => ['max-age' => \Drupal::config('clashofclans_api.settings')->get('cache_max_age')],
@@ -139,7 +150,11 @@ class Render {
             break;
 
           case 'badge':
-            $row[] = self::image($item['badgeUrls']['small'], 64, 64);
+            $row[] = self::image($item['badgeUrls']['small'], 35, 35);
+            break;
+
+          case 'clanPoints':
+            $row[] = isset($item[$field]) ? $item[$field] : '';
             break;
 
           case 'location':
@@ -159,11 +174,21 @@ class Render {
       $rows[] = $row;
     }
 
-    $header = array_keys($fields);
+    $header = [];
+    foreach ($fields as $key => $field) {
+      $th = [];
+      $highs = ['rank', 'clanRank', 'name', 'clanPoints', 'trophies'];
+      $th['data'] = $key;
+      if (!in_array($field, $highs)) {
+        $th['class'] = [RESPONSIVE_PRIORITY_MEDIUM];
+      }
+      $header[] = $th;
+    }
 
     $build = [
       '#type' => 'table',
-      '#sticky' => TRUE,
+      '#sticky' => FALSE,
+      '#responsive' => FALSE,
       '#header' => $header,
       '#rows' => $rows,
       '#cache' => ['max-age' => \Drupal::config('clashofclans_api.settings')->get('cache_max_age')],

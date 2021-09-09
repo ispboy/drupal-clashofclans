@@ -5,6 +5,9 @@ namespace Drupal\clashofclans_api\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans_api\Clan;
+use Symfony\Component\HttpFoundation\Response;
+use Drupal\clashofclans_api\GuzzleCache;
+
 /**
  * Returns responses for ClashOfClans API routes.
  */
@@ -30,7 +33,7 @@ class ClashofclansApiController extends ControllerBase {
    * Builds the response.
    */
   public function build() {
-    $client = $this->client;
+    $client = new GuzzleCache();
 
     $tag = '#Q09C';
     // $name = $this->clan->getName($tag);
@@ -65,9 +68,9 @@ class ClashofclansApiController extends ControllerBase {
     // dpm(array_keys($data));
 
     $data = [];
-    $tag = '#Q09C';
+    $tag = '#2CVPQRL9';
     $url = 'clans/'. urlencode($tag);
-    $data = $this->client->get($url);
+    $data = $client->get($url);
     // dpm($data['memberList']['#89YLCQ0J9']);
 
     $build['debug'] = [
@@ -97,6 +100,26 @@ class ClashofclansApiController extends ControllerBase {
       // $build['#cache']['max-age'] = 5;
     }
     return $build;
+  }
+
+  public function passThrough() {
+    $root = \Drupal::config('clashofclans_api.settings')->get('api_root');
+    $url = \Drupal::request()->getRequestUri();
+    $url = str_replace($root. '/', '', $url);
+    $data = $this->client->get($url, 'json');
+    if ($data) {
+      $response = new Response();
+      $response->setContent($data);
+      $response->headers->set('Content-Type', 'application/json');
+      $response->setPublic();
+      $response->setMaxAge(60);
+      return $response;
+    } else {
+      $build['content'] = [
+        '#markup' => $this->t('No results.'),
+      ];
+      return $build;
+    }
   }
 
 }

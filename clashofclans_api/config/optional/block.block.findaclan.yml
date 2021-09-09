@@ -1,0 +1,18 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_clan
+  theme:
+    - bartik
+id: findaclan
+theme: bartik
+region: sidebar_second
+weight: -7
+provider: null
+plugin: clashofclans_clan_tag_form
+settings:
+  id: clashofclans_clan_tag_form
+  label: 'Find a clan'
+  provider: clashofclans_clan
+  label_display: visible
+visibility: {  }

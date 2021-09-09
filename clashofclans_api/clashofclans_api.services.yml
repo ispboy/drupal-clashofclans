@@ -18,3 +18,10 @@ services:
   clashofclans_api.war:
     class: Drupal\clashofclans_api\War
     arguments: ['@clashofclans_api.client', '@clashofclans_api.clan', '@entity_type.manager']
+
+  cache.clashofclans_api_http_cache_bin:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: [clashofclans_api_http_cache_bin]

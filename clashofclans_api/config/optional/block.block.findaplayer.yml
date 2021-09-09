@@ -1,0 +1,18 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_player
+  theme:
+    - bartik
+id: findaplayer
+theme: bartik
+region: sidebar_second
+weight: -6
+provider: null
+plugin: clashofclans_player_tag_form
+settings:
+  id: clashofclans_player_tag_form
+  label: 'Find a player'
+  provider: clashofclans_player
+  label_display: visible
+visibility: {  }

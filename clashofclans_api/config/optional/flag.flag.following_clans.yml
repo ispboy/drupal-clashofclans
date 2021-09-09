@@ -1,0 +1,27 @@
+status: true
+dependencies:
+  module:
+    - clashofclans_clan
+id: following_clans
+label: 'Following Clans'
+bundles: {  }
+entity_type: clashofclans_clan
+global: false
+weight: 0
+flag_short: 'Follow this clan'
+flag_long: ''
+flag_message: ''
+unflag_short: 'Unfollow this clan'
+unflag_long: ''
+unflag_message: ''
+unflag_denied_text: ''
+flag_type: 'entity:clashofclans_clan'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: true
+  show_on_form: false
+  show_contextual_link: false
+  extra_permissions:
+    owner: '0'
+linkTypeConfig: {  }

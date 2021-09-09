@@ -25,7 +25,7 @@ class ClanController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('clashofclans_api.client'),
-      $container->get('clashofclans_api.clan'),
+      $container->get('clashofclans_api.clan')
     );
   }
 
@@ -118,7 +118,11 @@ class ClanController extends ControllerBase {
           'Previous season' => 'previousSeason',
           'trophies'  => 'trophies',
         ];
-        $build['content'] = \Drupal\clashofclans_api\Render::players($members, $fields);
+        $table = \Drupal\clashofclans_api\Render::players($members, $fields);
+        $table['#attributes']['class'][] = 'uk-table-middle';
+        $table['#attributes']['class'][] = 'uk-table-small';
+
+        $build['content'] = $table;
         $build['#cache']['max-age'] = $this->client->getCacheMaxAge();
       }
     }

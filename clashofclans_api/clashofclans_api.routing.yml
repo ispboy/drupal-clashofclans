@@ -13,3 +13,6 @@ clashofclans_api.settings_form:
     _form: 'Drupal\clashofclans_api\Form\SettingsForm'
   requirements:
     _permission: 'administer clashofclans_api configuration'
+
+route_callbacks:
+  - '\Drupal\clashofclans_api\Routing\ClashofclansApiRoutes::routes'

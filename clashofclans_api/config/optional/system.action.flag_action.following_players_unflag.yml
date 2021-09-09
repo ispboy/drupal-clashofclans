@@ -1,0 +1,13 @@
+status: true
+dependencies:
+  config:
+    - flag.flag.following_players
+  module:
+    - flag
+id: flag_action.following_players_unflag
+label: 'Unfollow this player'
+type: user
+plugin: 'flag_action:following_players_unflag'
+configuration:
+  flag_id: following_players
+  flag_action: unflag

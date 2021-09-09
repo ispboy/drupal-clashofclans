@@ -1,0 +1,13 @@
+status: true
+dependencies:
+  config:
+    - flag.flag.following_clans
+  module:
+    - flag
+id: flag_action.following_clans_flag
+label: 'Follow this clan'
+type: clashofclans_clan
+plugin: 'flag_action:following_clans_flag'
+configuration:
+  flag_id: following_clans
+  flag_action: flag
