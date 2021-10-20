@@ -3,6 +3,10 @@ services:
     class: Drupal\clashofclans_api\Client
     arguments: ['@config.factory']
 
+  clashofclans_api.guzzle_cache:
+    class: Drupal\clashofclans_api\GuzzleCache
+    arguments: ['@config.factory']
+
   clashofclans_api.player:
     class: Drupal\clashofclans_api\Player
     arguments: ['@clashofclans_api.client', '@entity_type.manager']

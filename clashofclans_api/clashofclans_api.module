@@ -9,20 +9,40 @@
  * @see https://www.drupal.org/node/2217931
  */
 
- function clashofclans_api_theme($existing, $type, $theme, $path) {
-   return [
-     'clashofclans_api_sample' => [
-       'variables' => [
-         'data' => NULL,
-       ],
+function clashofclans_api_theme($existing, $type, $theme, $path) {
+  return [
+   'clashofclans_api_sample' => [
+     'variables' => [
+       'data' => NULL,
      ],
+   ],
 
-     'clashofclans_api_link' => [
-       'variables' => [
-         'title' => NULL,
-         'url' => NULL,
-       ],
+   'clashofclans_api_link' => [
+     'variables' => [
+       'title' => NULL,
+       'url' => NULL,
      ],
+   ],
 
-   ];
- }
+    'clashofclans_api__location__clans' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+    'clashofclans_api' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+  ]; // end;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+// function clashofclans_api_theme_suggestions_clashofclans_api(array $variables) {
+//   $suggestions[] = 'clashofclans_api__location';
+//   return $suggestions;
+// }

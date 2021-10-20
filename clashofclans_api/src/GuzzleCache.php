@@ -7,8 +7,11 @@ use Kevinrob\GuzzleCache\CacheMiddleware;
 use Kevinrob\GuzzleCache\Strategy\PrivateCacheStrategy;
 use Drupal\guzzle_cache\DrupalGuzzleCache;
 use GuzzleHttp\Exception\RequestException;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
-class GuzzleCache {
+class GuzzleCache implements ContainerInjectionInterface {
 
   protected $key;
   protected $cacheMaxAge;
@@ -17,7 +20,7 @@ class GuzzleCache {
   /**
    * Class constructor.
    */
-  public function __construct() {
+  public function __construct(ConfigFactoryInterface $config_factory) {
     // Create default HandlerStack
     $stack = HandlerStack::create();
 
@@ -40,7 +43,7 @@ class GuzzleCache {
       'cache'
     );
 
-    $config = \Drupal::config('clashofclans_api.settings');
+    $config = $config_factory->get('clashofclans_api.settings');
     $this->key = $config->get('key');
     $this->cacheMaxAge = $config->get('cache_max_age');
     $base_uri = $config->get('base_uri');
@@ -50,49 +53,34 @@ class GuzzleCache {
     ]);;
   }
 
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory')
+    );
+  }
+
+  /**
+   * @param $url, $options
+   * @return string
+   */
+  public function get($url, $options = [], $json = ''){
+    $options['headers']['authorization'] = 'Bearer ' . $this->key;
+    $response = $this->httpClient->get($url, $options);
+    $data = $response->getBody()->getContents();
+    return ($json == 'json') ? $data : \Drupal\Component\Serialization\Json::decode($data);
+  }
+
   /**
    * @param $url, $json: 'json', others.
    * @return array
    */
-  public function get($url, $json = ''){
-    $data = $this->request('GET', $url);
+  public function post($url, $body, $json = ''){
+    $options['body'] = $body;
+    $response = $this->httpClient->request('POST', $url, $options);
+    $data = $response->getBody()->getContents();
+
     return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
 
   }
 
-  /**
-   * @param $url, $json: 'json', others.
-   * @return array
-   */
-  public function request($method='GET', $url, $options=[]){
-    $data = &drupal_static(__FUNCTION__);
-    $cid = 'clashofclans:'. urlencode($url); //not the this->key;
-
-    if (!isset($data[$cid])) {
-
-      $data[$cid] = NULL;
-
-      if ($cache = \Drupal::cache()->get($cid)) {
-        $data[$cid] = $cache->data;
-      } else {
-        $age = $this->cacheMaxAge;
-        try {
-          $options['headers']['authorization'] = 'Bearer ' . $this->key;
-          $response = $this->httpClient->request($method, $url, $options);
-          $data[$cid] = $response->getBody()->getContents();
-          \Drupal::cache()->set($cid, $data[$cid], time() + $age);
-        }
-        catch (RequestException $error) {
-          if ($error->getCode() == 404) {
-            \Drupal::cache()->set($cid, $data[$cid], time() + $age * 10);
-          } else {
-            $logger = \Drupal::logger('ClashOfClans API Request error');
-            $logger->error($error->getMessage());
-          }
-        }
-      }
-    }
-
-    return $data[$cid]; //json format.
-  }
 }

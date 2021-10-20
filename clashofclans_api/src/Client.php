@@ -27,8 +27,7 @@ class Client implements ContainerInjectionInterface {
     ]);;
   }
 
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory')
     );

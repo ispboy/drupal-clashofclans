@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\clashofclans_api\Clan;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\clashofclans_api\GuzzleCache;
+use Drupal\Core\Link;
 
 /**
  * Returns responses for ClashOfClans API routes.
@@ -15,7 +16,7 @@ class ClashofclansApiController extends ControllerBase {
   private $client;
   private $clan;
 
-  public function __construct(\Drupal\clashofclans_api\Client $client, Clan $clan)
+  public function __construct(GuzzleCache $client, Clan $clan)
   {
       $this->client = $client;
       $this->clan = $clan;
@@ -24,7 +25,7 @@ class ClashofclansApiController extends ControllerBase {
   public static function create(ContainerInterface $container)
   {
       return new static(
-        $container->get('clashofclans_api.client'),
+        $container->get('clashofclans_api.guzzle_cache'),
         $container->get('clashofclans_api.clan'),
       );
   }
@@ -33,7 +34,7 @@ class ClashofclansApiController extends ControllerBase {
    * Builds the response.
    */
   public function build() {
-    $client = new GuzzleCache();
+    $client = $this->client;
 
     $tag = '#Q09C';
     // $name = $this->clan->getName($tag);
@@ -49,12 +50,19 @@ class ClashofclansApiController extends ControllerBase {
     ];
 
     $build['test'] = [
+      '#type' => 'item',
       '#markup' => urldecode('%25'). ' time: '. time(),
     ];
 
-    $request_time = \Drupal::time()->getCurrentTime();
-    // dpm(date('Y-m-d H:i:s', $request_time));
-
+    $items = [];
+    $items[] = Link::createFromRoute('Global clans', 'clashofclans_api.location.clans', ['locationId' => 'global']);
+    $items[] = Link::createFromRoute('Global players', 'clashofclans_api.location.players', ['locationId' => 'global']);
+    $build['links'] = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#title' => 'Useful links',
+      '#items' => $items,
+    ];
 
     // $name = '铁血团之彼泽棠棣';
     // $tag = '#22P2GP82P';
@@ -78,48 +86,59 @@ class ClashofclansApiController extends ControllerBase {
       '#data' => $data,
     ];
 
-    if (isset($data['memberList'])) {
-      $members = \Drupal\clashofclans_api\Members::getDetail($data['memberList'], $this->client, 10);
-      $fields = [
-        'Rank' => 'clanRank',
-        'league' => 'league',
-        'expLevel' => 'expLevel',
-        'Name'  => 'name',
-        'role' => 'role',
-        'donations' => 'donations',
-        'Received' => 'donationsReceived',
-        'attackWins' => 'attackWins',
-        'defenseWins' => 'defenseWins',
-        // 'legendTrophies' => 'legendTrophies',
-        'Best season' => 'bestSeason',
-        // 'versusTrophies'  => 'versusTrophies',
-        'trophies'  => 'trophies',
-      ];
-      $build['member_list'] = \Drupal\clashofclans_api\Render::players($members, $fields);
-      // $build['#cache']['max-age'] = $this->config('clashofclans_api.settings')->get('cache_max_age');
-      // $build['#cache']['max-age'] = 5;
-    }
+    // if (isset($data['memberList'])) {
+    //   $members = \Drupal\clashofclans_api\Members::getDetail($data['memberList'], $this->client, 10);
+    //   $fields = [
+    //     'Rank' => 'clanRank',
+    //     'league' => 'league',
+    //     'expLevel' => 'expLevel',
+    //     'Name'  => 'name',
+    //     'role' => 'role',
+    //     'donations' => 'donations',
+    //     'Received' => 'donationsReceived',
+    //     'attackWins' => 'attackWins',
+    //     'defenseWins' => 'defenseWins',
+    //     // 'legendTrophies' => 'legendTrophies',
+    //     'Best season' => 'bestSeason',
+    //     // 'versusTrophies'  => 'versusTrophies',
+    //     'trophies'  => 'trophies',
+    //   ];
+    //   $build['member_list'] = \Drupal\clashofclans_api\Render::players($members, $fields);
+    //   // $build['#cache']['max-age'] = $this->config('clashofclans_api.settings')->get('cache_max_age');
+    //   // $build['#cache']['max-age'] = 5;
+    // }
     return $build;
   }
 
   public function passThrough() {
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    $items = explode('.', $route_name);
+
+    $tpl = implode('__', $items);
+
     $root = \Drupal::config('clashofclans_api.settings')->get('api_root');
     $url = \Drupal::request()->getRequestUri();
     $url = str_replace($root. '/', '', $url);
-    $data = $this->client->get($url, 'json');
+    // $data = $this->client->get($url, [], 'json');
+    $data = $this->client->get($url);
     if ($data) {
-      $response = new Response();
-      $response->setContent($data);
-      $response->headers->set('Content-Type', 'application/json');
-      $response->setPublic();
-      $response->setMaxAge(60);
-      return $response;
+      // $response = new Response();
+      // $response->setContent($data);
+      // $response->headers->set('Content-Type', 'application/json');
+      // $response->setPublic();
+      // $response->setMaxAge(60);
+      // return $response;
+      $build['content'] = [
+        '#theme' => $tpl,
+        // '#theme' => 'clashofclans_api',
+        '#data' => $data,
+      ];
     } else {
       $build['content'] = [
         '#markup' => $this->t('No results.'),
       ];
-      return $build;
     }
+    return $build;
   }
 
 }
