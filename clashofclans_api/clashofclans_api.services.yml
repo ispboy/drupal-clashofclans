@@ -1,0 +1,11 @@
+services:
+  clashofclans_api.guzzle_cache:
+    class: Drupal\clashofclans_api\GuzzleCache
+    arguments: ['@config.factory']
+
+  cache.clashofclans_api_http_cache_bin:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: [clashofclans_api_http_cache_bin]

@@ -1,0 +1,14 @@
+clashofclans_api.settings_form:
+  title: ClashOfClans API
+  description: Configure ClashOfClans API.
+  parent: system.admin_config_system
+  route_name: clashofclans_api.settings_form
+  weight: 10
+
+clashofclans.example:
+  title: ClashOfClans
+  description: ClashOfClans example.
+  menu_name: main
+  route_name: clashofclans_api.example
+  weight: 10
+  
