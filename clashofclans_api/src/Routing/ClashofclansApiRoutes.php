@@ -13,28 +13,23 @@ class ClashofclansApiRoutes {
    */
   public function routes() {
     $root = \Drupal::config('clashofclans_api.settings')->get('api_root');
-    $locations = [
-      'clashofclans_api.location.clans' => '/locations/{locationId}/rankings/clans',
-      'clashofclans_api.location.players' => '/locations/{locationId}/rankings/players',
-      'clashofclans_api.location.clans_versus' => '/locations/{locationId}/rankings/clans-versus',
-      'clashofclans_api.location.players_versus' => '/locations/{locationId}/rankings/players-versus',
-    ];
+    if (!$root) {
+      $root = '/api';
+    }
     $routes = [];
 
-    foreach ($locations as $key => $val) {
-      $routes[$key] = new Route(
-        // Path to attach this route to:
-        $root . $val,
-        // Route defaults:
-        [
-          '_controller' => '\Drupal\clashofclans_api\Controller\ClashofclansApiController::passThrough',
-        ],
-        // Route requirements:
-        [
-          '_permission'  => 'access content',
-        ]
-      );
-    }
+    $routes['clashofclans_api'] = new Route(
+      $root,
+      // Route defaults:
+      [
+        '_controller' => '\Drupal\clashofclans_api\Controller\ClashofclansApiController::cutThrough',
+      ],
+      // Route requirements:
+      [
+        '_permission'  => 'access content',
+        '_csrf_token' => 'TRUE',
+      ]
+    );
 
     return $routes;
   }

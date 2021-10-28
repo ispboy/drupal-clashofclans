@@ -1,0 +1,25 @@
+<details>
+  <summary>{{ 'Detail'|t }}</summary>
+  <table>
+  <tr>
+  <th>name</th>
+  <th>stars</th>
+  <th>value</th>
+  <th>target</th>
+  <th>info</th>
+  <th>completionInfo</th>
+  <th>village</th>
+  </tr>
+  {% for item in data %}
+  <tr>
+  <td>{{ item.name }}</td>
+  <td>{{ item.stars }}</td>
+  <td>{{ item.value }}</td>
+  <td>{{ item.target }}</td>
+  <td>{{ item.info }}</td>
+  <td>{{ item.completionInfo }}</td>
+  <td>{{ item.village }}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</details>

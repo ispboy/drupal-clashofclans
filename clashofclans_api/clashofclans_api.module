@@ -8,3 +8,89 @@
  * This file is no longer required in Drupal 8.
  * @see https://www.drupal.org/node/2217931
  */
+
+function clashofclans_api_theme($existing, $type, $theme, $path) {
+  $items = [
+    'clashofclans_api' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+  ];
+
+  $keys = [
+    'location', 'badgeUrls', 'clanPoints', 'clan', 'league', 'name',
+    'warLeague', 'chatLanguage', 'labels', 'memberList', 'trophies',
+    'legendStatistics', 'heroes', 'spells', 'achievements', 'troops'
+  ];
+  foreach ($keys as $key) {
+    $id = 'clashofclans_api__'. $key;
+    $items[$id] = [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ];
+  }
+
+
+  return $items;
+}
+
+/**
+ * Prepares variables for memberList templates.
+ *
+ * Default template: clashofclans-api--memberList.html.twig.
+ *
+ * @param array $variables
+ *
+ */
+function template_preprocess_clashofclans_api__memberList(array &$variables) {
+  $data = $variables['data'];
+  $header = [
+    'clanRank' => '#',
+    'previousClanRank' => 'Prev',
+    'league' => 'League',
+    'expLevel' => 'Exp',
+    'tag' => 'Tag',
+    'name' => 'Name',
+    'role' => 'Role',
+    'donations' => 'Donated',
+    'donationsReceived' => 'Received',
+    'versusTrophies' => 'Versus',
+    'trophies' => 'Trophies',
+  ];
+  $rows = [];
+  foreach ($data as $item) {
+    $row = [];
+    foreach (array_keys($header) as $key) {
+      if ($key == 'name' && isset($item['tag'])) {
+        $link = \Drupal\Core\Link::createFromRoute($item[$key], 'clashofclans_player.tag', ['tag' => $item['tag']]);
+        $renderable = $link->toRenderable();
+      } else {
+        $renderable = [
+          '#theme' => 'clashofclans_api__'. $key,
+          '#data' => $item[$key],
+        ];
+      }
+      $row[] = \Drupal::service('renderer')->renderPlain($renderable);
+    }
+    $rows[] = $row;
+  }
+
+  $renderable = [
+    '#type' => 'table',
+    // '#responsive' => FALSE,
+    '#header' => array_values($header),
+    '#rows' => $rows,
+  ];
+  $variables['data'] = $renderable;
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ *
+ * @inheritdoc
+*/
+function clashofclans_api_local_tasks_alter(&$local_tasks) {
+  $local_tasks['entity.clashofclans_location.view']['title'] = t('Clans');
+}

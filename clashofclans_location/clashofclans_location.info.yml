@@ -1,0 +1,11 @@
+name: ClashOfClans Location
+type: module
+description: 'Provides a location entity.'
+package: Clash of Clans
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - drupal:text
+  - country:country
+  - migrate_plus:migrate_plus
+configure: entity.clashofclans_location.settings

@@ -1,0 +1,15 @@
+entity.clashofclans_clan.settings:
+  path: 'admin/structure/clashofclans-clan'
+  defaults:
+    _form: '\Drupal\clashofclans_clan\Form\ClashofclansClanSettingsForm'
+    _title: 'Clan'
+  requirements:
+    _permission: 'administer clan'
+
+clashofclans_clan.tag:
+  path: 'clashofclans-clan/tag/{tag}'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::tag'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
+  requirements:
+    _permission: 'view clan'

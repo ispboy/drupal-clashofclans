@@ -1,0 +1,5 @@
+clashofclans_clan.add_form:
+  route_name: entity.clashofclans_clan.add_form
+  title: 'Add clan'
+  appears_on:
+    - entity.clashofclans_clan.collection

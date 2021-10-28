@@ -1,0 +1,25 @@
+# Migration configuration for clashofclans_location content.
+id: clashofclans_location
+label: 'Location'
+migration_group: 'Clash of Clans'
+
+source:
+  plugin: clashofclans_location
+  track_changes: true
+
+destination:
+  # Specify the destination plugin (usually entity:entity_type).
+  plugin: 'entity:clashofclans_location'
+  default_bundle: 'clashofclans_location'
+
+process:
+  id: id
+  title: name
+  field_country: countryCode
+
+dependencies:
+  module:
+    - clashofclans_location
+  enforced:
+    module:
+      - clashofclans_location

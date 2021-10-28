@@ -1,0 +1,4 @@
+services:
+  clashofclans_clan.clan:
+    class: Drupal\clashofclans_clan\Clan
+    arguments: ['@clashofclans_api.guzzle_cache', '@entity_type.manager']

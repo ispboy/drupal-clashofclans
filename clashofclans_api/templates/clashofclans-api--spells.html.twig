@@ -1,0 +1,17 @@
+<details>
+  <summary>{{ 'Detail'|t }}</summary>
+  <table>
+  <tr>
+  <th>name</th>
+  <th>level</th>
+  <th>village</th>
+  </tr>
+  {% for item in data %}
+  <tr>
+  <td>{{ item.name }}</td>
+  <td>{{ item.level }} / {{ item.maxLevel }}</td>
+  <td>{{ item.village }}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</details>

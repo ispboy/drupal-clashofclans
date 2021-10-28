@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Provides a player entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+function clashofclans_player_theme_registry_alter(array &$theme_registry) {
+  $theme_registry['user']['template'] = 'clashofclans_player';
+  $theme_registry['user']['path'] = drupal_get_path('module', 'clashofclans_player') . '/templates';;
+
+}
+
+function clashofclans_player_preprocess_user(&$variables) {
+  $json = $variables['content']['field_data'][0]['#context']['value'];
+  unset($variables['content']['field_data']);
+
+  if ($json) {
+    $data = \Drupal\Component\Serialization\Json::decode($json);
+    unset($data['name']);
+    $variables['tag'] = $data['tag']; //keep the raw tag, without renderable
+    $items = [];
+    foreach ($data as $key => $item) {
+      $renderable = [
+        '#theme' => 'clashofclans_api__'. $key,
+        '#data' => $item,
+      ];
+      $items[$key] = $renderable;
+    }
+    $variables['data'] = $items;
+  }
+
+  $variables['content']['#cache']['max-age'] = 180;
+}
+
+function clashofclans_player_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
+
+  // Load a specific node into the user object for later theming.
+  if (!empty($entities) && $entity_type_id == 'user' && $view_mode == 'full') {
+
+    $player = \Drupal::service('clashofclans_player.player');
+    foreach ($entities as $entity) {
+      $player->prepareView($entity);
+    }
+
+  }
+}
+
+function clashofclans_player_user_format_name_alter(&$name, $account) {
+
+  $user = \Drupal\user\Entity\User::load($account->id());
+  $player = $user->field_name->value;
+  if ($player) {
+    $name = $player;
+  }
+
+}

@@ -1,0 +1,10 @@
+entity.clashofclans_clan.settings:
+  title: Clan
+  description: Configure a Clan entity type
+  route_name:  entity.clashofclans_clan.settings
+  parent: system.admin_structure
+entity.clashofclans_clan.collection:
+  title: Clans
+  description: List of clans
+  route_name: entity.clashofclans_clan.collection
+  parent: system.admin_content

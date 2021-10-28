@@ -1,0 +1,6 @@
+name: ClashOfClans Player
+type: module
+description: 'Attach player to drupal core user.'
+package: Clash of Clans
+core: 8.x
+core_version_requirement: ^8 || ^9

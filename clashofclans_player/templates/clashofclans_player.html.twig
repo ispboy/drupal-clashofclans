@@ -1,0 +1,43 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present all user data.
+ *
+ * This template is used when viewing a registered user's page,
+ * e.g., example.com/user/123. 123 being the user's ID.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.field_example'. Fields attached to a user
+ *   such as 'user_picture' are available as 'content.user_picture'.
+ * - attributes: HTML attributes for the container element.
+ * - user: A Drupal User entity.
+ *
+ * - remove content.field_data
+ * - data: the full data array
+ *
+ * @see template_preprocess_user()
+ *
+ * @ingroup themeable
+ */
+#}
+<article{{ attributes }}>
+  <div style="float: right;">
+  {{ content.user_picture }}
+  {% if logged_in %}
+    {{ content.flag_following_player }}
+  {% else %}
+    <a href="{{ path('clashofclans_player.tag.verifytoken', {'tag': tag}) }}">{{ 'login as this player..'|t }}</a>
+  {% endif %}
+  </div>
+
+  <ul class="inline">
+  {% for key,item in data %}
+    <li><em>{{ key }}:</em> {{ item }}</li>
+  {% endfor %}
+  </ul>
+
+  {% if content %}
+  {{- content|without('user_picture', 'flag_following_player') -}}
+  {% endif %}
+</article>

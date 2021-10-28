@@ -1,0 +1,4 @@
+services:
+  clashofclans_player.player:
+    class: Drupal\clashofclans_player\Player
+    arguments: ['@clashofclans_api.guzzle_cache', '@entity_type.manager']

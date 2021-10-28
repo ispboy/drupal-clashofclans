@@ -13,9 +13,11 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 
 class GuzzleCache implements ContainerInjectionInterface {
 
-  protected $key;
-  protected $cacheMaxAge;
-  protected $httpClient;
+  protected $key; // the clash of clans api key.
+  protected $http_client;
+  protected $cache_max_age;
+  protected $api_root;
+  protected $csrf_token;
 
   /**
    * Class constructor.
@@ -35,6 +37,14 @@ class GuzzleCache implements ContainerInjectionInterface {
     //   arguments: [my_custom_http_cache_bin]
     $cache = new DrupalGuzzleCache(\Drupal::service('cache.clashofclans_api_http_cache_bin'));
 
+    $config = $config_factory->get('clashofclans_api.settings');
+    $this->key = $config->get('key');
+
+    $this->cache_max_age = $config->get('cache_max_age');
+    $this->api_root = $config->get('api_root');
+    $this->csrf_token = \Drupal::getContainer()->get('csrf_token')
+                                               ->get(ltrim($this->api_root, '/'));
+
     // Push the cache to the stack.
     $stack->push(
       new CacheMiddleware(
@@ -43,11 +53,8 @@ class GuzzleCache implements ContainerInjectionInterface {
       'cache'
     );
 
-    $config = $config_factory->get('clashofclans_api.settings');
-    $this->key = $config->get('key');
-    $this->cacheMaxAge = $config->get('cache_max_age');
     $base_uri = $config->get('base_uri');
-    $this->httpClient = \Drupal::service('http_client_factory')->fromOptions([
+    $this->http_client = \Drupal::service('http_client_factory')->fromOptions([
       'base_uri' => $base_uri,
       'handler' => $stack,
     ]);;
@@ -63,24 +70,49 @@ class GuzzleCache implements ContainerInjectionInterface {
    * @param $url, $options
    * @return string
    */
-  public function get($url, $options = [], $json = ''){
-    $options['headers']['authorization'] = 'Bearer ' . $this->key;
-    $response = $this->httpClient->get($url, $options);
-    $data = $response->getBody()->getContents();
-    return ($json == 'json') ? $data : \Drupal\Component\Serialization\Json::decode($data);
+  public function getData($url, $options = []){
+    $data = $this->getJson($url, $options);
+    return \Drupal\Component\Serialization\Json::decode($data);
+  }
+
+  /**
+   * @param $url, $options
+   * @return string
+   */
+  public function getJson($url, $options = []){
+    $data = $this->request('GET', $url, $options);
+    return $data;
   }
 
   /**
    * @param $url, $json: 'json', others.
    * @return array
    */
-  public function post($url, $body, $json = ''){
-    $options['body'] = $body;
-    $response = $this->httpClient->request('POST', $url, $options);
+  public function postData($url, $options = []){
+    $data = $this->request('POST', $url, $options);
+    if ($data) {
+      return \Drupal\Component\Serialization\Json::decode($data);
+    }
+  }
+
+  public function request($method, $url, $options = []) {
+    $url = \str_replace('#', '%23', $url);
+    $options['headers']['authorization'] = 'Bearer ' . $this->key;
+    $response = $this->http_client->request($method, $url, $options);
     $data = $response->getBody()->getContents();
+    return $data;
+  }
 
-    return ($json == 'json')? $data: \Drupal\Component\Serialization\Json::decode($data);
+  public function getCsrfToken() {
+    if (isset($this->csrf_token)) {
+      return $this->csrf_token;
+    }
+  }
 
+  public function getMaxAge() {
+    if (isset($this->cache_max_age)) {
+      return $this->cache_max_age;
+    }
   }
 
 }

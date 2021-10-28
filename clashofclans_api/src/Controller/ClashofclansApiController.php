@@ -12,6 +12,7 @@ use Drupal\Core\Link;
  * Returns responses for ClashOfClans API routes.
  */
 class ClashofclansApiController extends ControllerBase {
+
   private $client;
 
   public function __construct(GuzzleCache $client)
@@ -31,15 +32,11 @@ class ClashofclansApiController extends ControllerBase {
    */
   public function build() {
     $client = $this->client;
-
-    $tag = '#Q09C';
-    // $name = $this->clan->getName($tag);
-    // dpm($name);
-
     $build['content'] = [
       '#type' => 'item',
-      '#markup' => $this->t('Integrates <a href="@api" target="_blank">Clash of Clans API</a> into Drupal.
+      '#markup' => $this->t('<a href="@project" target="_blank">drupal-clashofclans</a> Integrates <a href="@api" target="_blank">Clash of Clans API</a> into Drupal.
         Inspired from <a href="@github" target="_blank">Toniperic</a>.', array(
+        '@project' => 'https://github.com/ispboy/drupal-clashofclans/tree/3.0.x',
         '@api' => 'https://developer.clashofclans.com/',
         '@github' => 'https://github.com/toniperic/php-clash-of-clans',
       )),
@@ -51,8 +48,57 @@ class ClashofclansApiController extends ControllerBase {
     ];
 
     $items = [];
-    $items[] = Link::createFromRoute('Global clans', 'clashofclans_api.location.clans', ['locationId' => 'global']);
-    $items[] = Link::createFromRoute('Global players', 'clashofclans_api.location.players', ['locationId' => 'global']);
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'locations/global/rankings/clans',
+        'limit' => 10,
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('Global clans', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'locations/global/rankings/players',
+        'limit' => 10,
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('Global players', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'leagues/29000022/seasons/2021-09',
+        'limit' => 10,
+        'after' => 'eyJwb3MiOjEwfQ',
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('leagues/29000022/seasons/2021-09', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'players/#P9RJUCR2U',
+        'limit' => 10,
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('蓝竹-画雅人', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'clans/#9YR8JU00',
+        'limit' => 10,
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('快乐糖果屋', 'clashofclans_api', [], $options);
+
     $build['links'] = [
       '#theme' => 'item_list',
       '#list_type' => 'ul',
@@ -63,38 +109,71 @@ class ClashofclansApiController extends ControllerBase {
       ],
     ];
 
+    $url = 'locations/global/rankings/clans';
+    $data = $client->getData($url, ['query' => ['limit' => 60]]);
+    if (isset($data['items'])) {
+      $header = [];
+      $rows = [];
+      foreach ($data['items'] as $item) {
+        if (!$header) {
+          $header = array_keys($item);
+          array_unshift($header, array_pop($header));
+          array_unshift($header, array_pop($header));
+        }
+        $row = [];
+        foreach ($header as $key) {
+          $renderable = [
+            '#theme' => 'clashofclans_api__'. $key,
+            '#data' => $item[$key],
+          ];
+          $row[] = \Drupal::service('renderer')->renderPlain($renderable);
+        }
+        $rows[] = $row;
+      }
+      $build['table'] = [
+        '#type' => 'table',
+        '#sticky' => TRUE,
+        // '#responsive' => FALSE,
+        '#header' => $header,
+        '#rows' => $rows,
+      ];
+    }
+
+
+
     return $build;
   }
 
-  public function passThrough() {
-    $route_name = \Drupal::routeMatch()->getRouteName();
-    $items = explode('.', $route_name);
+  public function cutThrough() {
+    $client = $this->client;
+    $data = NULL;
+    $query =  \Drupal::request()->query->all();
 
-    $tpl = implode('__', $items);
+    if (isset($query['url'])) {
+        $url = $query['url'];
+        unset($query['url']);
 
-    $root = \Drupal::config('clashofclans_api.settings')->get('api_root');
-    $url = \Drupal::request()->getRequestUri();
-    $url = str_replace($root. '/', '', $url);
-    // $data = $this->client->get($url, [], 'json');
-    $data = $this->client->get($url);
+        $options = [];
+        if ($query) {
+          $options['query'] = $query;
+        }
+
+        $data = $client->getJson($url, $options);
+    }
+
     if ($data) {
-      // $response = new Response();
-      // $response->setContent($data);
-      // $response->headers->set('Content-Type', 'application/json');
-      // $response->setPublic();
-      // $response->setMaxAge(60);
-      // return $response;
-      $build['content'] = [
-        '#theme' => $tpl,
-        // '#theme' => 'clashofclans_api',
-        '#data' => $data,
-      ];
+      $response = new Response();
+      $response->setContent($data);
+      $response->headers->set('Content-Type', 'application/json');
+      $response->setPublic();
+      $response->setMaxAge($client->getMaxAge());
+      return $response;
     } else {
       $build['content'] = [
         '#markup' => $this->t('No results.'),
       ];
+      return $build;
     }
-    return $build;
   }
 
 }

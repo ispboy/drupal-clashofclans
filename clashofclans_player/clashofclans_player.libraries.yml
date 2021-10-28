@@ -1,0 +1,4 @@
+clashofclans_player_season:
+  css:
+    component:
+      css/clashofclans-player-season-widget.css: {}

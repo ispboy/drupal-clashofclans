@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - clashofclans_location
+    - country
+id: clashofclans_location.field_country
+field_name: field_country
+entity_type: clashofclans_location
+type: country
+settings:
+  selectable_countries: {  }
+module: country
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
