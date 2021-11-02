@@ -1,0 +1,22 @@
+entity.clashofclans_leaguegroup.settings:
+  title: Settings
+  route_name: entity.clashofclans_leaguegroup.settings
+  base_route: entity.clashofclans_leaguegroup.settings
+entity.clashofclans_leaguegroup.view:
+  title: View
+  route_name: entity.clashofclans_leaguegroup.canonical
+  base_route: entity.clashofclans_leaguegroup.canonical
+entity.clashofclans_leaguegroup.edit_form:
+  title: Edit
+  route_name: entity.clashofclans_leaguegroup.edit_form
+  base_route: entity.clashofclans_leaguegroup.canonical
+entity.clashofclans_leaguegroup.delete_form:
+  title: Delete
+  route_name: entity.clashofclans_leaguegroup.delete_form
+  base_route: entity.clashofclans_leaguegroup.canonical
+  weight: 10
+entity.clashofclans_leaguegroup.collection:
+  title: LeagueGroup
+  route_name: entity.clashofclans_leaguegroup.collection
+  base_route: system.admin_content
+  weight: 10

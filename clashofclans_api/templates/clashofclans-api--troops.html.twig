@@ -1,19 +1,17 @@
-<details>
-  <summary>{{ 'Detail'|t }}</summary>
-  <table>
-  <tr>
-  <th>name</th>
-  <th>level</th>
-  <th>village</th>
-  <th>superTroopIsActive</th>
-  </tr>
-  {% for item in data %}
-  <tr>
-  <td>{{ item.name }}</td>
-  <td>{{ item.level }} / {{ item.maxLevel }}</td>
-  <td>{{ item.village }}</td>
-  <td>{{ item.superTroopIsActive }}</td>
-  </tr>
-  {% endfor %}
-  </table>
-</details>
+<table>
+<caption>{{ 'Troops'|t }}</caption>
+<tr>
+<th>name</th>
+<th>level</th>
+<th>village</th>
+<th>Active</th>
+</tr>
+{% for item in data %}
+<tr>
+<td>{{ item.name }}</td>
+<td>{{ item.level }} / {{ item.maxLevel }}</td>
+<td>{{ item.village }}</td>
+<td>{{ item.superTroopIsActive }}</td>
+</tr>
+{% endfor %}
+</table>

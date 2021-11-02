@@ -98,9 +98,15 @@ class GuzzleCache implements ContainerInjectionInterface {
   public function request($method, $url, $options = []) {
     $url = \str_replace('#', '%23', $url);
     $options['headers']['authorization'] = 'Bearer ' . $this->key;
-    $response = $this->http_client->request($method, $url, $options);
-    $data = $response->getBody()->getContents();
-    return $data;
+    try {
+      $response = $this->http_client->request($method, $url, $options);
+      $data = $response->getBody()->getContents();
+      return $data;
+    } catch (RequestException $error) {
+      $message = $error->getMessage();
+      $code = $error->getCode();
+      // to be continute..
+    }
   }
 
   public function getCsrfToken() {

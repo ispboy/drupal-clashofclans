@@ -1,0 +1,24 @@
+# Migration configuration for clashofclans_warleague content.
+id: clashofclans_warleague
+label: 'WarLeague'
+migration_group: 'Clash of Clans'
+
+source:
+  plugin: clashofclans_warleague
+  track_changes: true
+
+destination:
+  # Specify the destination plugin (usually entity:entity_type).
+  plugin: 'entity:clashofclans_warleague'
+  default_bundle: 'clashofclans_warleague'
+
+process:
+  id: id
+  title: name
+
+dependencies:
+  module:
+    - clashofclans_warleague
+  enforced:
+    module:
+      - clashofclans_warleague

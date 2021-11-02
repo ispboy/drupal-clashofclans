@@ -102,8 +102,11 @@ class Player {
       $outdated = $this->entityOutdated($entity, $data);
       $entity->set('field_data', $json);  //keep entity view update.
       if ($outdated) {
+        if ($entity->field_name->value != $data['name']) {
+          $entity->field_name->appendItem($data['name']);
+        }
         $entity->save();
-        \Drupal::messenger()->addMessage('This clan data updated.');
+        \Drupal::messenger()->addMessage('This player data updated.');
       }
     }
   }
@@ -114,10 +117,10 @@ class Player {
     } else {
       $field = \Drupal\Component\Serialization\Json::decode($entity->field_data->value);
       $keys = [
-        'name', 'townHallLevel', 'townHallWeaponLevel', 'warStars', 'role', 'warPreference'
+        'name', 'townHallLevel', 'warStars', 'role', 'warPreference'
       ];
       foreach ($keys as $key) {
-        if (isset($data['townHallWeaponLevel']) && strcmp($data[$key], $field[$key]) !== 0) {
+        if (strcmp($data[$key], $field[$key]) !== 0) {
           return TRUE;
         }
       }

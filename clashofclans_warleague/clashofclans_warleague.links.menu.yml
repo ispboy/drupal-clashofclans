@@ -1,0 +1,10 @@
+entity.clashofclans_warleague.settings:
+  title: warleague
+  description: Configure a warleague entity type
+  route_name:  entity.clashofclans_warleague.settings
+  parent: system.admin_structure
+entity.clashofclans_warleague.collection:
+  title: warleagues
+  description: List of warleagues
+  route_name: entity.clashofclans_warleague.collection
+  parent: system.admin_content

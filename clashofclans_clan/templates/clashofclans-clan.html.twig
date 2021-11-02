@@ -15,13 +15,40 @@
  */
 #}
 <article{{ attributes }}>
-  {% if content %}
-    {{- content -}}
-  {% endif %}
+  <div style="float: right; text-align: center;">
+    {{ data.badgeUrls ? render_var({ '#theme': 'image',
+     '#uri': data.badgeUrls.small, '#width': 70, '#height': 70 }) }}
+     <p>{{ data.tag }}</p>
+     <p>{{ content.flag_following_clan }}</p>
+     <p style="font-size: large;">🏆{{ data.clanPoints }}</p>
+     <p style="font-size: large;">🥉{{ data.clanVersusPoints }}</p>
+  </div>
 
-  <ul class="inline">
-  {% for key,item in data %}
-    <li><em>{{ key }}:</em> {{ item }}</li>
-  {% endfor %}
+  <p style="padding:1em 90px 0 0">{{ data.description|nl2br }}</p>
+  <p>{{ render_var({ '#theme': 'clashofclans_api__labels', '#data': data.labels }) }}<p>
+  <ul>
+  <li><em>{{ 'Location'|t }}</em>: {{ data.location ? render_var({ '#theme': 'clashofclans_api__location', '#data': data.location }) }}</li>
+  <li><em>{{ 'Language'|t }}</em>: {{ render_var({ '#theme': 'clashofclans_api__chatLanguage', '#data': data.chatLanguage }) }} </li>
+  <li><em>{{ 'warLeague'|t }}</em>: <strong>{{ data.warLeague.name|t }}</strong></li>
+  <li><em>{{ 'Type'|t }}</em>: <strong>{{ data.type|t }}</strong></li>
+  <li><em>{{ 'requiredTownhallLevel'|t }}</em>: {{ data.requiredTownhallLevel }}</li>
+  <li><em>{{ 'requiredTrophies'|t }}</em>: 🏆{{ data. requiredTrophies }}</li>
+  <li><em>{{ 'requiredVersusTrophies'|t }}</em>: 🥉{{ data.requiredVersusTrophies }}</li>
+  <li><em>{{ 'warFrequency'|t }}</em>: {{ data.warFrequency|t }}</li>
+  <li><em>{{ 'warWins'|t }}</em>: {{ data.warWins }}</li>
+  <li><em>{{ 'warWinStreak'|t }}</em>: {{ data.warWinStreak }}</li>
+  {% if data.isWarLogPublic %}
+  <li><em>{{ 'warTies'|t }}</em>: {{ data.warTies }}</li>
+  <li><em>{{ 'warLosses'|t }}</em>: {{ data.warLosses }}</li>
+  <li>{{ data.entity_id ? link('War log'|t, 'internal:' ~ path('clashofclans_clan.warlog', {'clashofclans_clan': data.entity_id}))}}</li>
+  <li>{{ data.entity_id ? link('League group'|t, 'internal:' ~ path('clashofclans_clan.league_group', {'clashofclans_clan': data.entity_id}))}}</li>
+  {% endif %}
   </ul>
+
+  <p><em>{{ 'Members'|t }}</em>: <strong>{{ data.members }}</strong></p>
+  {{ render_var({ '#theme': 'clashofclans_api__memberList', '#data': data.memberList }) }}
+
+  {% if content %}
+    {{- content|without('flag_following_clan') -}}
+  {% endif %}
 </article>

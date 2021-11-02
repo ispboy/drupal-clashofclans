@@ -16,6 +16,12 @@ function clashofclans_clan_theme() {
     'clashofclans_clan' => [
       'render element' => 'elements',
     ],
+
+    'clashofclans_clan_warlog' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
   ];
 }
 
@@ -32,40 +38,26 @@ function clashofclans_clan_theme() {
  */
 function template_preprocess_clashofclans_clan(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    if ($key == 'field_data' && isset($variables['elements'][$key][0]['#context']['value'])) {
+    if ($key == 'extra_field_clashofclans_clan_live_data' && isset($variables['elements'][$key]['#data'])) {
+      $data = $variables['elements'][$key]['#data'];
       // $weight = $variables['elements'][$key]['#weight'];
-      $json = $variables['elements'][$key][0]['#context']['value'];
-      if ($json) {
-        $data = \Drupal\Component\Serialization\Json::decode($json);
-        unset($data['tag']);
-        unset($data['name']);
-        unset($data['description']);
-        $items = [];
-        foreach ($data as $key => $item) {
-          $renderable = [
-            '#theme' => 'clashofclans_api__'. $key,
-            '#data' => $item,
-          ];
-
-          $items[$key] = $renderable;
-        }
-        $variables['data'] = $items;
-      }
+      $variables['data'] = $data;
       unset($variables['elements'][$key]);
     } else {
       $variables['content'][$key] = $variables['elements'][$key];
     }
   }
-  $variables['content']['#cache']['max-age'] = 180;
+  $clan = \Drupal::service('clashofclans_clan.clan');
+  $variables['content']['#cache']['max-age'] = $clan->client->getMaxAge();
 }
 
 function clashofclans_clan_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
 
-  // Load a specific node into the user object for later theming.
-  if (!empty($entities) && $entity_type_id == 'clashofclans_clan' && $view_mode == 'full') {
-    $clan = \Drupal::service('clashofclans_clan.clan');
-    foreach ($entities as $entity) {
-      $clan->prepareView($entity);
-    }
-  }
+  // // Load a specific node into the user object for later theming.
+  // if (!empty($entities) && $entity_type_id == 'clashofclans_clan' && $view_mode == 'full') {
+  //   $clan = \Drupal::service('clashofclans_clan.clan');
+  //   foreach ($entities as $entity) {
+  //     $clan->prepareView($entity);
+  //   }
+  // }
 }

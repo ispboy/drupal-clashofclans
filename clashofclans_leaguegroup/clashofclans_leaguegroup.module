@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Provides a leaguegroup entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function clashofclans_leaguegroup_theme() {
+  return [
+    'clashofclans_leaguegroup' => [
+      'render element' => 'elements',
+    ],
+
+    'clashofclans_leaguegroup_currentwar' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+    'clashofclans_leaguegroup_clans' => [
+      'variables' => [
+        'items' => NULL,
+      ],
+    ],
+
+    'clashofclans_leaguegroup_rounds' => [
+      'variables' => [
+        'items' => NULL,
+      ],
+    ],
+
+  ];
+}
+
+/**
+ * Prepares variables for leaguegroup templates.
+ *
+ * Default template: clashofclans-leaguegroup.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the leaguegroup information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_clashofclans_leaguegroup(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+function template_preprocess_clashofclans_leaguegroup_clans(array &$variables) {
+  $items = $variables['items'];
+  $header = ['clan', 'clanLevel', 'members'];
+  $rows = [];
+  foreach ($items as $item) {
+    $clan = ['name' => $item['name'], 'tag' => $item['tag']];
+    $renderable = [
+      '#theme' => 'clashofclans_api__clan',
+      '#data' => $clan,
+    ];
+    $rows[] = [\Drupal::service('renderer')->renderPlain($renderable), $item['clanLevel'], count($item['members'])];
+  }
+
+  $renderable = [
+    '#type' => 'table',
+    // '#responsive' => FALSE,
+    '#sticky' => TRUE,
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No results.'),
+  ];
+
+  $variables['content'] = $renderable;
+}

@@ -1,0 +1,7 @@
+entity.clashofclans_warleague.settings:
+  path: 'admin/structure/clashofclans-warleague'
+  defaults:
+    _form: '\Drupal\clashofclans_warleague\Form\ClashofclansWarleagueSettingsForm'
+    _title: 'warleague'
+  requirements:
+    _permission: 'administer warleague'

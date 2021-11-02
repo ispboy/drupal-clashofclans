@@ -14,22 +14,22 @@ function clashofclans_player_theme_registry_alter(array &$theme_registry) {
 }
 
 function clashofclans_player_preprocess_user(&$variables) {
-  $json = $variables['content']['field_data'][0]['#context']['value'];
-  unset($variables['content']['field_data']);
-
-  if ($json) {
+  if (isset($variables['content']['field_data'][0]['#context']['value']) && $variables['content']['field_data'][0]['#context']['value']) {
+    $json = $variables['content']['field_data'][0]['#context']['value'];
+    unset($variables['content']['field_data']);
     $data = \Drupal\Component\Serialization\Json::decode($json);
-    unset($data['name']);
-    $variables['tag'] = $data['tag']; //keep the raw tag, without renderable
-    $items = [];
-    foreach ($data as $key => $item) {
-      $renderable = [
-        '#theme' => 'clashofclans_api__'. $key,
-        '#data' => $item,
-      ];
-      $items[$key] = $renderable;
-    }
-    $variables['data'] = $items;
+    // $variables['tag'] = $data['tag']; //keep the raw tag, without renderable
+    // $items = [];
+    // foreach ($data as $key => $item) {
+    //   $renderable = [
+    //     '#theme' => 'clashofclans_api__'. $key,
+    //     '#data' => $item,
+    //   ];
+    //   $items[$key] = $renderable;
+    // }
+    // $variables['data'] = $items;
+    $variables['data'] = $data;
+
   }
 
   $variables['content']['#cache']['max-age'] = 180;
@@ -51,9 +51,10 @@ function clashofclans_player_entity_prepare_view($entity_type_id, array $entitie
 function clashofclans_player_user_format_name_alter(&$name, $account) {
 
   $user = \Drupal\user\Entity\User::load($account->id());
-  $player = $user->field_name->value;
-  if ($player) {
-    $name = $player;
+  $values = $user->field_name->getValue();
+  $values = array_filter($values);
+  if ($values) {
+    $player = end($values);
+    $name = $player['value'];
   }
-
 }

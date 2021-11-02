@@ -1,1 +1,1 @@
-{{ link(data.name, 'internal:' ~ path('clashofclans_clan.tag', {'tag': data.tag})) }}
+{{ data.tag ? link(data.name, 'internal:' ~ path('clashofclans_clan.tag', {'tag': data.tag})) : data.name }}

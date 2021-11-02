@@ -51,8 +51,8 @@ function template_preprocess_clashofclans_api__memberList(array &$variables) {
     'previousClanRank' => 'Prev',
     'league' => 'League',
     'expLevel' => 'Exp',
-    'tag' => 'Tag',
     'name' => 'Name',
+    'tag' => 'Tag',
     'role' => 'Role',
     'donations' => 'Donated',
     'donationsReceived' => 'Received',
@@ -77,9 +77,28 @@ function template_preprocess_clashofclans_api__memberList(array &$variables) {
     $rows[] = $row;
   }
 
+  $low = ['previousClanRank', 'tag', 'donations', 'donationsReceived', 'versusTrophies'];
+  foreach ($low as $col) {
+    $val = $header[$col];
+    $header[$col] = [
+      'data' => $val,
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+  }
+
+  $medium = ['league', 'expLevel'];
+  foreach ($medium as $col) {
+    $val = $header[$col];
+    $header[$col] = [
+      'data' => $val,
+      'class' => [RESPONSIVE_PRIORITY_MEDIUM],
+    ];
+  }
+
   $renderable = [
     '#type' => 'table',
     // '#responsive' => FALSE,
+    '#sticky' => TRUE,
     '#header' => array_values($header),
     '#rows' => $rows,
   ];

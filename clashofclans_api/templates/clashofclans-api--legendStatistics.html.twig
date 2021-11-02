@@ -1,19 +1,30 @@
-<table>
+<table class="responsive-enabled">
+  <caption>{{ 'Legend Statistics'|t }}</caption>
   <tr>
-    <th>legendTrophies</th>
-    <th colspan="2">currentSeason</th>
-    <th colspan="3">previousSeason</th>
     <th colspan="3">bestSeason</th>
+    <th class="priority-medium" colspan="3">previousSeason</th>
+    <th class="priority-medium">legendTrophies</th>
   </tr>
   <tr>
-    <td>🏆{{ data.legendTrophies }}</td>
-    <td>📌{{ data.currentSeason.rank }}</td>
-    <td>🏆{{ data.currentSeason.trophies }}</td>
-    <td>📅{{ data.previousSeason.id }}</td>
-    <td>📌{{ data.previousSeason.rank }}</td>
-    <td>🏆{{ data.previousSeason.trophies }}</td>
-    <td>📅{{ data.bestSeason.id }}</td>
-    <td>📌{{ data.bestSeason.rank }}</td>
+    <td>📅<strong>{{ data.bestSeason.id }}</strong></td>
+    <td>📌<strong>{{ data.bestSeason.rank }}</strong></td>
     <td>🏆{{ data.bestSeason.trophies }}</td>
+    <td class="priority-medium">📅{{ data.previousSeason.id }}</td>
+    <td class="priority-medium">📌{{ data.previousSeason.rank }}</td>
+    <td class="priority-medium">🏆{{ data.previousSeason.trophies }}</td>
+    <td class="priority-medium" rowspan="3" style="font-size: large">🏆{{ data.legendTrophies }}</td>
+  </tr>
+
+  <tr>
+    <th colspan="3">bestVersusSeason</th>
+    <th class="priority-medium" colspan="3">previousVersusSeason</th>
+  </tr>
+  <tr>
+    <td>📅{{ data.bestVersusSeason.id }}</td>
+    <td>📌{{ data.bestVersusSeason.rank }}</td>
+    <td>🥉{{ data.bestVersusSeason.trophies }}</td>
+    <td class="priority-medium">📅{{ data.previousVersusSeason.id }}</td>
+    <td class="priority-medium">📌{{ data.previousVersusSeason.rank }}</td>
+    <td class="priority-medium">🥉{{ data.previousVersusSeason.trophies }}</td>
   </tr>
 </table>

@@ -1,0 +1,13 @@
+<ul>
+<li><em>{{ 'Season'|t }}</em>: {{ data.season }}</li>
+<li><em>{{ 'State'|t }}</em>: {{ data.state }}</li>
+<li><em>{{ 'warLeague'|t }}</em>: {{ data.warLeague.name }}</li>
+</ul>
+
+<div class="league-group-clans">
+{{ render_var({ '#theme': 'clashofclans_leaguegroup_clans', '#items': data.clans }) }}
+</div>
+
+<div class="league-group-rounds">
+{{ render_var({ '#theme': 'clashofclans_leaguegroup_rounds', '#items': data.rounds }) }}
+</div>

@@ -13,3 +13,29 @@ clashofclans_clan.tag:
     _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::setTitle'
   requirements:
     _permission: 'view clan'
+
+clashofclans_clan.warlog:
+  path: 'clashofclans-clan/{clashofclans_clan}/warlog'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::warlog'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::getTitle'
+  requirements:
+    _permission: 'view clan'
+    _custom_access: '\Drupal\clashofclans_clan\Controller\ClanController::warlogAccess'
+  options:
+    parameters:
+      clashofclans_clan:
+        type: entity:clashofclans_clan
+
+clashofclans_clan.league_group:
+  path: 'clashofclans-clan/{clashofclans_clan}/leaguegroup'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::leagueGroup'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::getTitle'
+  requirements:
+    _permission: 'view clan'
+    _custom_access: '\Drupal\clashofclans_clan\Controller\ClanController::warlogAccess'
+  options:
+    parameters:
+      clashofclans_clan:
+        type: entity:clashofclans_clan

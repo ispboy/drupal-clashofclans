@@ -1,0 +1,13 @@
+administer warleague:
+  title: 'Administer warleague settings'
+  restrict access: true
+access warleague overview:
+  title: 'Access warleague overview page'
+delete warleague:
+  title: Delete warleague
+create warleague:
+  title: Create warleague
+view warleague:
+  title: View warleague
+edit warleague:
+  title: Edit warleague

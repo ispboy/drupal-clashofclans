@@ -22,22 +22,92 @@
  */
 #}
 <article{{ attributes }}>
-  <div style="float: right;">
-  {{ content.user_picture }}
-  {% if logged_in %}
-    {{ content.flag_following_player }}
-  {% else %}
-    <a href="{{ path('clashofclans_player.tag.verifytoken', {'tag': tag}) }}">{{ 'login as this player..'|t }}</a>
-  {% endif %}
+  {% if data.league %}
+  <div style="float: right; text-align: center;">
+    {{ render_var({ '#theme': 'image',
+     '#uri': data.league.iconUrls.small, '#width': 72, '#height': 72 }) }}
+    <p>{{ data.league.name }}</p>
+    <p style="font-size: x-large;">🏆{{ data.trophies }}</p>
   </div>
+  {% endif %}
 
-  <ul class="inline">
-  {% for key,item in data %}
-    <li><em>{{ key }}:</em> {{ item }}</li>
-  {% endfor %}
-  </ul>
 
   {% if content %}
-  {{- content|without('user_picture', 'flag_following_player') -}}
+  <div style="float: left; margin-right: 2em;">
+    {{- content -}}
+    <p>
+    {% if not logged_in %}
+      <a href="{{ path('clashofclans_player.tag.verifytoken', {'tag': data.tag}) }}">{{ 'login as this player'|t }}</a>
+    {% endif %}
+    </p>
+  </div>
   {% endif %}
+
+  {% if data.townHallLevel %}
+  <div style="float: left;">
+    <ul>
+      <li><em>{{ 'expLevel'|t }}</em>: {{ data.expLevel }}</li>
+      <li><em>{{ 'townHall'|t }}</em>: {{ data.townHallLevel }}</li>
+      <li><em>{{ 'bestTrophies'|t }}</em>: 🏆<strong>{{ data.bestTrophies }}</strong></li>
+      <li><em>{{ 'attackWins'|t }}</em>: {{ data.attackWins }}</li>
+      <li><em>{{ 'defenseWins'|t }}</em>: {{ data.defenseWins }}</li>
+    </ul>
+    {{ render_var({ '#theme': 'clashofclans_api__labels', '#data': data.labels }) }}
+  </div>
+  {% endif %}
+
+  <div class="clearfix"></div>
+
+  {% if data.clan %}
+  <table class="responsive-enabled">
+    <tr>
+      <th colspan="2">Clan</th>
+      <th>Role</th>
+      <th class="priority-medium">donations</th>
+      <th class="priority-medium">Received</th>
+      <th class="priority-low">warPreference</th>
+      <th class="priority-medium">warStars</th>
+    </tr>
+    <tr>
+      <td>{{ render_var({ '#theme': 'image',
+           '#uri': data.clan.badgeUrls.small, '#width': 70, '#height': 70 }) }}</td>
+      <td>{{ render_var({ '#theme': 'clashofclans_api__clan', '#data': data.clan }) }}</td>
+      <td>{{ data.role }}</td>
+      <td class="priority-medium">{{ data.donations }}</td>
+      <td class="priority-medium">{{ data.donationsReceived }}</td>
+      <td class="priority-low">{{ data.warPreference }}</td>
+      <td class="priority-medium">⭐{{ data.warStars }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  {% if data.builderHallLevel %}
+  <table class="responsive-enabled">
+    <caption>{{ 'Builder Base'|t }}</caption>
+    <tr>
+      <th>HallLevel</th>
+      <th>BattleWins</th>
+      <th class="priority-low">versusBattleWinCount</th>
+      <th class="priority-medium">The best versus Trophies</th>
+      <th>versusTrophies</th>
+    </tr>
+    <tr>
+      <td>{{ data.builderHallLevel }}</td>
+      <td>{{ data.versusBattleWins }}</td>
+      <td class="priority-low">{{ data.versusBattleWinCount }}</td>
+      <td class="priority-medium">🥉{{ data.bestVersusTrophies }}</td>
+      <td>🥉{{ data.versusTrophies }}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  {% set keys = ['legendStatistics', 'heroes', 'spells', 'troops', 'spells', 'achievements'] %}
+
+  {% for key in keys %}
+    {% if data[key] %}
+    {{ render_var({ '#theme': 'clashofclans_api__' ~ key, '#data': data[key] }) }}
+    {% endif %}
+  {% endfor %}
+
+
 </article>

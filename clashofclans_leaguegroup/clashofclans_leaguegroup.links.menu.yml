@@ -1,0 +1,10 @@
+entity.clashofclans_leaguegroup.settings:
+  title: LeagueGroup
+  description: Configure a LeagueGroup entity type
+  route_name:  entity.clashofclans_leaguegroup.settings
+  parent: system.admin_structure
+entity.clashofclans_leaguegroup.collection:
+  title: LeagueGroups
+  description: List of leaguegroups
+  route_name: entity.clashofclans_leaguegroup.collection
+  parent: system.admin_content

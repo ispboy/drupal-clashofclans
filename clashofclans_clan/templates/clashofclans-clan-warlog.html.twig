@@ -1,0 +1,5 @@
+{# theme clan or opponent of warlog #}
+<h3>{{ render_var({ '#theme': 'clashofclans_api__clan', '#data': data }) }}</h3>
+<p>⭐{{ data.stars }}</p>
+<p>💥{{ data.destructionPercentage|number_format(2) }}%</p>
+<p>{{ data.attacks ? '🏹' ~ data.attacks }}&nbsp;{{ data.expEarned ? '💎' ~ data.expEarned }}</p>

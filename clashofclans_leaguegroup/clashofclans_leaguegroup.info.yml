@@ -1,0 +1,9 @@
+name: ClashOfClans LeagueGroup
+type: module
+description: 'Provides a leaguegroup entity.'
+package: Clash of Clans
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - drupal:text
+configure: entity.clashofclans_leaguegroup.settings

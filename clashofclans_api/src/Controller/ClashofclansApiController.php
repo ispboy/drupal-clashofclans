@@ -99,6 +99,26 @@ class ClashofclansApiController extends ControllerBase {
     ];
     $items[] = Link::createFromRoute('快乐糖果屋', 'clashofclans_api', [], $options);
 
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'clans/#C00RJP/warlog',
+        'limit' => 5,
+        'after' => 'eyJwb3MiOjUwfQ',
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('War log', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'clans/#PCUJJ2GQ/currentwar/leaguegroup',
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('联赛', 'clashofclans_api', [], $options);
+
     $build['links'] = [
       '#theme' => 'item_list',
       '#list_type' => 'ul',
