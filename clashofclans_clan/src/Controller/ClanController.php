@@ -79,7 +79,7 @@ class ClanController extends ControllerBase {
       ['data' => '#'],
       ['data' => 'Result'],
       ['data' => 'endTime', 'class' => [RESPONSIVE_PRIORITY_LOW ]],
-      ['data' => 'teamSize'],
+      ['data' => 'teamSize', 'class' => [RESPONSIVE_PRIORITY_LOW ]],
       ['data' => 'attacksPerMember', 'class' => [RESPONSIVE_PRIORITY_LOW ]],
       ['data' => 'clan'],
       ['data' => 'opponent'],
