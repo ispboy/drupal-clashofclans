@@ -84,9 +84,8 @@ class Clan {
     if ($tag) {
       $client = $this->client;
       $url = 'clans/'. $tag;
-      $json = $client->getJson($url);
-      if ($json) {
-        $data = \Drupal\Component\Serialization\Json::decode($json);
+      $data = $client->getData($url);
+      if ($data) {
         $this->updateEntity($entity, $data); //update entity if needed.
         $data['entity_id'] = $entity->id();
         return $data;
@@ -95,19 +94,22 @@ class Clan {
   }
 
 
-  public function prepareView($entity) {
-    $tag = $entity->tag->value;
-    if ($tag) {
-      $client = $this->client;
-      $url = 'clans/'. $tag;
-      $json = $client->getJson($url);
-      $data = \Drupal\Component\Serialization\Json::decode($json);
-      $this->updateEntity($entity, $data);
-      $entity->set('field_data', $json);  //keep entity view update.
+  // public function prepareView($entity) {
+  //   $tag = $entity->tag->value;
+  //   if ($tag) {
+  //     $client = $this->client;
+  //     $url = 'clans/'. $tag;
+  //     $json = $client->getJson($url);
+  //     $data = \Drupal\Component\Serialization\Json::decode($json);
+  //     $this->updateEntity($entity, $data);
+  //     $entity->set('field_data', $json);  //keep entity view update.
+  //
+  //   }
+  // }
 
-    }
-  }
-
+  /**
+  * Compare fields and update entity if outdated.
+  **/
   public function updateEntity($entity, $data) {
     $diff = [];
     $fields = $this->getFields($data);

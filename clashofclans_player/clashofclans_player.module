@@ -14,22 +14,9 @@ function clashofclans_player_theme_registry_alter(array &$theme_registry) {
 }
 
 function clashofclans_player_preprocess_user(&$variables) {
-  if (isset($variables['content']['field_data'][0]['#context']['value']) && $variables['content']['field_data'][0]['#context']['value']) {
-    $json = $variables['content']['field_data'][0]['#context']['value'];
-    unset($variables['content']['field_data']);
-    $data = \Drupal\Component\Serialization\Json::decode($json);
-    // $variables['tag'] = $data['tag']; //keep the raw tag, without renderable
-    // $items = [];
-    // foreach ($data as $key => $item) {
-    //   $renderable = [
-    //     '#theme' => 'clashofclans_api__'. $key,
-    //     '#data' => $item,
-    //   ];
-    //   $items[$key] = $renderable;
-    // }
-    // $variables['data'] = $items;
-    $variables['data'] = $data;
-
+  if (isset($variables['content']['extra_field_clashofclans_player_live_data']['#data'])) {
+    $variables['data'] = $variables['content']['extra_field_clashofclans_player_live_data']['#data'];
+    unset($variables['content']['extra_field_clashofclans_player_live_data']);
   }
 
   $variables['content']['#cache']['max-age'] = 180;
@@ -37,15 +24,15 @@ function clashofclans_player_preprocess_user(&$variables) {
 
 function clashofclans_player_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
 
-  // Load a specific node into the user object for later theming.
-  if (!empty($entities) && $entity_type_id == 'user' && $view_mode == 'full') {
-
-    $player = \Drupal::service('clashofclans_player.player');
-    foreach ($entities as $entity) {
-      $player->prepareView($entity);
-    }
-
-  }
+  // // Load a specific node into the user object for later theming.
+  // if (!empty($entities) && $entity_type_id == 'user' && $view_mode == 'full') {
+  //
+  //   $player = \Drupal::service('clashofclans_player.player');
+  //   foreach ($entities as $entity) {
+  //     $player->prepareView($entity);
+  //   }
+  //
+  // }
 }
 
 function clashofclans_player_user_format_name_alter(&$name, $account) {

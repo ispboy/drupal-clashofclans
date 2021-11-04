@@ -1,0 +1,19 @@
+# Default value.
+field.value.clashofclans_player_season:
+  type: mapping
+  label: Default value
+  mapping:
+    id:
+      type: datetime
+      label: ID
+    trophies:
+      type: integer
+      label: Trophies
+# Field formatter.
+field.formatter.settings.clashofclans_player_season_default:
+  type: mapping
+  label: Example formatter settings
+  mapping:
+    foo:
+      type: string
+      label: Foo

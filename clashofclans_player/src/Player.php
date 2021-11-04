@@ -60,15 +60,100 @@ class Player {
       // Optional.
       $user->set('init', $mail);
       $user->set('field_tag', $tag);
-      $user->set('field_name', $data['name']);
-      $user->set('field_data', $json);
+
+      $fields = $this->getFields($data);
+      $user = $this->setEntity($user, $fields);
+
       $user->activate();
       $user->addRole('player');
 
       // Save user account.
       $user->save();
+      \Drupal::messenger()->addMessage('Player data created.');
       return $user;
     }
+  }
+
+  public function getLiveData($entity) {
+    $tag = $entity->field_tag->value;
+    if ($tag) {
+      $client = $this->client;
+      $url = 'players/'. $tag;
+      $data = $client->getData($url);
+      if ($data) {
+        $this->updateEntity($entity, $data); //update entity if needed.
+        $data['entity_id'] = $entity->id();
+        return $data;
+      }
+    }
+  }
+
+  /**
+  * Compare fields and update entity if outdated.
+  **/
+  public function updateEntity($entity, $data) {
+    $diff = [];
+    $fields = $this->getFields($data);
+    foreach ($fields as $key => $field) {
+      if (\is_array($field)) {
+        continue; //omit array().. especially Season
+      }
+
+      $values = $entity->get($key)->getValue();
+      $value = end($values);
+      if (isset($value['value']) && $value['value'] == $field) {
+        continue;
+      }
+
+      $diff[$key] = $field;
+    }
+
+    if (array_key_exists('field_legend_trophies', $diff)) {
+      if (isset($fields['field_best_season'])) $diff['field_best_season'] = $fields['field_best_season'];
+      if (isset($fields['field_previous_season'])) $diff['field_previous_season'] = $fields['field_previous_season'];
+    }
+
+    if ($diff) {
+      $entity = $this->setEntity($entity, $diff);
+      $entity->save();
+      \Drupal::messenger()->addMessage('Player data updated.');
+    }
+
+  }
+
+  // get field data
+  public function getFields($data) {
+    $fields = [];
+    if (isset($data['name'])) $fields['field_name'] = $data['name'];
+    if (isset($data['warStars'])) $fields['field_war_stars'] = $data['warStars'];
+    if (isset($data['legendStatistics']['legendTrophies'])) $fields['field_legend_trophies'] = $data['legendStatistics']['legendTrophies'];
+    if (isset($data['legendStatistics']['bestSeason'])) {
+      $fields['field_best_season'] = $this->convertSeason($data['legendStatistics']['bestSeason']);
+    }
+    if (isset($data['legendStatistics']['previousSeason'])) {
+      $fields['field_previous_season'] = $this->convertSeason($data['legendStatistics']['previousSeason']);
+    }
+    return $fields;
+  }
+
+  public function convertSeason($season) {
+    if (isset($season['id'])) {
+      $timestamp = strtotime($season['id']);
+      $date = date('Y-m-d', $timestamp);
+      $season['id'] = $date; //convert 2021-06 to 2021-06-01
+    }
+    return $season;
+  }
+
+  public function setEntity($entity, $fields) {
+    foreach ($fields as $key => $field) {
+      if ($key == 'field_name') {
+        $entity->field_name->appendItem($field);
+      } else {
+        $entity->set($key, $field);
+      }
+    }
+    return $entity;
   }
 
   /**
@@ -89,54 +174,6 @@ class Player {
         user_login_finalize($user);
         return $uid;
       }
-    }
-  }
-
-  public function prepareView($entity) {
-    $tag = $entity->field_tag->value;
-    if ($tag) {
-      $client = $this->client;
-      $url = 'players/'. $tag;
-      $json = $client->getJson($url);
-      $data = \Drupal\Component\Serialization\Json::decode($json);
-      $outdated = $this->entityOutdated($entity, $data);
-      $entity->set('field_data', $json);  //keep entity view update.
-      if ($outdated) {
-        if ($entity->field_name->value != $data['name']) {
-          $entity->field_name->appendItem($data['name']);
-        }
-        $entity->save();
-        \Drupal::messenger()->addMessage('This player data updated.');
-      }
-    }
-  }
-
-  public function entityOutdated($entity, $data) {
-    if (!$entity->field_data->value) {
-      return TRUE;
-    } else {
-      $field = \Drupal\Component\Serialization\Json::decode($entity->field_data->value);
-      $keys = [
-        'name', 'townHallLevel', 'warStars', 'role', 'warPreference'
-      ];
-      foreach ($keys as $key) {
-        if (strcmp($data[$key], $field[$key]) !== 0) {
-          return TRUE;
-        }
-      }
-
-      if (isset($data['legendStatistics']['legendTrophies']) && isset($field['legendStatistics']['legendTrophies'])) {
-        if (strcmp($data['legendStatistics']['legendTrophies'], $field['legendStatistics']['legendTrophies']) !== 0) {
-          return TRUE;
-        }
-      }
-
-      if (isset($data['clan']['tag']) && isset($field['clan']['tag'])) {
-        if (strcmp($data['clan']['tag'], $field['clan']['tag']) !== 0) {
-          return TRUE;
-        }
-      }
-
     }
   }
 
