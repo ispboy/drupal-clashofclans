@@ -134,6 +134,22 @@ class ClanController extends ControllerBase {
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
     }
+    $build['content']['#cache']['max-age'] = $this->clan->client->getMaxAge();
+    return $build;
+  }
+
+  /**
+   * Builds the response.
+   */
+  public function members($clashofclans_clan) {
+    $options = ['query' => ['limit' => 50]];
+    $items = $this->clan->getMembers($clashofclans_clan, $options);
+    $build['content'] = [
+      '#theme' => 'clashofclans_clan_members',
+      '#items' => $items,
+      '#cache' => ['max-age' => $this->clan->client->getMaxAge() * 5],
+    ];
+
     return $build;
   }
 

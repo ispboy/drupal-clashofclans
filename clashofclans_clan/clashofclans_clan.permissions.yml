@@ -9,5 +9,7 @@ create clan:
   title: Create clan
 view clan:
   title: View clan
+view members:
+  title: View members
 edit clan:
   title: Edit clan

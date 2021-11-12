@@ -1,4 +1,4 @@
 services:
   clashofclans_leaguegroup.league_group:
     class: Drupal\clashofclans_leaguegroup\LeagueGroup
-    arguments: ['@clashofclans_api.guzzle_cache', '@entity_type.manager']
+    arguments: ['@clashofclans_api.guzzle_cache', '@entity_type.manager', '@clashofclans_war.war', '@clashofclans_clan.clan']

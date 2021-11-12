@@ -1,7 +1,7 @@
+<div style="float: right;">{{ data.warLeague }}</div>
 <ul>
 <li><em>{{ 'Season'|t }}</em>: {{ data.season }}</li>
 <li><em>{{ 'State'|t }}</em>: {{ data.state }}</li>
-<li><em>{{ 'warLeague'|t }}</em>: {{ data.warLeague.name }}</li>
 </ul>
 
 <div class="league-group-clans">
@@ -9,5 +9,38 @@
 </div>
 
 <div class="league-group-rounds">
-{{ render_var({ '#theme': 'clashofclans_leaguegroup_rounds', '#items': data.rounds }) }}
+{{ render_var({ '#theme': 'clashofclans_leaguegroup_rounds', '#items': data.rounds, '#wars': data.wars }) }}
+</div>
+
+<div class="league-group-members">
+  {% for clan in data.clans %}
+  <table id="{{ clan.tag|trim('#') }}">
+    <caption><a href="{{ path('clashofclans_clan.tag', {'tag': clan.tag}) }}">{{ clan.name }}</a> ({{ clan.members|length }})
+    </caption>
+    <tr>
+      <th>#</th>
+      <th>{{ 'Player'|t }}</th>
+      <th class="priority-medium">{{ 'TH'|t }}</th>
+      <th>{{ 'Stars'|t }}</th>
+      <th>💥%</th>
+      <th>{{ 'ATKs'|t }}</th>
+      <th class="priority-medium">{{ 'Lost'|t }}</th>
+      <th class="priority-medium">±⭐</th>
+    </tr>
+
+    {% for player in clan.members %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><a href="{{ path('clashofclans_player.tag', {'tag': player.tag}) }}">{{ player.name }}</a></td>
+      <td class="priority-medium">{{ player.townHallLevel }}</td>
+      <td>{{ player.stars }}⭐</td>
+      <td>{{ player.destructionPercentage }}</td>
+      <td>{{ player.attacks }} / {{ player.attend }}</td>
+      <td class="priority-medium">{{ player.lost }}</td>
+      {% set point = (player.stars - player.lost) %}
+      <td class="priority-medium">{{ point|number_format }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
 </div>

@@ -1,0 +1,7 @@
+clashofclans_war.tag:
+  path: 'clanwarleagues/wars/{tag}'
+  defaults:
+    _controller: '\Drupal\clashofclans_war\Controller\WarController::tag'
+    _title_callback: '\Drupal\clashofclans_war\Controller\WarController::setTitle'
+  requirements:
+    _permission: 'view war'

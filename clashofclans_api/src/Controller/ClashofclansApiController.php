@@ -82,7 +82,7 @@ class ClashofclansApiController extends ControllerBase {
     $options = [
       'attributes' => ['target' => '_blank'],
       'query' => [
-        'url' => 'players/#P9RJUCR2U',
+        'url' => 'players/#YCUJV0JCY',
         'limit' => 10,
         'token' => $client->getCsrfToken(),
       ],
@@ -113,11 +113,20 @@ class ClashofclansApiController extends ControllerBase {
     $options = [
       'attributes' => ['target' => '_blank'],
       'query' => [
-        'url' => 'clans/#PCUJJ2GQ/currentwar/leaguegroup',
+        'url' => 'clans/#JGV82LPC/currentwar/leaguegroup',
         'token' => $client->getCsrfToken(),
       ],
     ];
     $items[] = Link::createFromRoute('联赛', 'clashofclans_api', [], $options);
+
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'clanwarleagues/wars/#2G8CQULPP',
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('LeagueWar', 'clashofclans_api', [], $options);
 
     $build['links'] = [
       '#theme' => 'item_list',

@@ -1,0 +1,25 @@
+<ul class="links">
+  {% for item in items %}
+  {% set tag = item[context.tag] %}
+  <li>
+    {% for i in 1..3 %}
+      {% if loop.index0 < item.stars|number_format %}
+      <span style="color: orange;">★</span>
+      {% else %}
+      <span style="color: black;">☆</span>
+      {% endif %}
+    {% endfor %}
+    {% if item.destructionPercentage != '100' %}
+     &nbsp;({{ item.destructionPercentage|number_format }}%)
+    {% endif %}
+    &nbsp;⌚{{ item.duration|date('i\'s"', '+00:00 GMT')|trim('0') }}
+    <div>
+    {% if context.target == 'route' %}
+      <a href="{{ path('clashofclans_player.tag', { 'tag': tag }) }}" id="{{ tag|trim('#') }}">{{ players[tag].name }}</a>
+    {% else %}
+      <a href="{{ tag }}">{{ players[tag].name }}</a>
+    {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,17 @@
+<div style="font-size: large">
+{{ data.clan == 'clan' ? '⇒'}}
+{% for i in 1..3 %}
+  {% if loop.index0 < data.stars|number_format %}
+  <span style="color: orange;">★</span>
+  {% else %}
+  <span style="color: black;">☆</span>
+  {% endif %}
+{% endfor %}
+{{ data.clan == 'opponent' ? '⇐'}}
+</div>
+<div>
+{% if data.destructionPercentage != '100' %}
+{{ data.destructionPercentage|number_format }}%
+{% endif %}
+&nbsp;⌚{{ data.duration|date('i\'s"', '+00:00 GMT')|trim('0') }}
+</div>

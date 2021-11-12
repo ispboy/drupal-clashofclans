@@ -1,0 +1,4 @@
+services:
+  clashofclans_war.war:
+    class: Drupal\clashofclans_war\War
+    arguments: ['@clashofclans_api.guzzle_cache', '@clashofclans_clan.clan', '@entity_type.manager']

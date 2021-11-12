@@ -1,0 +1,54 @@
+<style>
+#clashofclans-war-result tr td {
+  text-align: center;
+}
+</style>
+<div id="clashofclans-war-data">
+  <ul>
+  <li><em>{{ 'State'|t }}:</em> <strong>{{ data.state }}</strong></li>
+  <li><em>{{ 'Team Size'|t }}:</em> {{ data.teamSize }}</li>
+  <li><em>preparationStartTime:</em> {{ data.preparationStartTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+  <li><em>startTime:</em> {{ data.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+  <li><em>endTime:</em> {{ data.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}</li>
+  </ul>
+
+  <div id="clashofclans-war-result">
+  <table>
+    <tr>
+      <td><img src="{{ data.clan.badgeUrls.medium}}" /><h2><a href="{{ data.clan.tag }}">{{ data.clan.name }}</a></h2></td>
+      <td><img src="{{ data.opponent.badgeUrls.medium}}" /><h2><a href="{{ data.opponent.tag }}">{{ data.opponent.name }}</a></h2></td>
+    </tr>
+    <tr>
+      <td>⭐{{ data.clan.stars }}</td><td>⭐{{ data.opponent.stars }}</td>
+    </tr>
+    <tr>
+      <td>💥{{ data.clan.destructionPercentage|number_format(2) }}%</td>
+      <td>💥{{ data.opponent.destructionPercentage|number_format(2) }}%</td>
+    </tr>
+    <tr>
+      <td>⚔️{{ data.clan.attacks }}</td>
+      <td>⚔️{{ data.opponent.attacks }}</td>
+    </tr>
+    <tr>
+      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.clan.averageDestruction|number_format(1) }}%</td>
+      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.opponent.averageDestruction|number_format(1) }}%</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="clashofclans-war-events">
+  <h2>{{ 'Events'|t }}</h2>
+  {{ render_var({ '#theme': 'clashofclans_war_events', '#items': data.events, '#players': data.players }) }}
+  </div>
+
+  <div class="clashofclans-war-clan">
+  <h2 id="{{ data.clan.tag|trim('#') }}">{{ data.clan.name }}</h2>
+  {{ render_var({ '#theme': 'clashofclans_war_members', '#items': data.clan.members, '#players': data.players }) }}
+  </div>
+
+  <div class="clashofclans-war-opponent">
+  <h2 id="{{ data.opponent.tag|trim('#') }}">{{ data.opponent.name }}</h2>
+  {{ render_var({ '#theme': 'clashofclans_war_members', '#items': data.opponent.members, '#players': data.players }) }}
+  </div>
+
+</div>

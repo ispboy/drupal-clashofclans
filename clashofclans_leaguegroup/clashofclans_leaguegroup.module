@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\clashofclans_api\Render;
 
 /**
  * Implements hook_theme().
@@ -31,6 +32,7 @@ function clashofclans_leaguegroup_theme() {
     'clashofclans_leaguegroup_rounds' => [
       'variables' => [
         'items' => NULL,
+        'wars' => NULL,
       ],
     ],
 
@@ -50,21 +52,57 @@ function clashofclans_leaguegroup_theme() {
  */
 function template_preprocess_clashofclans_leaguegroup(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
+    if ($key == 'field_data') {
+      $json = $variables['elements'][$key]['#items']->value;
+      if ($json) {
+        $league_group = \Drupal::service('clashofclans_leaguegroup.league_group');
+        $data = \Drupal\Component\Serialization\Json::decode($json);
+        $data = $league_group->processData($data);
+        $renderable = [
+          '#theme' => 'clashofclans_leaguegroup_currentwar',
+          '#data' => $data,
+          '#weight' => $variables['elements'][$key]['#weight'],
+        ];
+        $variables['content'][$key] = $renderable;
+      }
+    } else {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
   }
 }
 
 function template_preprocess_clashofclans_leaguegroup_clans(array &$variables) {
   $items = $variables['items'];
-  $header = ['clan', 'clanLevel', 'members'];
+  $header = [
+    '#',
+    'badgeUrls' => ['data' => 'Badge'],
+    'name' => ['data' => 'Clan'],
+    // 'clanLevel' => ['data' => 'clanLevel', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'stars' => ['data' => t('Stars')],
+    'destructionPercentage' => ['data' => '💥 %'],
+  ];
   $rows = [];
+
+  $i = 0;
   foreach ($items as $item) {
-    $clan = ['name' => $item['name'], 'tag' => $item['tag']];
+    $row = [];
+    $i++;
+    $row[] = $i;
     $renderable = [
-      '#theme' => 'clashofclans_api__clan',
-      '#data' => $clan,
+      '#theme' => 'clashofclans_api__badgeUrls',
+      '#data' => $item['badgeUrls'],
     ];
-    $rows[] = [\Drupal::service('renderer')->renderPlain($renderable), $item['clanLevel'], count($item['members'])];
+    $row[] = \Drupal::service('renderer')->renderPlain($renderable);
+
+    $text = $item['name'];
+    $url = \Drupal\Core\Url::fromUserInput($item['tag']);
+    $link = \Drupal\Core\Link::fromTextAndUrl($text, $url);
+    $row[] = $link;
+
+    $row[] = $item['stars']. '⭐';
+    $row[] = $item['destructionPercentage'];
+
+    $rows[] = $row;
   }
 
   $renderable = [
@@ -73,8 +111,8 @@ function template_preprocess_clashofclans_leaguegroup_clans(array &$variables) {
     '#sticky' => TRUE,
     '#header' => $header,
     '#rows' => $rows,
-    '#empty' => t('No results.'),
   ];
 
   $variables['content'] = $renderable;
+
 }

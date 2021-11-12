@@ -1,1 +1,49 @@
-{{ content }}
+<style>
+.league-group-rounds tr td,
+.league-group-rounds tr th {
+  text-align: center;
+}
+.league-war-stars {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.league-war-meta {
+  color: gray;
+}
+
+</style>
+<div class="league-group-rounds">
+  <table><caption>{{ 'Rounds'|t }}</caption>
+  {% for item in items %}
+    <tr>
+      <th colspan="3">{{ 'Round'|t ~ ' ' ~ loop.index }}</th>
+    </tr>
+    {% for tag in item.warTags %}
+    {% if tag != '#0' %}
+    {% set war = wars[tag] %}
+    {% if loop.index == 1 %}
+    <tr>
+      <td colspan="3">{{ war.state ? war.state|t }}:
+      {{ war.state == 'warEnded' ? war.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}
+      {{ war.state == 'inWar' ? war.endTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}
+      {{ war.state == 'preparation' ? war.startTime|replace({ '.000Z':' UTC'})|date('Y-m-d H:i:s') }}
+      </td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td><img src="{{ war.clan.badgeUrls.small }}" width="70" height="70" />
+      <div>{{ war.clan.name }}</div></td>
+      <td nowrap><div class="league-war-stars"><a href='{{ path('clashofclans_war.tag', {'tag': tag}) }}'>{{ war.clan.stars }} ⭐ {{ war.opponent.stars }}</a></div>
+      <div class="league-war-meta">{{ war.clan.destructionPercentage|number_format }}% 💥 {{ war.opponent.destructionPercentage|number_format }}%</div>
+      <div class="league-war-meta">{{ war.clan.attacks }} ⚔️ {{ war.opponent.attacks }}</div>
+      </td>
+      <td><img src="{{ war.opponent.badgeUrls.small }}" width="70" height="70" />
+      <div>{{ war.opponent.name }}</div></td>
+    </tr>
+    {% else %}
+      <tr><td colspan="3">{{ 'Not available.'|t }}</td></tr>
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </table>
+</div>

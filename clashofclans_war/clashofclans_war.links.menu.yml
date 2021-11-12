@@ -1,0 +1,5 @@
+entity.clashofclans_war_type.collection:
+  title: 'War types'
+  parent: system.admin_structure
+  description: 'Manage and CRUD actions on War type.'
+  route_name: entity.clashofclans_war_type.collection

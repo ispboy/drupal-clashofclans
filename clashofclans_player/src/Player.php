@@ -136,15 +136,6 @@ class Player {
     return $fields;
   }
 
-  public function convertSeason($season) {
-    if (isset($season['id'])) {
-      $timestamp = strtotime($season['id']);
-      $date = date('Y-m-d', $timestamp);
-      $season['id'] = $date; //convert 2021-06 to 2021-06-01
-    }
-    return $season;
-  }
-
   public function setEntity($entity, $fields) {
     foreach ($fields as $key => $field) {
       if ($key == 'field_name') {
@@ -177,4 +168,13 @@ class Player {
     }
   }
 
+
+  public function convertSeason($season) {
+    if (isset($season['id'])) {
+      $timestamp = strtotime($season['id']);
+      $date = date('Y-m-d', $timestamp);
+      $season['id'] = $date; //convert 2021-06 to 2021-06-01
+    }
+    return $season;
+  }
 }

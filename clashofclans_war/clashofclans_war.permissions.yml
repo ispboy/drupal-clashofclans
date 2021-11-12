@@ -1,0 +1,14 @@
+administer war types:
+  title: 'Administer war types'
+  description: 'Maintain the types of war entity.'
+  restrict access: true
+access war overview:
+  title: 'Access war overview page'
+delete war:
+  title: Delete war
+create war:
+  title: Create war
+view war:
+  title: View war
+edit war:
+  title: Edit war

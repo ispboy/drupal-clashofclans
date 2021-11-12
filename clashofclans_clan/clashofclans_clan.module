@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
-use Drupal\clashofclans_clan\Clan;
+use Drupal\clashofclans_api\Render;
 
 /**
  * Implements hook_theme().
@@ -22,6 +22,13 @@ function clashofclans_clan_theme() {
         'data' => NULL,
       ],
     ],
+
+    'clashofclans_clan_members' => [
+      'variables' => [
+        'items' => NULL,
+      ],
+    ],
+
   ];
 }
 
@@ -51,13 +58,39 @@ function template_preprocess_clashofclans_clan(array &$variables) {
   $variables['content']['#cache']['max-age'] = $clan->client->getMaxAge();
 }
 
-function clashofclans_clan_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
+/**
+ * Prepares variables for clan_members templates.
+ *
+ * Default template: clashofclans-clan-members.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - items
+ */
+function template_preprocess_clashofclans_clan_members(array &$variables) {
+  $header = [
+    'clanRank' => ['data' => '#'],
+    'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'name' => ['data' => 'Name'],
+    // 'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    // 'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    // 'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    // 'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    // 'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'townHallLevel' => ['data' => 'TH', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'attackWins' => ['data' => 'AW'],
+    'defenseWins' => ['data' => 'DW'],
+    'legendTrophies' => ['data' => 'legendTrophies', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'bestSeason' => ['data' => 'bestSeason', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'bestRank' => ['data' => 'bestRank', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'previousRank' => ['data' => 'previous', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'trophies' => ['data' => 'Trophies'],
+  ];
 
-  // // Load a specific node into the user object for later theming.
-  // if (!empty($entities) && $entity_type_id == 'clashofclans_clan' && $view_mode == 'full') {
-  //   $clan = \Drupal::service('clashofclans_clan.clan');
-  //   foreach ($entities as $entity) {
-  //     $clan->prepareView($entity);
-  //   }
-  // }
+  $renderable = Render::table($header, $variables['items'], 'player');
+
+  $variables['content'] = $renderable;
+
 }

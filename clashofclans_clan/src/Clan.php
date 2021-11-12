@@ -45,8 +45,7 @@ class Clan {
   public function createEntity($tag) {
     $storage = $this->entityTypeManager->getStorage('clashofclans_clan');
     $url = 'clans/'. $tag;
-    $json = $this->client->getJson($url);
-    $data = \Drupal\Component\Serialization\Json::decode($json);
+    $data = $this->client->getData($url);
     // dpm(array_keys($data));
     if (isset($data['name']) && isset($data['tag'])) {
       $entity = $storage->create([
@@ -140,6 +139,47 @@ class Clan {
       $items = [];
       if (isset($data['items'])) {
         $items = $data['items'];
+      }
+      return $items;
+    }
+  }
+
+  public function getMembers($entity, $options = []) {
+    if (isset($entity->tag->value)) {
+      $tag = $entity->tag->value;
+      $url = 'clans/'. $tag. '/members';
+      $data = $this->client->getData($url, $options);
+      $items = [];
+      if (isset($data['items'])) {
+        $items = $data['items'];
+        foreach ($items as $key => $item) {
+          if (isset($item['tag'])) {
+            $tag = $item['tag'];
+            $url = 'players/'. $tag;
+            $data = $this->client->getData($url);
+            if (isset($data['attackWins'])) {
+              $subset = array_intersect_key($data, [
+                'attackWins' => 0,
+                'defenseWins' => 0,
+                'townHallLevel' => 0,
+              ]); //limit the result for merging.
+              $items[$key] = array_merge($item, $subset);
+
+              $items[$key]['legendTrophies'] = isset($data['legendStatistics']['legendTrophies']) ?
+                $data['legendStatistics']['legendTrophies'] : NULL;
+
+              $items[$key]['bestSeason'] = isset($data['legendStatistics']['bestSeason']['id']) ?
+                $data['legendStatistics']['bestSeason']['id'] : NULL;
+
+              $items[$key]['bestRank'] = isset($data['legendStatistics']['bestSeason']['rank']) ?
+                '📌'. $data['legendStatistics']['bestSeason']['rank'] : NULL;
+
+              $items[$key]['previousRank'] = isset($data['legendStatistics']['previousSeason']['rank']) ?
+                $data['legendStatistics']['previousSeason']['rank'] : NULL;
+
+            }
+          }
+        }
       }
       return $items;
     }

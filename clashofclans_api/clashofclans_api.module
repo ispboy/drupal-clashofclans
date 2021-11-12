@@ -1,4 +1,5 @@
 <?php
+use Drupal\clashofclans_api\Render;
 
 /**
  * @file
@@ -45,64 +46,23 @@ function clashofclans_api_theme($existing, $type, $theme, $path) {
  *
  */
 function template_preprocess_clashofclans_api__memberList(array &$variables) {
-  $data = $variables['data'];
   $header = [
-    'clanRank' => '#',
-    'previousClanRank' => 'Prev',
-    'league' => 'League',
-    'expLevel' => 'Exp',
-    'name' => 'Name',
-    'tag' => 'Tag',
-    'role' => 'Role',
-    'donations' => 'Donated',
-    'donationsReceived' => 'Received',
-    'versusTrophies' => 'Versus',
-    'trophies' => 'Trophies',
+    'clanRank' => ['data' => '#'],
+    'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'league' => ['data' => 'League'],
+    'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'name' => ['data' => 'Name'],
+    'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'trophies' => ['data' => 'Trophies'],
   ];
-  $rows = [];
-  foreach ($data as $item) {
-    $row = [];
-    foreach (array_keys($header) as $key) {
-      if ($key == 'name' && isset($item['tag'])) {
-        $link = \Drupal\Core\Link::createFromRoute($item[$key], 'clashofclans_player.tag', ['tag' => $item['tag']]);
-        $renderable = $link->toRenderable();
-      } else {
-        $renderable = [
-          '#theme' => 'clashofclans_api__'. $key,
-          '#data' => $item[$key],
-        ];
-      }
-      $row[] = \Drupal::service('renderer')->renderPlain($renderable);
-    }
-    $rows[] = $row;
-  }
 
-  $low = ['previousClanRank', 'tag', 'donations', 'donationsReceived', 'versusTrophies'];
-  foreach ($low as $col) {
-    $val = $header[$col];
-    $header[$col] = [
-      'data' => $val,
-      'class' => [RESPONSIVE_PRIORITY_LOW],
-    ];
-  }
+  $renderable = Render::table($header, $variables['data'], 'player');
 
-  $medium = ['league', 'expLevel'];
-  foreach ($medium as $col) {
-    $val = $header[$col];
-    $header[$col] = [
-      'data' => $val,
-      'class' => [RESPONSIVE_PRIORITY_MEDIUM],
-    ];
-  }
-
-  $renderable = [
-    '#type' => 'table',
-    // '#responsive' => FALSE,
-    '#sticky' => TRUE,
-    '#header' => array_values($header),
-    '#rows' => $rows,
-  ];
-  $variables['data'] = $renderable;
+  $variables['content'] = $renderable;
 }
 
 /**

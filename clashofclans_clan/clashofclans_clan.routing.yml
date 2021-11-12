@@ -14,6 +14,18 @@ clashofclans_clan.tag:
   requirements:
     _permission: 'view clan'
 
+clashofclans_clan.members:
+  path: 'clashofclans-clan/{clashofclans_clan}/members'
+  defaults:
+    _controller: '\Drupal\clashofclans_clan\Controller\ClanController::members'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::getTitle'
+  requirements:
+    _permission: 'view members'
+  options:
+    parameters:
+      clashofclans_clan:
+        type: entity:clashofclans_clan
+
 clashofclans_clan.warlog:
   path: 'clashofclans-clan/{clashofclans_clan}/warlog'
   defaults:

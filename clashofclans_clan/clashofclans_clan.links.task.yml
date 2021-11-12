@@ -21,14 +21,20 @@ entity.clashofclans_clan.collection:
   base_route: system.admin_content
   weight: 10
 
+clashofclans_clan.members:
+  title: Members
+  route_name: clashofclans_clan.members
+  base_route: entity.clashofclans_clan.canonical
+  weight: 1
+
 clashofclans_clan.warlog:
   title: War log
   route_name: clashofclans_clan.warlog
   base_route: entity.clashofclans_clan.canonical
-  weight: 1
+  weight: 2
 
 clashofclans_clan.league_group:
   title: League group
   route_name: clashofclans_clan.league_group
   base_route: entity.clashofclans_clan.canonical
-  weight: 3  
+  weight: 3

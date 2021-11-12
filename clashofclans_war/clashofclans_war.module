@@ -1,0 +1,215 @@
+<?php
+
+/**
+ * @file
+ * Provides a war entity type.
+ */
+
+use Drupal\Core\Render\Element;
+use Drupal\clashofclans_api\Render;
+
+/**
+ * Implements hook_theme().
+ */
+function clashofclans_war_theme() {
+  return [
+    'clashofclans_war' => [
+      'render element' => 'elements',
+    ],
+
+    'clashofclans_war_data' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+    'clashofclans_war_members' => [
+      'variables' => [
+        'items' => NULL,
+        'players' => NULL,
+      ],
+    ],
+
+    'clashofclans_war_attacks' => [
+      'variables' => [
+        'items' => NULL,
+        'players' => NULL,
+        'context' => NULL,
+      ],
+    ],
+
+    'clashofclans_war_events' => [
+      'variables' => [
+        'items' => NULL,
+        'players' => NULL,
+      ],
+    ],
+
+    'clashofclans_war_event' => [
+      'variables' => [
+        'data' => NULL,
+      ],
+    ],
+
+  ];
+}
+
+/**
+ * Prepares variables for war templates.
+ *
+ * Default template: clashofclans-war.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the war information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_clashofclans_war(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    if ($key == 'field_data') {
+      $json = $variables['elements'][$key]['#items']->value;
+      if ($json) {
+        $war = \Drupal::service('clashofclans_war.war');
+        $data = \Drupal\Component\Serialization\Json::decode($json);
+        $data = $war->preprocessData($data);
+        $renderable = [
+          '#theme' => 'clashofclans_war_data',
+          '#data' => $data,
+          '#weight' => $variables['elements'][$key]['#weight'],
+        ];
+        $variables['content'][$key] = $renderable;
+      }
+    } else {
+      $variables['content'][$key] = $variables['elements'][$key];
+    }
+  }
+  $variables['content']['#cache']['max-age'] = $war->getClient()->getMaxAge();
+}
+
+function template_preprocess_clashofclans_war_members(array &$variables) {
+  $players = $variables['players'];
+  $header = [
+    'mapPosition' => ['data' => 'MP'],
+    'name' => ['data' => 'Player'],
+    'townhallLevel' => ['data' => 'TH', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'bestOpponentAttack' => ['data' => 'bestOpponentAttack', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'opponentAttacks' => ['data' => 'Defence'],
+    'attacks' => ['data' => 'attacks'],
+  ];
+  $rows = [];
+  foreach ($variables['items'] as $item) {
+    $row = [];
+    $row[] = $item['mapPosition'];
+
+    $options = [
+      'attributes' => ['id' => ltrim($item['tag'], '#')],
+    ];
+    $player = \Drupal\Core\Link::createFromRoute($item['name'], 'clashofclans_player.tag', ['tag' => $item['tag']], $options);
+    if (isset($item['bestOpponentAttack'])) {
+      $renderable = [
+        '#theme' => 'clashofclans_war_attacks',
+        '#items' => [$item['bestOpponentAttack']],
+        '#players' => $players,
+        '#context' => [
+          'tag' => 'defenderTag',
+          'target' => 'route',
+        ],
+      ];
+      $row[] = \Drupal::service('renderer')->renderPlain($renderable);
+    } else {
+      $row[] = $player;
+    }
+
+    $row[] = $item['townhallLevel'];
+
+    if (isset($item['bestOpponentAttack'])) {
+      $text = $players[$item['bestOpponentAttack']['attackerTag']]['name'];
+      $url = \Drupal\Core\Url::fromUserInput($item['bestOpponentAttack']['attackerTag']);
+      $link = \Drupal\Core\Link::fromTextAndUrl($text, $url);
+      $row[] = $link;
+    } else {
+      $row[] = '';
+    }
+
+    $row[] = $item['opponentAttacks'];
+
+    $items = [];
+    if (isset($item['attacks'])) $items = $item['attacks'];
+    $renderable = [
+      '#theme' => 'clashofclans_war_attacks',
+      '#items' => $items,
+      '#players' => $players,
+      '#context' => [
+        'tag' => 'defenderTag',
+      ],
+    ];
+    $row[] = \Drupal::service('renderer')->renderPlain($renderable);
+
+    $rows[] = $row;
+  }
+
+  foreach ($rows as $key => $row) {
+    $position[$key] = $row[0];
+  }
+  array_multisort($position, SORT_ASC, $rows);
+
+  $renderable = [
+    '#type' => 'table',
+    // '#responsive' => FALSE,
+    // '#sticky' => TRUE,
+    '#header' => $header,
+    '#rows' => $rows,
+  ];
+
+  $variables['content'] = $renderable;
+}
+
+function template_preprocess_clashofclans_war_events(array &$variables) {
+  $header = [
+    ['data' => '#'],
+    ['data' => 'Clan'],
+    ['data' => 'Event'],
+    ['data' => 'Opponent'],
+  ];
+  $items = $variables['items'];
+  $players = $variables['players'];
+  $rows = [];
+  foreach ($items as $item) {
+    $row = [];
+    $row[] = $item['order'];
+
+    $tag = ($item['clan'] == 'clan') ? $item['attackerTag'] : $item['defenderTag'];
+    $row[] = \Drupal\Core\Link::fromTextAndUrl($players[$tag]['name'], \Drupal\Core\Url::fromUserInput($tag));
+
+    $renderable = [
+      '#theme' => 'clashofclans_war_event',
+      '#data' => $item,
+    ];
+    $row[] = [
+      'data' => \Drupal::service('renderer')->renderPlain($renderable),
+      'class' => [$item['clan']],
+      'nowrap' => '',
+    ];
+
+    // $event = str_repeat('⭐', intval($item['stars'])) . str_repeat('☆', 3 - intval($item['stars']));
+    // $event = ($item['clan'] == 'clan') ? '⏭'. $event : $event. '⏮';
+    // $row[] = ['data' => $event, 'class' => [$item['clan']], 'nowrap' => ''];
+
+    $tag = ($item['clan'] == 'clan') ? $item['defenderTag'] : $item['attackerTag'];
+    $row[] = \Drupal\Core\Link::fromTextAndUrl($players[$tag]['name'], \Drupal\Core\Url::fromUserInput($tag));
+
+    $rows[] = $row;
+  }
+
+  $renderable = [
+    '#type' => 'table',
+    // '#responsive' => FALSE,
+    '#sticky' => TRUE,
+    '#header' => $header,
+    '#rows' => $rows,
+  ];
+
+  $variables['content'] = $renderable;
+
+}
