@@ -51,7 +51,15 @@ class ClashofclansApiLocationId extends ArgumentPluginBase {
   public function getTitle() {
     $id = $this->argument;
     if ($id == 'global') {
-      return $this->t('Global ranking');
+      switch ($this->view->id()) {
+        case 'clashofclans_ranking_clans':
+          return $this->t('Top Global Clans');
+        case 'clashofclans_ranking_players':
+          return $this->t('Top Global Players');
+        default:
+          return 'No views';
+      }
+
     } else {
       $location = $this->entityTypeManager
             ->getStorage('clashofclans_location')

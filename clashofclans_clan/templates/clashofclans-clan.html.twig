@@ -46,7 +46,7 @@
   </ul>
 
   <p><em>{{ 'Members'|t }}</em>: <strong>{{ data.members }}</strong></p>
-  {{ render_var({ '#theme': 'clashofclans_api__memberList', '#data': data.memberList }) }}
+  {{ render_var({ '#theme': 'clashofclans_clan_memberlist', '#items': data.memberList }) }}
 
   {% if content %}
     {{- content|without('flag_following_clan') -}}

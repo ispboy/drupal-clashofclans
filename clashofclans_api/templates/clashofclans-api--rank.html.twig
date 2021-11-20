@@ -1,0 +1,10 @@
+<strong>{{ data.rank }}</strong>
+{% if data.diff is not null %}
+  {% if data.diff > 0 %}
+    <em>(+{{ data.diff }})</em>
+  {% elseif data.diff == 0 %}
+    <em>(=)</em>
+  {% else %}
+    <em>({{ data.diff }})</em>
+  {% endif %}
+{% endif %}

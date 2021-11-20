@@ -1,12 +1,10 @@
 <?php
-
 /**
  * @file
  * Provides a clan entity type.
  */
 
 use Drupal\Core\Render\Element;
-use Drupal\clashofclans_api\Render;
 
 /**
  * Implements hook_theme().
@@ -23,12 +21,17 @@ function clashofclans_clan_theme() {
       ],
     ],
 
-    'clashofclans_clan_members' => [
+    // 'clashofclans_clan_members' => [
+    //   'variables' => [
+    //     'items' => NULL,
+    //   ],
+    // ],
+
+    'clashofclans_clan_memberlist' => [
       'variables' => [
         'items' => NULL,
       ],
     ],
-
   ];
 }
 
@@ -59,6 +62,35 @@ function template_preprocess_clashofclans_clan(array &$variables) {
 }
 
 /**
+ * Prepares variables for clan_memberlist templates.
+ *
+ * Default template: clashofclans-clan-memberlist.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - items
+ */
+function template_preprocess_clashofclans_clan_memberlist(array &$variables) {
+  $items = $variables['items'];
+  $header = [
+    'clanRank' => ['data' => '#'],
+    // 'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'league' => ['data' => 'League'],
+    'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'name' => ['data' => 'Name'],
+    'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+    'trophies' => ['data' => 'Trophies'],
+  ];
+
+  $variables['content'] = \Drupal\clashofclans_api\Render::table($header, $items);
+
+}
+
+/**
  * Prepares variables for clan_members templates.
  *
  * Default template: clashofclans-clan-members.html.twig.
@@ -67,30 +99,35 @@ function template_preprocess_clashofclans_clan(array &$variables) {
  *   An associative array containing:
  *   - items
  */
-function template_preprocess_clashofclans_clan_members(array &$variables) {
-  $header = [
-    'clanRank' => ['data' => '#'],
-    'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
-    'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'name' => ['data' => 'Name'],
-    // 'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
-    // 'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    // 'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    // 'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    // 'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'townHallLevel' => ['data' => 'TH', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'attackWins' => ['data' => 'AW'],
-    'defenseWins' => ['data' => 'DW'],
-    'legendTrophies' => ['data' => 'legendTrophies', 'class' => [RESPONSIVE_PRIORITY_LOW]],
-    'bestSeason' => ['data' => 'bestSeason', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'bestRank' => ['data' => 'bestRank', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'previousRank' => ['data' => 'previous', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
-    'trophies' => ['data' => 'Trophies'],
-  ];
-
-  $renderable = Render::table($header, $variables['items'], 'player');
-
-  $variables['content'] = $renderable;
-
-}
+// function template_preprocess_clashofclans_clan_members(array &$variables) {
+//   $header = [
+//     'clanRank' => ['data' => '#'],
+//     'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+//     'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'name' => ['data' => 'Name'],
+//     // 'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+//     // 'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     // 'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     // 'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     // 'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'townHallLevel' => ['data' => 'TH', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'attackWins' => ['data' => 'AW'],
+//     'defenseWins' => ['data' => 'DW'],
+//     'legendTrophies' => ['data' => 'legendTrophies', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+//     'bestSeason' => ['data' => 'bestSeason', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'bestRank' => ['data' => 'bestRank', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'previousRank' => ['data' => 'previous', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+//     'trophies' => ['data' => 'Trophies'],
+//   ];
+//
+//   $renderable = [
+//     '#theme' => 'clashofclans_api__table',
+//     '#sticky' => TRUE,
+//     '#header' => $header,
+//     '#items' => $variables['items'],
+//   ];
+//
+//   $variables['content'] = $renderable;
+//
+// }

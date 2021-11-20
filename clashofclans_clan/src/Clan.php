@@ -92,20 +92,6 @@ class Clan {
     }
   }
 
-
-  // public function prepareView($entity) {
-  //   $tag = $entity->tag->value;
-  //   if ($tag) {
-  //     $client = $this->client;
-  //     $url = 'clans/'. $tag;
-  //     $json = $client->getJson($url);
-  //     $data = \Drupal\Component\Serialization\Json::decode($json);
-  //     $this->updateEntity($entity, $data);
-  //     $entity->set('field_data', $json);  //keep entity view update.
-  //
-  //   }
-  // }
-
   /**
   * Compare fields and update entity if outdated.
   **/

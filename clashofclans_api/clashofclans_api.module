@@ -17,12 +17,13 @@ function clashofclans_api_theme($existing, $type, $theme, $path) {
         'data' => NULL,
       ],
     ],
+
   ];
 
   $keys = [
-    'location', 'badgeUrls', 'clanPoints', 'clan', 'league', 'name',
-    'warLeague', 'chatLanguage', 'labels', 'memberList', 'trophies',
-    'legendStatistics', 'heroes', 'spells', 'achievements', 'troops'
+    'rank', 'location', 'badgeUrls', 'clanPoints', 'clan', 'league',
+    'name', 'warLeague', 'chatLanguage', 'labels', 'memberList', 'trophies',
+    'legendStatistics', 'heroes', 'spells', 'achievements', 'troops',
   ];
   foreach ($keys as $key) {
     $id = 'clashofclans_api__'. $key;
@@ -70,6 +71,6 @@ function template_preprocess_clashofclans_api__memberList(array &$variables) {
  *
  * @inheritdoc
 */
-function clashofclans_api_local_tasks_alter(&$local_tasks) {
-  $local_tasks['entity.clashofclans_location.view']['title'] = t('Clans');
-}
+// function clashofclans_api_local_tasks_alter(&$local_tasks) {
+//   $local_tasks['entity.clashofclans_location.view']['title'] = t('Clans');
+// }

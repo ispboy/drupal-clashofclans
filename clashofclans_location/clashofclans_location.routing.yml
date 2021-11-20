@@ -5,3 +5,46 @@ entity.clashofclans_location.settings:
     _title: 'Location'
   requirements:
     _permission: 'administer location'
+
+clashofclans_location.global:
+  path: 'clashofclans-location/global'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\LocationController::globalClans'
+    _title: 'Top Global Clans'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_location.global.players:
+  path: 'clashofclans-location/global/players'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\LocationController::globalPlayers'
+    _title: 'Top Global Players'
+  requirements:
+    _permission: 'access content'
+
+clashofclans_location.clans:
+  path: 'clashofclans-location/{clashofclans_location}'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\LocationController::clans'
+    _title_callback: '\Drupal\clashofclans_location\Controller\LocationController::setTitle'
+    custom_arg: 'Clans'
+  requirements:
+    _permission: 'view location'
+  options:
+    parameters:
+      clashofclans_location:
+        type: entity:clashofclans_location
+
+
+clashofclans_location.players:
+  path: 'clashofclans-location/{clashofclans_location}/players'
+  defaults:
+    _controller: '\Drupal\clashofclans_location\Controller\LocationController::players'
+    _title_callback: '\Drupal\clashofclans_location\Controller\LocationController::setTitle'
+    custom_arg: 'Players'
+  requirements:
+    _permission: 'view location'
+  options:
+    parameters:
+      clashofclans_location:
+        type: entity:clashofclans_location

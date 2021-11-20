@@ -142,13 +142,32 @@ class ClanController extends ControllerBase {
    * Builds the response.
    */
   public function members($clashofclans_clan) {
-    $options = ['query' => ['limit' => 50]];
+    $options = ['query' => ['limit' => 100]];
     $items = $this->clan->getMembers($clashofclans_clan, $options);
-    $build['content'] = [
-      '#theme' => 'clashofclans_clan_members',
-      '#items' => $items,
-      '#cache' => ['max-age' => $this->clan->client->getMaxAge() * 5],
-    ];
+
+      $header = [
+        'clanRank' => ['data' => '#'],
+        'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+        'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'name' => ['data' => 'Name'],
+        // 'tag' => ['data' => 'Tag', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+        // 'role' => ['data' => 'Role', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        // 'donations' => ['data' => 'Donated', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        // 'donationsReceived' => ['data' => 'Received', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        // 'versusTrophies' => ['data' => 'Versus', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'townHallLevel' => ['data' => 'TH', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'attackWins' => ['data' => 'AW'],
+        'defenseWins' => ['data' => 'DW'],
+        'legendTrophies' => ['data' => 'legendTrophies', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+        'bestSeason' => ['data' => 'bestSeason', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'bestRank' => ['data' => 'bestRank', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'previousRank' => ['data' => 'previous', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
+        'trophies' => ['data' => 'Trophies'],
+      ];
+
+    $build['content'] = \Drupal\clashofclans_api\Render::table($header, $items);
+    $build['content']['#cache']['max-age'] = $this->clan->client->getMaxAge() * 10;
 
     return $build;
   }
