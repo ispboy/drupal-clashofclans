@@ -145,13 +145,15 @@ class War {
   * process data.
   */
   public function preprocessData($data) {
-    $data['clan']['averageDestruction'] = $this->setAverageDestruction('clan', 'opponent', $data);
-    $data['opponent']['averageDestruction'] = $this->setAverageDestruction('opponent', 'clan', $data);
-    // $data['clan']['bestPlayers'] = $this->setClanBestPlayers('clan', 'opponent', $data);
-    // $data['opponent']['bestPlayers'] = $this->setClanBestPlayers('opponent', 'clan', $data);
-    $data['players'] = $this->getPlayers('clan', 'opponent', $data);
-    $data['players'] += $this->getPlayers('opponent', 'clan', $data);
-    $data = $this->setEvents($data);
+    if (isset($data['clan']['members'])) {
+      $data['clan']['averageDestruction'] = $this->getAverageDestruction('clan', 'opponent', $data);
+      $data['opponent']['averageDestruction'] = $this->getAverageDestruction('opponent', 'clan', $data);
+      $data['players'] = $this->getPlayers('clan', 'opponent', $data);
+      $data['players'] += $this->getPlayers('opponent', 'clan', $data);
+      $data = $this->getEvents($data);
+      $data['clan']['bestStars'] = $this->getBestStars('clan', $data);
+      $data['opponent']['bestStars'] = $this->getBestStars('opponent', $data);
+    }
     return $data;
   }
 
@@ -159,25 +161,47 @@ class War {
   * process players.
   */
   public function getPlayers($clan, $opponent, $data) {
-    $items = [];
+    $items = [];  //initial players
     foreach ($data[$clan]['members'] as $item) {
+      $tag = $item['tag']; //player tag
       $item['clan'] = $clan;
-      $items[$item['tag']] = $item;
+      $item['bestStars'] = [0, 0, 0, 0];
+      $items[$tag] = $item;
     }
+
+    //calculate player's best attack stars.
+    foreach ($data[$opponent]['members'] as $member) {
+      if (isset($member['bestOpponentAttack'])) {
+        $bestOpponentAttack = $member['bestOpponentAttack'];
+        $tag = $bestOpponentAttack['attackerTag'];
+        $key = intval($bestOpponentAttack['stars']);
+        $items[$tag]['bestStars'][$key] ++;
+      }
+    }
+
     return $items;
-  }
-
-  /**
-  * process Clan best players.
-  */
-  public function setClanBestPlayers($clan, $opponent, $data) {
-
   }
 
   /**
   * process events.
   */
-  public function setEvents($data) {
+  public function getBestStars($clan, $data) {
+    $items = [0, 0, 0, 0];
+    $players = $data['players'];
+    $members = \array_filter($players, function($player) use($clan) {
+      if ($player['clan'] == $clan) return TRUE;
+    });
+    $bestStars = \array_column($members, 'bestStars');
+    for ($i = 0; $i < count($items); $i++) {
+      $items[$i] = \array_sum(\array_column($bestStars, $i));
+    }
+    return $items;
+  }
+
+  /**
+  * process events.
+  */
+  public function getEvents($data) {
     $events = [];
     $players = $data['players'];
     foreach ($players as $player) {
@@ -197,7 +221,7 @@ class War {
   /**
   * process events.
   */
-  public function setAverageDestruction($clan, $opponent, $data) {
+  public function getAverageDestruction($clan, $opponent, $data) {
     $members = $data[$opponent]['members'];
     $bestOpponentAttack = array_filter($members, function($player) {
       if (\array_key_exists('bestOpponentAttack', $player)) return TRUE;

@@ -140,7 +140,7 @@ class ClashofclansApiController extends ControllerBase {
     $options = [
       'attributes' => ['target' => '_blank'],
       'query' => [
-        'url' => 'clans/#C00RJP/currentwar',
+        'url' => 'clans/#2VQ2JP8P/currentwar',
         'token' => $client->getCsrfToken(),
       ],
     ];

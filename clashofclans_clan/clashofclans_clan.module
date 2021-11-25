@@ -27,7 +27,7 @@ function clashofclans_clan_theme() {
     //   ],
     // ],
 
-    'clashofclans_clan_memberlist' => [
+    'clashofclans_clan_memberlist' => [ //memberList in clan page.
       'variables' => [
         'items' => NULL,
       ],

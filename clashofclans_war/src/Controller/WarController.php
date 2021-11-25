@@ -62,11 +62,15 @@ class WarController extends ControllerBase {
    */
   public function currentwar($clashofclans_clan) {
     $data = $this->war->currentWar($clashofclans_clan);
-    if ($data) {
-      $build['content'] = [
-        '#theme' => 'clashofclans_war_data',
-        '#data' => $data,
-      ];
+    if (isset($data['state'])) {
+      if ($data['state'] == 'notInWar') {
+        $build['content'] = ['#markup' => $this->t('Not in war.')];
+      } else {
+        $build['content'] = [
+          '#theme' => 'clashofclans_war_data',
+          '#data' => $data,
+        ];
+      }
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
     }

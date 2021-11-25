@@ -144,7 +144,6 @@ class ClanController extends ControllerBase {
   public function members($clashofclans_clan) {
     $options = ['query' => ['limit' => 100]];
     $items = $this->clan->getMembers($clashofclans_clan, $options);
-
       $header = [
         'clanRank' => ['data' => '#'],
         'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
@@ -163,6 +162,7 @@ class ClanController extends ControllerBase {
         'bestRank' => ['data' => 'bestRank', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
         'previousRank' => ['data' => 'previous', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
         'trophies' => ['data' => 'Trophies'],
+        'superTroops' => ['data' => 'Super', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
       ];
 
     $build['content'] = \Drupal\clashofclans_api\Render::table($header, $items);

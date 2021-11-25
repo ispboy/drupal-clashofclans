@@ -30,8 +30,24 @@
       <td>⚔️{{ data.opponent.attacks }}</td>
     </tr>
     <tr>
-      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.clan.averageDestruction|number_format(1) }}%</td>
-      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.opponent.averageDestruction|number_format(1) }}%</td>
+      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.clan.averageDestruction|number_format(2) }}%</td>
+      <td><em>{{ 'avg.'|t }}</em> 💥{{ data.opponent.averageDestruction|number_format(2) }}%</td>
+    </tr>
+    <tr>
+      <td>⭐⭐⭐ {{ data.clan.bestStars[3] }}</td>
+      <td>⭐⭐⭐ {{ data.opponent.bestStars[3] }}</td>
+    </tr>
+    <tr>
+      <td>⭐⭐☆ {{ data.clan.bestStars[2] }}</td>
+      <td>⭐⭐☆ {{ data.opponent.bestStars[2] }}</td>
+    </tr>
+    <tr>
+      <td>⭐☆☆ {{ data.clan.bestStars[1] }}</td>
+      <td>⭐☆☆ {{ data.opponent.bestStars[1] }}</td>
+    </tr>
+    <tr>
+      <td>☆☆☆ {{ data.clan.bestStars[0] }}</td>
+      <td>☆☆☆ {{ data.opponent.bestStars[0] }}</td>
     </tr>
   </table>
   </div>

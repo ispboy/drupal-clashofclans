@@ -143,12 +143,10 @@ class Clan {
             $tag = $item['tag'];
             $url = 'players/'. $tag;
             $data = $this->client->getData($url);
+
             if (isset($data['attackWins'])) {
-              $subset = array_intersect_key($data, [
-                'attackWins' => 0,
-                'defenseWins' => 0,
-                'townHallLevel' => 0,
-              ]); //limit the result for merging.
+              $allowed = ['attackWins', 'defenseWins', 'townHallLevel'];
+              $subset = array_intersect_key($data, \array_flip($allowed)); //limit the result for merging.
               $items[$key] = array_merge($item, $subset);
 
               $items[$key]['legendTrophies'] = isset($data['legendStatistics']['legendTrophies']) ?
@@ -162,8 +160,15 @@ class Clan {
 
               $items[$key]['previousRank'] = isset($data['legendStatistics']['previousSeason']['rank']) ?
                 $data['legendStatistics']['previousSeason']['rank'] : NULL;
-
             }
+            
+            $troops = $data['troops'];
+            $superTroops = array_filter($troops, function($troop) {
+              if (!empty($troop['superTroopIsActive'])) return TRUE;
+            });
+            $superNames = \array_column($superTroops, 'name');
+            $items[$key]['superTroops'] = implode(', ', $superNames);
+
           }
         }
       }

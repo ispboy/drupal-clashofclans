@@ -151,7 +151,8 @@ function template_preprocess_clashofclans_war_members(array &$variables) {
   foreach ($rows as $key => $row) {
     $position[$key] = $row[0];
   }
-  array_multisort($position, SORT_ASC, $rows);
+
+  if ($position) array_multisort($position, SORT_ASC, $rows);
 
   $renderable = [
     '#type' => 'table',
