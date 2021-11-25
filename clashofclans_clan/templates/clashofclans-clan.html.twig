@@ -40,6 +40,7 @@
   {% if data.isWarLogPublic %}
   <li><em>{{ 'warTies'|t }}</em>: {{ data.warTies }}</li>
   <li><em>{{ 'warLosses'|t }}</em>: {{ data.warLosses }}</li>
+  <li>{{ data.entity_id ? link('Current war'|t, 'internal:' ~ path('clashofclans_clan.currentwar', {'clashofclans_clan': data.entity_id}))}}</li>
   <li>{{ data.entity_id ? link('War log'|t, 'internal:' ~ path('clashofclans_clan.warlog', {'clashofclans_clan': data.entity_id}))}}</li>
   <li>{{ data.entity_id ? link('League group'|t, 'internal:' ~ path('clashofclans_clan.league_group', {'clashofclans_clan': data.entity_id}))}}</li>
   {% endif %}

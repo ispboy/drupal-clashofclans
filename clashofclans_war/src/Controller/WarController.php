@@ -55,4 +55,23 @@ class WarController extends ControllerBase {
     return $build;
 
   }
+
+
+  /**
+   * current war of clan
+   */
+  public function currentwar($clashofclans_clan) {
+    $data = $this->war->currentWar($clashofclans_clan);
+    if ($data) {
+      $build['content'] = [
+        '#theme' => 'clashofclans_war_data',
+        '#data' => $data,
+      ];
+    } else {
+      $build['content'] = ['#markup' => $this->t('No results.')];
+    }
+    $build['content']['#cache']['max-age'] = $this->war->getClient()->getMaxAge();
+    return $build;
+  }
+
 }

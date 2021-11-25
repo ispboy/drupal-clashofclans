@@ -30,18 +30,34 @@ class War {
   }
 
   /**
+  * clan's currentwar;
+  * @param $entity: clan entity
+  **/
+  public function currentWar($entity) {
+    if (isset($entity->tag->value)) {
+      $tag = $entity->tag->value;
+      $url = 'clans/'. $tag. '/currentwar';
+      $data = $this->client->getData($url);
+      if ($data) {
+        $data = $this->preprocessData($data);
+        return $data;
+      }
+    }
+  }
+
+  /**
   * response to controller tag();
   **/
   public function tag($tag) {
     $result = [];
-    $id = $this->getEntityId($tag);
+    $id = $this->getLeagueWarId($tag);
     if ($id) {
       $result['id'] = $id;
     } else {
       $url = 'clanwarleagues/wars/'. $tag;
       $data = $this->client->getData($url);
       if (isset($data['state']) && $data['state'] == 'warEnded') {
-        $entity = $this->createEntity($data, $tag);
+        $entity = $this->createLeagueWar($data, $tag);
         if ($entity) $result['id'] = $entity->id();
       }
       $data = $this->preprocessData($data);
@@ -72,7 +88,7 @@ class War {
   /**
   * Get EntityId
   **/
-  public function getEntityId($tag) {
+  public function getLeagueWarId($tag) {
     $storage = $this->entityTypeManager->getStorage('clashofclans_war');
     $query = $storage->getQuery();
     $query -> condition('field_war_tag', $tag);
@@ -83,7 +99,7 @@ class War {
     }
   }
 
-  public function createEntity($data, $war_tag) {
+  public function createLeagueWar($data, $war_tag) {
     $storage = $this->entityTypeManager->getStorage('clashofclans_war');
     if (isset($data['startTime'])) {
       $start_time = $this->convertTime($data['startTime']);
@@ -129,9 +145,12 @@ class War {
   * process data.
   */
   public function preprocessData($data) {
-    $data['clan']['averageDestruction'] = $this->setAverageDestruction($data['clan'], $data['teamSize']);
-    $data['opponent']['averageDestruction'] = $this->setAverageDestruction($data['opponent'], $data['teamSize']);
-    $data = $this->setPlayers($data);
+    $data['clan']['averageDestruction'] = $this->setAverageDestruction('clan', 'opponent', $data);
+    $data['opponent']['averageDestruction'] = $this->setAverageDestruction('opponent', 'clan', $data);
+    // $data['clan']['bestPlayers'] = $this->setClanBestPlayers('clan', 'opponent', $data);
+    // $data['opponent']['bestPlayers'] = $this->setClanBestPlayers('opponent', 'clan', $data);
+    $data['players'] = $this->getPlayers('clan', 'opponent', $data);
+    $data['players'] += $this->getPlayers('opponent', 'clan', $data);
     $data = $this->setEvents($data);
     return $data;
   }
@@ -139,18 +158,20 @@ class War {
   /**
   * process players.
   */
-  public function setPlayers($data) {
+  public function getPlayers($clan, $opponent, $data) {
     $items = [];
-    foreach ($data['clan']['members'] as $item) {
-      $item['clan'] = 'clan';
+    foreach ($data[$clan]['members'] as $item) {
+      $item['clan'] = $clan;
       $items[$item['tag']] = $item;
     }
-    foreach ($data['opponent']['members'] as $item) {
-      $item['clan'] = 'opponent';
-      $items[$item['tag']] = $item;
-    }
-    $data['players'] = $items;
-    return $data;
+    return $items;
+  }
+
+  /**
+  * process Clan best players.
+  */
+  public function setClanBestPlayers($clan, $opponent, $data) {
+
   }
 
   /**
@@ -176,12 +197,17 @@ class War {
   /**
   * process events.
   */
-  public function setAverageDestruction($clan, $team_size) {
-    $attacks = intval($clan['attacks']);
-    if ($attacks > 0) {
-      $percentage = \floatval($clan['destructionPercentage']);
-      $size = \intval($team_size);
-      $result = $percentage * $size / $attacks;
+  public function setAverageDestruction($clan, $opponent, $data) {
+    $members = $data[$opponent]['members'];
+    $bestOpponentAttack = array_filter($members, function($player) {
+      if (\array_key_exists('bestOpponentAttack', $player)) return TRUE;
+    });
+    $count = count($bestOpponentAttack);
+
+    if ($count > 0) {
+      $percentage = \floatval($data[$clan]['destructionPercentage']);
+      $size = \intval($data['teamSize']);
+      $result = $percentage * $size / $count;
       return $result;
     } else {
       return 0;

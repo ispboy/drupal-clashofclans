@@ -87,7 +87,7 @@ class ClashofclansApiController extends ControllerBase {
         'token' => $client->getCsrfToken(),
       ],
     ];
-    $items[] = Link::createFromRoute('蓝竹-画雅人', 'clashofclans_api', [], $options);
+    $items[] = Link::createFromRoute('玩家', 'clashofclans_api', [], $options);
 
     $options = [
       'attributes' => ['target' => '_blank'],
@@ -97,7 +97,7 @@ class ClashofclansApiController extends ControllerBase {
         'token' => $client->getCsrfToken(),
       ],
     ];
-    $items[] = Link::createFromRoute('快乐糖果屋', 'clashofclans_api', [], $options);
+    $items[] = Link::createFromRoute('部落', 'clashofclans_api', [], $options);
 
     $options = [
       'attributes' => ['target' => '_blank'],
@@ -117,7 +117,7 @@ class ClashofclansApiController extends ControllerBase {
         'token' => $client->getCsrfToken(),
       ],
     ];
-    $items[] = Link::createFromRoute('联赛', 'clashofclans_api', [], $options);
+    $items[] = Link::createFromRoute('联赛分组', 'clashofclans_api', [], $options);
 
     $options = [
       'attributes' => ['target' => '_blank'],
@@ -126,8 +126,25 @@ class ClashofclansApiController extends ControllerBase {
         'token' => $client->getCsrfToken(),
       ],
     ];
-    $items[] = Link::createFromRoute('LeagueWar', 'clashofclans_api', [], $options);
+    $items[] = Link::createFromRoute('联赛战争', 'clashofclans_api', [], $options);
+    $build['links'] = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#title' => 'Useful links',
+      '#items' => $items,
+      '#attributes' => [
+        'class' => ['links','inline'],
+      ],
+    ];
 
+    $options = [
+      'attributes' => ['target' => '_blank'],
+      'query' => [
+        'url' => 'clans/#C00RJP/currentwar',
+        'token' => $client->getCsrfToken(),
+      ],
+    ];
+    $items[] = Link::createFromRoute('部落战争', 'clashofclans_api', [], $options);
     $build['links'] = [
       '#theme' => 'item_list',
       '#list_type' => 'ul',

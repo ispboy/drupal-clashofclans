@@ -39,6 +39,19 @@ clashofclans_clan.warlog:
       clashofclans_clan:
         type: entity:clashofclans_clan
 
+clashofclans_clan.currentwar:
+  path: 'clashofclans-clan/{clashofclans_clan}/currentwar'
+  defaults:
+    _controller: '\Drupal\clashofclans_war\Controller\WarController::currentwar'
+    _title_callback: '\Drupal\clashofclans_clan\Controller\ClanController::getTitle'
+  requirements:
+    _permission: 'view clan'
+    _custom_access: '\Drupal\clashofclans_clan\Controller\ClanController::warlogAccess'
+  options:
+    parameters:
+      clashofclans_clan:
+        type: entity:clashofclans_clan
+
 clashofclans_clan.league_group:
   path: 'clashofclans-clan/{clashofclans_clan}/leaguegroup'
   defaults:

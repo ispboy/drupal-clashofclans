@@ -27,14 +27,20 @@ clashofclans_clan.members:
   base_route: entity.clashofclans_clan.canonical
   weight: 1
 
+clashofclans_clan.currentwar:
+  title: Current war
+  route_name: clashofclans_clan.currentwar
+  base_route: entity.clashofclans_clan.canonical
+  weight: 2
+
 clashofclans_clan.warlog:
   title: War log
   route_name: clashofclans_clan.warlog
   base_route: entity.clashofclans_clan.canonical
-  weight: 2
+  weight: 3
 
 clashofclans_clan.league_group:
   title: League group
   route_name: clashofclans_clan.league_group
   base_route: entity.clashofclans_clan.canonical
-  weight: 3
+  weight: 4

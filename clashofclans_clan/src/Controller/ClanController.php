@@ -147,7 +147,6 @@ class ClanController extends ControllerBase {
 
       $header = [
         'clanRank' => ['data' => '#'],
-        'previousClanRank' => ['data' => 'Prev', 'class' => [RESPONSIVE_PRIORITY_LOW]],
         'league' => ['data' => 'League', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
         'expLevel' => ['data' => 'Exp', 'class' => [RESPONSIVE_PRIORITY_MEDIUM]],
         'name' => ['data' => 'Name'],
