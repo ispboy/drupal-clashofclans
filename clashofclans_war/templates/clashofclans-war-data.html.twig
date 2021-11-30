@@ -58,12 +58,12 @@
   </div>
 
   <div class="clashofclans-war-clan">
-  <h2 id="{{ data.clan.tag|trim('#') }}">{{ data.clan.name }}</h2>
+  <h2 id="{{ data.clan.tag|trim('#') }}"><a href="{{ path('clashofclans_clan.tag', {'tag': data.clan.tag}) }}">{{ data.clan.name }}</a></h2>
   {{ render_var({ '#theme': 'clashofclans_war_members', '#items': data.clan.members, '#players': data.players }) }}
   </div>
 
   <div class="clashofclans-war-opponent">
-  <h2 id="{{ data.opponent.tag|trim('#') }}">{{ data.opponent.name }}</h2>
+  <h2 id="{{ data.opponent.tag|trim('#') }}"><a href="{{ path('clashofclans_clan.tag', {'tag': data.opponent.tag}) }}">{{ data.opponent.name }}</a></h2>
   {{ render_var({ '#theme': 'clashofclans_war_members', '#items': data.opponent.members, '#players': data.players }) }}
   </div>
 

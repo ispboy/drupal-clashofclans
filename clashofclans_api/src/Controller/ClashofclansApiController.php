@@ -82,7 +82,7 @@ class ClashofclansApiController extends ControllerBase {
     $options = [
       'attributes' => ['target' => '_blank'],
       'query' => [
-        'url' => 'players/#YCUJV0JCY',
+        'url' => 'players/#UUGVVY98',
         'limit' => 10,
         'token' => $client->getCsrfToken(),
       ],
