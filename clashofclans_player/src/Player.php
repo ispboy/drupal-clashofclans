@@ -95,22 +95,19 @@ class Player {
     $diff = [];
     $fields = $this->getFields($data);
     foreach ($fields as $key => $field) {
-      if (\is_array($field)) {
-        continue; //omit array().. especially Season
-      }
-
       $values = $entity->get($key)->getValue();
-      $value = end($values);
-      if (isset($value['value']) && $value['value'] == $field) {
-        continue;
+      if (!$values && $field) {
+        $diff[$key] = $field;
+      }
+      if ($values) {
+        $value = end($values);
+        if (\is_array($field)) {
+          if (array_diff_assoc($value, $field)) $diff[$key] = $field;
+        } elseif (isset($value['value']) && $value['value'] != $field) {
+          $diff[$key] = $field;
+        }
       }
 
-      $diff[$key] = $field;
-    }
-
-    if (array_key_exists('field_legend_trophies', $diff)) {
-      if (isset($fields['field_best_season'])) $diff['field_best_season'] = $fields['field_best_season'];
-      if (isset($fields['field_previous_season'])) $diff['field_previous_season'] = $fields['field_previous_season'];
     }
 
     if ($diff) {
@@ -127,12 +124,10 @@ class Player {
     if (isset($data['name'])) $fields['field_name'] = $data['name'];
     if (isset($data['warStars'])) $fields['field_war_stars'] = $data['warStars'];
     if (isset($data['legendStatistics']['legendTrophies'])) $fields['field_legend_trophies'] = $data['legendStatistics']['legendTrophies'];
-    if (isset($data['legendStatistics']['bestSeason'])) {
-      $fields['field_best_season'] = $this->convertSeason($data['legendStatistics']['bestSeason']);
-    }
-    if (isset($data['legendStatistics']['previousSeason'])) {
-      $fields['field_previous_season'] = $this->convertSeason($data['legendStatistics']['previousSeason']);
-    }
+    $fields['field_best_season'] = isset($data['legendStatistics']['bestSeason']) ?
+      $this->convertSeason($data['legendStatistics']['bestSeason']) : [];
+    $fields['field_previous_season'] = isset($data['legendStatistics']['previousSeason']) ?
+      $this->convertSeason($data['legendStatistics']['previousSeason']) : [];
     return $fields;
   }
 
