@@ -41,7 +41,7 @@ class PlayerController extends ControllerBase {
 
     $id = $this->player->getEntityId($tag);
     if ($id) {
-      return $this->redirect($route, ['user' => $id]);
+      return $this->redirect($route, ['user' => $id], [], 301);
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
       return $build;

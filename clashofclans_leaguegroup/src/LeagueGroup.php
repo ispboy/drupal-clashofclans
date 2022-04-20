@@ -148,7 +148,9 @@ class LeagueGroup {
       $warTags = $round['warTags'];
       foreach ($warTags as $tag) {
         $war = $this->war->getData($tag);
-        $wars[$tag] = $war;
+        if ($war) {
+          $wars[$tag] = $war;
+        }
       }
       if ($war['state'] == 'preparation') {
         break;

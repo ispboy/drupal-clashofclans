@@ -10,7 +10,8 @@ clashofclans_player.tag.verifytoken:
   path: 'clashofclans-player/tag/{tag}/verifytoken'
   defaults:
     _form: 'Drupal\clashofclans_player\Form\VerifyTokenForm'
-    _title: 'Verify Token'
+    # _title: 'Verify Token'
+    _title_callback: '\Drupal\clashofclans_player\Controller\PlayerController::setTitle'
   requirements:
     # _permission: 'access content'
     _user_is_logged_in: 'FALSE'

@@ -48,7 +48,7 @@ class ClanController extends ControllerBase {
 
     $id = $this->clan->getEntityId($tag);
     if ($id) {
-      return $this->redirect($route, ['clashofclans_clan' => $id]);
+      return $this->redirect($route, ['clashofclans_clan' => $id], [], 301);
     } else {
       $build['content'] = ['#markup' => $this->t('No results.')];
       return $build;
