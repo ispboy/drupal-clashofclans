@@ -3,7 +3,7 @@ type: module
 description: Integrates Clash of Clans API into Drupal.
 package: Clash of Clans
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - guzzle_cache:guzzle_cache
   - guzzle_cache_middleware:guzzle_cache_middleware
